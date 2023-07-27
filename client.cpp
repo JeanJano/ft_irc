@@ -10,12 +10,16 @@ void	checkpassword(t_client* client, char **av)
 	memset(&msg, 0, sizeof(msg));
 	int checkpass;
 	recv(client->clientSd, (int*)&checkpass, sizeof(checkpass), 0);
-	std::cout << "msg: " << checkpass << std::endl;
+	// std::cout << "msg: " << checkpass << std::endl;
 	if (checkpass == 0)
 	{
 		std::cerr << "Wrong password" << std::endl;
 		exit(0);
 	}
+
+	memset(&msg, 0, sizeof(msg));
+	recv(client->clientSd, (char*)&msg, sizeof(msg), 0);
+	std::cout << msg << std::endl;
 }
 
 void	initClient(t_client *client, char **av)
@@ -46,13 +50,9 @@ int main(int ac, char **av)
 	std::cout << "Connected to the server" << std::endl;
 
 	// Connection with password
-	// checkpassword(&client, av);
+	checkpassword(&client, av);
 
-	// memset(&msg, 0, sizeof(msg));
-	// recv(client.clientSd, (char*)&msg, sizeof(msg), 0);
-	// std::cout << msg << std::endl;
-
-	while (1)
+	while (true)
 	{
 		std::cout << "> ";
 		std::string data;

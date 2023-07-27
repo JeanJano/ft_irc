@@ -21,7 +21,6 @@
 # include <deque>
 # include <vector>
 
-# define MAX_CLIENT 5
 # define BUFFER_SIZE 1024
 
 typedef struct	s_server
@@ -29,6 +28,8 @@ typedef struct	s_server
 	sockaddr_in	servAddr;
 	int			serverSd;
 	fd_set		readfds;
+	int			newSd;
+	std::vector<struct pollfd>	fds;
 }				t_server;
 
 typedef struct	s_client

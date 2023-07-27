@@ -45,7 +45,6 @@ void	initServer(t_server *server, char **av)
 		exit(0);
 	}
 
-	// bind the socket to its local address
 	if ((bind(server->serverSd, (struct sockaddr*) &server->servAddr, sizeof(server->servAddr))) < 0)
 	{
 		std::cerr << "Error bind" << std::endl;
@@ -53,8 +52,8 @@ void	initServer(t_server *server, char **av)
 		exit(0);
 	}
 
-	// listen for Max_Client request at a time
-	if ((listen(server->serverSd, MAX_CLIENT)) < 0)
+	// listen for 5 request at a time
+	if ((listen(server->serverSd, 5)) < 0)
 	{
 		std::cerr << "error listen" << std::endl;
 		close(server->serverSd);
@@ -62,57 +61,42 @@ void	initServer(t_server *server, char **av)
 	}
 }
 
-int main(int ac, char **av)
+void	servConnectClient(t_server *server, char **av)
 {
-	t_server	server;
-	char		msg[1500];
-
-	initServer(&server, av);
-
-	std::cout << "Waiting for the client to connect..." << std::endl;
-
-	// std::cout << "new client try to connect" << std::endl;
-
-	// receive request from client
-	// need a new address to connect with the client
 	sockaddr_in newSockAddress;
 	socklen_t newSockAddressSize = sizeof(newSockAddress);
 
-	// try connect several client
-
-	std::vector<struct pollfd> fds;
-	fds.push_back({server.serverSd, POLLIN, 0});
-	int newSd;
+	server->fds.push_back({server->serverSd, POLLIN, 0});
 
 	while (true)
 	{
-		if ((poll(fds.data(), fds.size(), -1)) < 0)
+		if ((poll(server->fds.data(), server->fds.size(), -1)) < 0)
 		{
 			std::cerr << "Error poll" << std::endl;
 			break ;
 		}
 
 		// new incoming connection
-		if (fds[0].revents & POLLIN)
+		if (server->fds[0].revents & POLLIN)
 		{
-			newSd = accept(server.serverSd, (struct sockaddr *)&newSockAddress, &newSockAddressSize);
-			if (newSd < 0)
+			server->newSd = accept(server->serverSd, (struct sockaddr *)&newSockAddress, &newSockAddressSize);
+			if (server->newSd < 0)
 			{
 				std::cerr << "Error accept" << std::endl;
 				continue ;
 			}
+			checkpassword(server->newSd, av);
 			std::cout << "new client connected" << std::endl;
-			fds.push_back({newSd, POLLIN | POLLOUT, 0});
+			server->fds.push_back({server->newSd, POLLIN | POLLOUT, 0});
 		}
 
 		// check data from clients
-		for (size_t i = 1; i < fds.size(); ++i)
+		for (size_t i = 1; i < server->fds.size(); ++i)
 		{
-			if (fds[i].revents & POLLIN)
+			if (server->fds[i].revents & POLLIN)
 			{
 				char buffer[BUFFER_SIZE];
-				// memset(&buffer, 0, sizeof(buffer));
-				int bytesRead = recv(fds[i].fd, buffer, BUFFER_SIZE, 0);
+				int bytesRead = recv(server->fds[i].fd, buffer, BUFFER_SIZE, 0);
 
 				if (bytesRead <= 0)
 				{
@@ -120,20 +104,30 @@ int main(int ac, char **av)
 						std::cout << "Client disconnected" << std::endl;
 					else
 						std::cerr << "Error recv" << std::endl;
-					close(fds[i].fd);
-					fds.erase(fds.begin() + i);
+					close(server->fds[i].fd);
+					server->fds.erase(server->fds.begin() + i);
 					--i;
 				}
-				else if (buffer[i] != '\0')
+				else if (buffer[0] != '\0')
 					std::cout << "Received from client " << i << ": " << buffer << std::endl;
 			}
 		}
 	}
+}
 
-	for (const auto& fd : fds)
+int main(int ac, char **av)
+{
+	t_server	server;
+
+	initServer(&server, av);
+
+	std::cout << "Waiting for the client to connect..." << std::endl;
+
+	servConnectClient(&server, av);
+
+	for (const auto& fd : server.fds)
 		close(fd.fd);
-
-	close(newSd);
+	close(server.newSd);
 	close(server.serverSd);
 	std::cout << "********Session********" << std::endl;
 	std::cout << "Connection closed..." << std::endl;
