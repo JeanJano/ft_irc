@@ -86,8 +86,7 @@ int main(int ac, char **av)
 
 	while (true)
 	{
-		int activity = poll(fds.data(), fds.size(), -1);
-		if (activity < 0)
+		if ((poll(fds.data(), fds.size(), -1)) < 0)
 		{
 			std::cerr << "Error poll" << std::endl;
 			break ;
@@ -125,7 +124,7 @@ int main(int ac, char **av)
 					fds.erase(fds.begin() + i);
 					--i;
 				}
-				else
+				else if (buffer[i] != '\0')
 					std::cout << "Received from client " << i << ": " << buffer << std::endl;
 			}
 		}

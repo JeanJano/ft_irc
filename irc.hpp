@@ -22,7 +22,7 @@
 # include <vector>
 
 # define MAX_CLIENT 5
-# define BUFFER_SIZE 10
+# define BUFFER_SIZE 1024
 
 typedef struct	s_server
 {
