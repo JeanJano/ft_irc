@@ -46,11 +46,11 @@ int main(int ac, char **av)
 	std::cout << "Connected to the server" << std::endl;
 
 	// Connection with password
-	checkpassword(&client, av);
+	// checkpassword(&client, av);
 
-	memset(&msg, 0, sizeof(msg));
-	recv(client.clientSd, (char*)&msg, sizeof(msg), 0);
-	std::cout << msg << std::endl;
+	// memset(&msg, 0, sizeof(msg));
+	// recv(client.clientSd, (char*)&msg, sizeof(msg), 0);
+	// std::cout << msg << std::endl;
 
 	while (1)
 	{
@@ -61,7 +61,7 @@ int main(int ac, char **av)
 		strcpy(msg, data.c_str());
 		if (data == "exit")
 		{
-			send(client.clientSd, (char*)&msg, strlen(msg), 0);
+			send(client.clientSd, (char *)&msg, strlen(msg), 0);
 			break ;
 		}
 		send(client.clientSd, (char *)&msg, sizeof(msg), 0);

@@ -6,6 +6,7 @@
 # include <stdio.h>
 # include <sys/types.h>
 # include <sys/socket.h>
+# include <sys/poll.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <stdlib.h>
@@ -18,6 +19,10 @@
 # include <fcntl.h>
 # include <fstream>
 # include <deque>
+# include <vector>
+
+# define MAX_CLIENT 5
+# define BUFFER_SIZE 10
 
 typedef struct	s_server
 {
