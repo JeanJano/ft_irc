@@ -48,6 +48,10 @@ int main(int ac, char **av)
 	// Connection with password
 	checkpassword(&client, av);
 
+	memset(&msg, 0, sizeof(msg));
+	recv(client.clientSd, (char*)&msg, sizeof(msg), 0);
+	std::cout << msg << std::endl;
+
 	while (1)
 	{
 		std::cout << "> ";

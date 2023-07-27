@@ -23,7 +23,7 @@ typedef struct	s_server
 {
 	sockaddr_in	servAddr;
 	int			serverSd;
-	int			bindStatus;
+	fd_set		readfds;
 }				t_server;
 
 typedef struct	s_client
