@@ -38,4 +38,6 @@ typedef struct	s_client
 	int			clientSd;
 }				t_client;
 
+void	initServer(t_server *server, char **av);
+
 #endif
