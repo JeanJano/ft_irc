@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:46 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/14 17:34:20 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/14 20:44:42 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ class User
 		std::string	getNickName() const;
 		std::string	getRealName() const;
 		std::string	getPassWord() const;
+		std::string	getStatus() const;
+
+		void		setStatus(bool status);
 
 		void		parseInput(std::string input);
 		void		printInfos();
@@ -35,6 +38,7 @@ class User
 		std::string nickName;
 		std::string realName;
 		std::string passWord;
+		bool		isConnected;
 };
 
 

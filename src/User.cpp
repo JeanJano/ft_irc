@@ -3,16 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/14 19:39:59 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/14 20:45:23 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "User.hpp"
 
-User::User() {}
+User::User() {
+	userName = "default";
+	nickName = "default";
+	realName = "default";
+	passWord = "default";
+	isConnected = false;
+}
 
 User::User(const User &cpy) {
 	if (this != &cpy)	
@@ -45,6 +51,12 @@ std::string	User::getRealName() const {
 std::string	User::getPassWord() const {
 	return (passWord);
 }
+
+std::string	User::getStatus() const {
+	return (isConnected);
+}
+
+void	User::setStatus(bool status) {}
 
 void	User::parseInput(std::string input) {
 	std::stringstream	ss(input);

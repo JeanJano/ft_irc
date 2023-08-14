@@ -25,8 +25,11 @@ void	welcomeMsg(int sd, t_server *server)
 	User usr;
 	usr.parseInput(input);
 	usr.printInfos();
-	if (checkpassword(sd, server, usr) == false)
+	if (checkpassword(sd, server, usr) == false) {
+		usr.setStatus(false);
 		return ;
+	}
+	usr.setStatus(true);
 	server->users.push_back(usr);
 
 	std::string msg001;

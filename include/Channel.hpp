@@ -7,14 +7,16 @@
 class Channel
 {
 	public:
-		Channel();
-		Channel(const Channel& p);
+		Channel(std::string n);
+		Channel(const Channel &cpy);
 		~Channel();
-		Channel& operator=(const Channel& p);
+		Channel& operator=(const Channel &cpy);
 
+		void	addUser(User *user);
+		void	removeUser(User *user);
 	private:
-		std::deque<User> user;
-		std::deque<std::string> message;
+		std::string			name;
+		std::vector<User>	members;
 };
 
 #endif
