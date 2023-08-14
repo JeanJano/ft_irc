@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   irc.hpp                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
+/*   Updated: 2023/08/14 18:44:27 by jsauvage         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef IRC_HPP
 # define IRC_HPP
 
@@ -18,10 +30,14 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <fstream>
+# include <sstream>
 # include <deque>
 # include <vector>
+# include "User.hpp"
 
 # define BUFFER_SIZE 1024
+
+class User;
 
 typedef struct	s_server
 {
@@ -29,14 +45,10 @@ typedef struct	s_server
 	int			serverSd;
 	fd_set		readfds;
 	int			newSd;
+	std::string	password;
 	std::vector<struct pollfd>	fds;
+	std::vector<User> users;
 }				t_server;
-
-typedef struct	s_client
-{
-	sockaddr_in	sendSockAddr;
-	int			clientSd;
-}				t_client;
 
 void	initServer(t_server *server, char **av);
 

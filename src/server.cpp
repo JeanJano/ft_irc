@@ -1,29 +1,38 @@
 #include "irc.hpp"
 
-// void	checkpassword(int sd, char **av)
-// {
-// 	char msg[1500];
-// 	memset(&msg, 0, sizeof(msg));
-// 	recv(sd, (char*)&msg, sizeof(msg), 0);
-// 	int checkpass = 0;
-// 	std::cout << "pass recv: " << msg << std::endl;
-// 	std::cout << "pass send: " << av[2] << std::endl;
-// 	if (strcmp(msg, av[2]))
-// 	{
-// 		std::cout << "client try to connect with wrong password" << std::endl;
-// 		memset(&msg, 0, sizeof(msg));
-// 		strcpy(msg, "Error");
-// 		send(sd, (int*)&checkpass, sizeof(checkpass), 0);
-// 	}
-// 	checkpass = 1;
-// 	memset(&msg, 0, sizeof(msg));
-// 	send(sd, (char*)&checkpass, sizeof(checkpass), 0);
+bool	checkpassword(int sd, t_server *server, User client)
+{
+	std::string msg;
+	std::cout << "Compare = " << client.getPassWord().compare(server->password) << std::endl;
+	if (client.getPassWord().compare(server->password) != 0)
+	{
+		std::cout << "client try to connect with wrong password" << std::endl;
+		msg = ":server 464 " + client.getNickName() + " :Password incorrect\r\n";
+		send(sd, (char*)msg.c_str(), msg.size(), 0);
+		return (false);
+	}
+	return (true);
+}
 
-// 	memset(&msg, 0, sizeof(msg));
-// 	strcpy(msg, "Welcome");
-// 	send(sd, msg, strlen(msg), 0);
-// 	std::cout << "Welcome message send" << std::endl;
-// }
+void	welcomeMsg(int sd, t_server *server)
+{
+	char msg[1500];
+	memset(&msg, 0, sizeof(msg));
+	recv(sd, (char*)msg, sizeof(msg), 0);
+	std::cout << msg << std::endl;
+
+	std::string input(msg);
+	User usr;
+	usr.parseInput(input);
+	usr.printInfos();
+	if (checkpassword(sd, server, usr) == false)
+		return ;
+	server->users.push_back(usr);
+
+	std::string msg001;
+	msg001 = ":server 001 " + usr.getNickName() + " :Welcome to the Internet Relay Network, " + usr.getNickName() + "!\r\n";
+	send(sd, (char*)msg001.c_str(), msg001.size(), 0);
+}
 
 void	servConnectClient(t_server *server, char **av)
 {
@@ -52,14 +61,7 @@ void	servConnectClient(t_server *server, char **av)
 			// checkpassword(server->newSd, av);
 			std::cout << "new client connected" << std::endl;
 			// welcome message to client
-			char msg[1500];
-			memset(&msg, 0, sizeof(msg));
-			recv(server->newSd, (char*)msg, sizeof(msg), 0);
-			std::cout << msg << std::endl;
-
-			memset(&msg, 0, sizeof(msg));
-			strcpy(msg, ":server 001 jsauvage :Welcome to the Internet Relay Network, jsauvage!\r\n");
-			send(server->newSd, (char*)msg, sizeof(msg), 0);
+			welcomeMsg(server->newSd, server);
 
 			server->fds.push_back({server->newSd, POLLIN | POLLOUT, 0});
 		}
@@ -92,6 +94,7 @@ void	servConnectClient(t_server *server, char **av)
 int main(int ac, char **av)
 {
 	t_server	server;
+
 
 	initServer(&server, av);
 

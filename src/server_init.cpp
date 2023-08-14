@@ -2,6 +2,8 @@
 
 void	initServer(t_server *server, char **av)
 {
+	server->password = av[2];
+
 	// set socket
 	bzero((char*)&server->servAddr, sizeof(server->servAddr));
 	server->servAddr.sin_family = AF_INET;
