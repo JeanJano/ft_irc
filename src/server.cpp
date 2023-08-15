@@ -1,67 +1,5 @@
 #include "irc.hpp"
 
-bool	checkpassword(int sd, t_server *server, User client)
-{
-	std::string msg;
-	std::cout << "Compare = " << client.getPassWord().compare(server->password) << std::endl;
-	if (client.getPassWord().compare(server->password) != 0)
-	{
-		std::cout << "client try to connect with wrong password" << std::endl;
-		msg = ":server 464 " + client.getNickName() + " :Password incorrect\r\n";
-		send(sd, (char*)msg.c_str(), msg.size(), 0);
-		return (false);
-	}
-	return (true);
-}
-
-std::string	getCompleteMsg(int sd)
-{
-	char		msg[1500];
-	int			bytesread;
-	std::string	received;
-
-	struct timeval tv;
-    tv.tv_sec = 1;  // 5 seconds timeout
-    tv.tv_usec = 0;
-	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
-	while(true)
-	{
-		memset(&msg, 0, sizeof(msg));
-		bytesread = recv(sd, msg, sizeof(msg), 0);
-		if (bytesread <= 0)
-			break ;
-		msg[bytesread] = '\0';
-		received += msg;
-		if (received.length() >= 2 && received.substr(received.length() - 2) == "/r/n")
-			break;
-	}
-	memset(&msg, 0, sizeof(msg));
-	return (received);
-}
-
-void	welcomeMsg(int sd, t_server *server)
-{
-	// char msg[1500];
-	// memset(&msg, 0, sizeof(msg));
-	// recv(sd, (char*)msg, sizeof(msg), 0);
-	// std::cout << msg << std::endl;
-
-	std::string input = getCompleteMsg(sd);
-	User usr;
-	usr.parseInput(input);
-	usr.printInfos();
-	if (checkpassword(sd, server, usr) == false) {
-		usr.setStatus(false);
-		return ;
-	}
-	usr.setStatus(true);
-	server->users.push_back(usr);
-
-	std::string msg001;
-	msg001 = ":server 001 " + usr.getNickName() + " :Welcome to the Internet Relay Network, " + usr.getNickName() + "!\r\n";
-	send(sd, (char*)msg001.c_str(), msg001.size(), 0);
-}
-
 void	servConnectClient(t_server *server, char **av)
 {
 	sockaddr_in newSockAddress;
@@ -86,11 +24,8 @@ void	servConnectClient(t_server *server, char **av)
 				std::cerr << "Error accept" << std::endl;
 				continue ;
 			}
-			// checkpassword(server->newSd, av);
-			std::cout << "new client connected" << std::endl;
 			// welcome message to client
 			welcomeMsg(server->newSd, server);
-
 			server->fds.push_back({server->newSd, POLLIN | POLLOUT, 0});
 		}
 
@@ -99,21 +34,24 @@ void	servConnectClient(t_server *server, char **av)
 		{
 			if (server->fds[i].revents & POLLIN)
 			{
-				// char buffer[BUFFER_SIZE];
-				// int bytesRead = recv(server->fds[i].fd, buffer, BUFFER_SIZE, 0);
+				char buffer[BUFFER_SIZE];
+				int bytesRead = recv(server->fds[i].fd, buffer, BUFFER_SIZE, 0);
 
-				// if (bytesRead <= 0)
-				// {
-				// 	if (bytesRead == 0)
-				// 		std::cout << "Client disconnected" << std::endl;
-				// 	else
-				// 		std::cerr << "Error recv" << std::endl;
-				// 	close(server->fds[i].fd);
-				// 	server->fds.erase(server->fds.begin() + i);
-				// 	--i;
-				// }
-				// else if (buffer[0] != '\0')
-				// 	std::cout << "Received from client " << i << ": " << buffer << std::endl;
+				if (bytesRead <= 0)
+				{
+					if (bytesRead == 0)
+						std::cout << "Client disconnected" << std::endl;
+					else
+						std::cerr << "Error recv" << std::endl;
+					close(server->fds[i].fd);
+					server->fds.erase(server->fds.begin() + i);
+					--i;
+				}
+				else if (buffer[0] != '\0')
+				{
+					// command from client
+					std::cout << "Received from client " << i << ": " << buffer << std::endl;
+				}
 			}
 		}
 	}
