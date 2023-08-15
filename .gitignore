@@ -3,5 +3,3 @@ client
 .vscode
 *.o
 *.d
-test
-test2
