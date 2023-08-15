@@ -6,7 +6,11 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2023/08/15 13:49:46 by smessal          ###   ########.fr       */
+=======
+/*   Updated: 2023/08/15 13:26:54 by jsauvage         ###   ########.fr       */
+>>>>>>> origin/main
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +38,12 @@
 # include <deque>
 # include <vector>
 # include "User.hpp"
+# include "Channel.hpp"
 
 # define BUFFER_SIZE 1024
 
 class User;
+class Channel;
 
 typedef struct	s_server
 {
@@ -48,6 +54,7 @@ typedef struct	s_server
 	std::string	password;
 	std::vector<struct pollfd>	fds;
 	std::vector<User> users;
+	std::vector<Channel> channels;
 }				t_server;
 
 void		initServer(t_server *server, char **av);

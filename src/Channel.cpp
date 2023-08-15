@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/14 20:49:33 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/15 12:59:50 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Channel.hpp"
+
+Channel::Channel() : name("default") {}
 
 Channel::Channel(std::string n) : name(n) {}
 
@@ -29,3 +31,15 @@ Channel	&Channel::operator=(const Channel &cpy) {
 // 		members.push_back(*user);
 // 	}
 // }
+
+std::string	Channel::getName() {
+	return (name);
+}
+
+std::vector<User> Channel::getMembers() {
+	return (members);
+}
+
+std::vector<std::string>	Channel::getMessages() {
+	return (messages);
+}

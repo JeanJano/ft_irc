@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:46 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/14 20:44:42 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/15 13:24:34 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class User
 		std::string	getNickName() const;
 		std::string	getRealName() const;
 		std::string	getPassWord() const;
-		std::string	getStatus() const;
+		bool		getStatus() const;
 
 		void		setStatus(bool status);
 
