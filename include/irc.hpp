@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/15 11:28:21 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/15 13:49:46 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ typedef struct	s_server
 	std::vector<User> users;
 }				t_server;
 
-void	initServer(t_server *server, char **av);
-void	welcomeMsg(int sd, t_server *server);
+void		initServer(t_server *server, char **av);
+void		welcomeMsg(int sd, t_server *server);
+std::string	getCompleteMsg(int sd);
 
 #endif
