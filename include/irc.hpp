@@ -6,9 +6,10 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/15 14:13:44 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/15 14:30:51 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef IRC_HPP
 # define IRC_HPP
@@ -54,7 +55,8 @@ typedef struct	s_server
 	std::vector<Channel> channels;
 }				t_server;
 
-void	initServer(t_server *server, char **av);
-void	welcomeMsg(int sd, t_server *server);
+void		initServer(t_server *server, char **av);
+void		welcomeMsg(int sd, t_server *server);
+std::string	getCompleteMsg(int sd);
 
 #endif

@@ -17,14 +17,7 @@ bool	checkpassword(int sd, t_server *server, User client)
 void	welcomeMsg(int sd, t_server *server)
 {
 	std::cout << "new client connected" << std::endl;
-
-	char msg[1500];
-	memset(&msg, 0, sizeof(msg));
-	sleep(1);
-	recv(sd, (char*)msg, sizeof(msg), 0);
-	std::cout << msg << std::endl;
-
-	std::string input(msg);
+	std::string input(getCompleteMsg(sd));
 	User usr;
 	usr.parseInput(input);
 	usr.printInfos();

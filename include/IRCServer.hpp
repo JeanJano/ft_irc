@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/15 14:26:23 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/15 14:30:47 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,6 @@ class IRCServer {
 		std::map<std::string, Channel*>	channels;
 		std::map<std::string, User*>	users;
 };
+
 
 #endif
