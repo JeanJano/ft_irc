@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/15 17:32:14 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/15 19:13:58 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,9 +108,10 @@ void	IRCServer::handleEvents() {
 			{
 				// command from client
 				std::cout << "Received from client " << i << ": " << buf << std::endl;
-				t_cmd    test = parseCmd(buf);
-				std::cout << "Cmd: " << test.typeCmd << std::endl;
-				std::cout << "Text: " << test.text << std::endl;
+				t_cmd    cmd = parseCmd(buf);
+				std::cout << "Cmd: " << cmd.typeCmd << std::endl;
+				std::cout << "Text: " << cmd.text << std::endl;
+				checkCmd(cmd);
 			}
 		}
 	}
@@ -124,7 +125,7 @@ void	IRCServer::newConnexionMsg(int sd) {
 	usr.printInfos();
 	if (checkpassword(sd, usr) == false)
 		return ;
-	users[usr.getUserName()] = &usr;
+	users[usr.getUserName()] = usr;
 
 	std::string msg001;
 	msg001 = ":server 001 " + usr.getNickName() + " :Welcome to the Internet Relay Network, " + usr.getNickName() + "!\r\n";
@@ -184,4 +185,26 @@ t_cmd    IRCServer::parseCmd(std::string buf) {
         command.text = buf.substr(posSpace + 1, buf.length() - posSpace);
     }
     return command;
+}
+
+void	IRCServer::checkCmd(t_cmd cmd) {
+	typedef void	(IRCServer::*functionPtr)(std::string);
+
+	std::string cmdArr[1] = {"JOIN",/*  "PRIVMSG" */};
+	functionPtr	functPtr[1] = {&IRCServer::join/* , &IRCServer::privmsg */};
+
+	for (int i = 0; i < 1; i++) {
+		if (cmd.typeCmd == cmdArr[i])
+			(this->*functPtr[i])(cmd.text);
+	}
+}
+
+void	IRCServer::join(std::string input) {
+	std::istringstream iss(input);
+	std::string	name;
+	std::string pass;
+
+	iss >> name >> pass;
+	Channel newChannel(name, pass);
+	channels[name] = newChannel;
 }
