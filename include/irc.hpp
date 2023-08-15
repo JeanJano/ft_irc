@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/15 13:26:54 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/15 14:13:44 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # include <sstream>
 # include <deque>
 # include <vector>
+# include <map>
 # include "User.hpp"
 # include "Channel.hpp"
 
