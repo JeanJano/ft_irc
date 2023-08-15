@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:46 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/15 13:24:34 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/15 18:27:39 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ class User
 {
 	public:
 		User();
+		User(size_t sd);
 		User(const User &cpy);
 		~User();
 		User& operator=(const User &cpy);
@@ -27,6 +28,7 @@ class User
 		std::string	getNickName() const;
 		std::string	getRealName() const;
 		std::string	getPassWord() const;
+		int			getSd() const;
 		bool		getStatus() const;
 
 		void		setStatus(bool status);
@@ -38,6 +40,7 @@ class User
 		std::string nickName;
 		std::string realName;
 		std::string passWord;
+		int			sd;
 		bool		isConnected;
 };
 

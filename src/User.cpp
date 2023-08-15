@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/15 13:49:57 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/15 18:28:11 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "User.hpp"
+
+User::User(size_t sd)
+{
+	userName = "default";
+	nickName = "default";
+	realName = "default";
+	passWord = "default";
+	isConnected = false;
+	sd = sd;
+}
 
 User::User() {
 	userName = "default";
@@ -18,6 +28,7 @@ User::User() {
 	realName = "default";
 	passWord = "default";
 	isConnected = false;
+	sd = -1;
 }
 
 User::User(const User &cpy) {
@@ -54,6 +65,11 @@ std::string	User::getPassWord() const {
 
 bool	User::getStatus() const {
 	return (isConnected);
+}
+
+int	User::getSd() const
+{
+	return (sd);
 }
 
 void	User::setStatus(bool status) {}

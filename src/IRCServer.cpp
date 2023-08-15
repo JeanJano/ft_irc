@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/15 17:32:14 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/15 19:13:57 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ bool	IRCServer::connectClient() {
 void	IRCServer::handleEvents() {
 	for (size_t i = 1; i < fds.size(); ++i)
 	{
+		nowFd = &i;
 		if (fds[i].revents & POLLIN)
 		{
 			std::string	buf = getCompleteMsg(fds[i].fd, &i);
@@ -109,6 +110,7 @@ void	IRCServer::handleEvents() {
 				// command from client
 				std::cout << "Received from client " << i << ": " << buf << std::endl;
 				t_cmd    test = parseCmd(buf);
+				// privateMsg(test);
 				std::cout << "Cmd: " << test.typeCmd << std::endl;
 				std::cout << "Text: " << test.text << std::endl;
 			}
@@ -119,7 +121,8 @@ void	IRCServer::handleEvents() {
 void	IRCServer::newConnexionMsg(int sd) {
 	std::cout << "new client connected" << std::endl;
 	std::string input(getCompleteMsg(sd, NULL));
-	User usr;
+	std::cout << input << std::endl;
+	User usr(sd);
 	usr.parseInput(input);
 	usr.printInfos();
 	if (checkpassword(sd, usr) == false)
@@ -185,3 +188,45 @@ t_cmd    IRCServer::parseCmd(std::string buf) {
     }
     return command;
 }
+
+// void	IRCServer::privateMsg(t_cmd	priv)
+// {
+// 	size_t	posCol = priv.text.find(":", 0);
+// 	std::string	msg;
+// 	if (posCol != std::string::npos)
+// 	{
+// 		std::string	nick = priv.text.substr(0, posCol - 1);
+// 		std::string	msg = priv.text.substr(posCol + 1, priv.text.length() - posCol);
+// 		User	*sender = findUser(fds[*nowFd].fd);
+// 		User	*receiver = findUser(nick);
+// 		if (!receiver)
+// 		{
+// 			std::cout << "Client not found" << std::endl;
+// 			return ;
+// 		}
+// 		msg = ":" + sender->getNickName() +"!~" + sender->getUserName() +"@localhost PRIVMSG " + receiver->getNickName() + " :" + msg + "\r\n";
+// 		send(receiver->getSd(), (char*)msg.c_str(), msg.size(), 0);
+// 	}
+// 	return ;
+// }
+
+// User	*IRCServer::findUser(std::string nick)
+// {
+// 	std::map<std::string, User*>::iterator	it = users.find(nick);
+// 	if (it != users.end())
+// 		return (it->second);
+// 	else
+// 		return (NULL);
+// }
+
+// User	*IRCServer::findUser(int sd)
+// {
+// 	std::map<std::string, User*>::iterator	it = users.begin();
+// 	while (it != users.end())
+// 	{
+// 		if (it->second->getSd() == sd)
+// 			return (it->second);
+// 		it++;
+// 	}
+// 	return (NULL);
+// }
