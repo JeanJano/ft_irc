@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/14 18:44:27 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/15 11:28:21 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,6 @@ typedef struct	s_server
 }				t_server;
 
 void	initServer(t_server *server, char **av);
+void	welcomeMsg(int sd, t_server *server);
 
 #endif
