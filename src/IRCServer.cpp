@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/15 16:54:52 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/15 17:32:14 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,35 +103,22 @@ void	IRCServer::handleEvents() {
 	{
 		if (fds[i].revents & POLLIN)
 		{
-			char buffer[BUFFER_SIZE];
-			int bytesRead = recv(fds[i].fd, buffer, BUFFER_SIZE, 0);
-
-			if (bytesRead <= 0)
-			{
-				if (bytesRead == 0)
-					std::cout << "Client disconnected" << std::endl;
-				else
-					std::cerr << "Error recv" << std::endl;
-				close(fds[i].fd);
-				fds.erase(fds.begin() + i);
-				--i;
-			}
-			else if (buffer[0] != '\0')
+			std::string	buf = getCompleteMsg(fds[i].fd, &i);
+			if (!buf.empty())
 			{
 				// command from client
-				std::cout << "Received from client " << i << ": " << buffer << std::endl;
-				t_cmd    test = parseCmd(buffer);
+				std::cout << "Received from client " << i << ": " << buf << std::endl;
+				t_cmd    test = parseCmd(buf);
 				std::cout << "Cmd: " << test.typeCmd << std::endl;
 				std::cout << "Text: " << test.text << std::endl;
 			}
-			bzero(buffer, sizeof(buffer));	
 		}
 	}
 }
 
 void	IRCServer::newConnexionMsg(int sd) {
 	std::cout << "new client connected" << std::endl;
-	std::string input(getCompleteMsg(sd));
+	std::string input(getCompleteMsg(sd, NULL));
 	User usr;
 	usr.parseInput(input);
 	usr.printInfos();
@@ -156,7 +143,7 @@ bool	IRCServer::checkpassword(int sd, User client) {
 	return (true);
 }
 
-std::string	IRCServer::getCompleteMsg(int sd) {
+std::string	IRCServer::getCompleteMsg(int sd, size_t *i) {
 	char		msg[1500];
 	int			bytesread;
 	std::string	received;
@@ -170,7 +157,15 @@ std::string	IRCServer::getCompleteMsg(int sd) {
 		memset(&msg, 0, sizeof(msg));
 		bytesread = recv(sd, msg, sizeof(msg), 0);
 		if (bytesread <= 0)
-			break ;
+		{
+			if (bytesread == 0)
+				std::cout << "Client disconnected" << std::endl;
+			else
+				break ;
+			close(sd);
+			fds.erase(fds.begin() + *i);
+			*i = *i - 1;
+		}
 		msg[bytesread] = '\0';
 		received += msg;
 		if (received.length() >= 2 && received.substr(received.length() - 2) == "/r/n")
@@ -179,8 +174,7 @@ std::string	IRCServer::getCompleteMsg(int sd) {
 	return (received);
 }
 
-t_cmd    IRCServer::parseCmd(char *buffer) {
-    std::string    buf = buffer;
+t_cmd    IRCServer::parseCmd(std::string buf) {
     size_t        posSpace = buf.find(" ");
     t_cmd        command;
 
