@@ -14,14 +14,39 @@ bool	checkpassword(int sd, t_server *server, User client)
 	return (true);
 }
 
+std::string	getCompleteMsg(int sd)
+{
+	char		msg[1500];
+	int			bytesread;
+	std::string	received;
+
+	struct timeval tv;
+    tv.tv_sec = 1;  // 5 seconds timeout
+    tv.tv_usec = 0;
+	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
+	while(true)
+	{
+		memset(&msg, 0, sizeof(msg));
+		bytesread = recv(sd, msg, sizeof(msg), 0);
+		if (bytesread <= 0)
+			break ;
+		msg[bytesread] = '\0';
+		received += msg;
+		if (received.length() >= 2 && received.substr(received.length() - 2) == "/r/n")
+			break;
+	}
+	memset(&msg, 0, sizeof(msg));
+	return (received);
+}
+
 void	welcomeMsg(int sd, t_server *server)
 {
-	char msg[1500];
-	memset(&msg, 0, sizeof(msg));
-	recv(sd, (char*)msg, sizeof(msg), 0);
-	std::cout << msg << std::endl;
+	// char msg[1500];
+	// memset(&msg, 0, sizeof(msg));
+	// recv(sd, (char*)msg, sizeof(msg), 0);
+	// std::cout << msg << std::endl;
 
-	std::string input(msg);
+	std::string input = getCompleteMsg(sd);
 	User usr;
 	usr.parseInput(input);
 	usr.printInfos();

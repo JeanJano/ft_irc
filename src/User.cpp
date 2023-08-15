@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/14 20:45:23 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/15 12:10:18 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ std::string	User::getPassWord() const {
 	return (passWord);
 }
 
-std::string	User::getStatus() const {
-	return (isConnected);
-}
+// std::string	User::getStatus() const {
+// 	return (isConnected);
+// }
 
 void	User::setStatus(bool status) {}
 
