@@ -6,13 +6,10 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2023/08/15 13:49:46 by smessal          ###   ########.fr       */
-=======
-/*   Updated: 2023/08/15 13:26:54 by jsauvage         ###   ########.fr       */
->>>>>>> origin/main
+/*   Updated: 2023/08/15 14:23:29 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef IRC_HPP
 # define IRC_HPP
