@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/15 14:30:51 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/15 16:20:06 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,26 +37,8 @@
 # include <map>
 # include "User.hpp"
 # include "Channel.hpp"
+# include "IRCServer.hpp"
 
 # define BUFFER_SIZE 1024
-
-class User;
-class Channel;
-
-typedef struct	s_server
-{
-	sockaddr_in	servAddr;
-	int			serverSd;
-	fd_set		readfds;
-	int			newSd;
-	std::string	password;
-	std::vector<struct pollfd>	fds;
-	std::vector<User> users;
-	std::vector<Channel> channels;
-}				t_server;
-
-void		initServer(t_server *server, char **av);
-void		welcomeMsg(int sd, t_server *server);
-std::string	getCompleteMsg(int sd);
 
 #endif
