@@ -2,11 +2,13 @@
 # define CHANNEL_HPP
 
 # include "irc.hpp"
-# include "User.hpp"
+
+class User;
 
 class Channel
 {
 	public:
+		Channel();
 		Channel(std::string n);
 		Channel(const Channel &cpy);
 		~Channel();
@@ -14,9 +16,16 @@ class Channel
 
 		void	addUser(User *user);
 		void	removeUser(User *user);
+		void	addMessage(std::string msg);
+
+		std::string					getName();
+		std::vector<User>			getMembers();
+		std::vector<std::string>	getMessages();
+
 	private:
-		std::string			name;
-		std::vector<User>	members;
+		std::string					name;
+		std::vector<User>			members;
+		std::vector<std::string>	messages;
 };
 
 #endif
