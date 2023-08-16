@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/15 18:53:44 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/16 17:38:24 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,4 @@ std::string	Channel::getPass() {
 
 std::vector<User> Channel::getMembers() {
 	return (members);
-}
-
-std::vector<std::string>	Channel::getMessages() {
-	return (messages);
 }
