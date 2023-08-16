@@ -1,5 +1,5 @@
 CC				:=	g++
-CPPFLAGS		:=	-I./include -MMD -MP
+CPPFLAGS		:=	-I./include -MMD -MP -g3
 
 # Directories
 SRC_DIR			:=	src/

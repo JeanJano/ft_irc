@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/16 17:38:54 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/16 20:33:48 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,14 @@ class IRCServer {
 		bool		checkpassword(int sd, User client);
 		t_cmd    	parseCmd(std::string buf);
 		std::string	getCompleteMsg(int sd, size_t *i);
-		void		checkCmd(t_cmd cmd);
+		void		checkCmd(t_cmd cmd, int sd);
 
 		// events
-		void	join(std::string intput);
-		// void	privmsg();
+		void		join(std::string input, int sd);
+		void		privmsg(std::string, int);
 		void		privateMsg(t_cmd msg);
-		User		*findUser(std::string nick);
-		User		*findUser(int sd);
+		User		findUserInstance(int sd);
+		std::string	findUserNickName(int sd);
 
 	private:
 		sockaddr_in						servAddr;
@@ -56,7 +56,7 @@ class IRCServer {
 		std::string						password;
 		std::vector<struct pollfd>		fds;
 		std::map<std::string, Channel>	channels;
-		std::map<std::string, User>	users;
+		std::map<std::string, User>		users;
 };
 
 

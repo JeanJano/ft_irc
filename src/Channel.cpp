@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/16 17:38:24 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/16 19:34:57 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,8 @@ std::string	Channel::getPass() {
 
 std::vector<User> Channel::getMembers() {
 	return (members);
+}
+
+void	Channel::setMember(User member) {
+	members.push_back(member);
 }

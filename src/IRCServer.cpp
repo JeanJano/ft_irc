@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/16 17:39:07 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/16 21:17:14 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,12 +107,10 @@ void	IRCServer::handleEvents() {
 			std::string	buf = getCompleteMsg(fds[i].fd, &i);
 			if (!buf.empty())
 			{
-				// command from client
-				std::cout << "Received from client " << i << ": " << buf << std::endl;
-				t_cmd    test = parseCmd(buf);
-				// privateMsg(test);
-				std::cout << "Cmd: " << test.typeCmd << std::endl;
-				std::cout << "Text: " << test.text << std::endl;
+				std::string	nickSender = findUserNickName(fds[i].fd);
+				t_cmd		cmd = parseCmd(buf);
+				std::cout << buf << std::endl;
+				checkCmd(cmd, fds[i].fd);
 			}
 		}
 	}
@@ -124,10 +122,11 @@ void	IRCServer::newConnexionMsg(int sd) {
 	std::cout << input << std::endl;
 	User usr(sd);
 	usr.parseInput(input);
-	usr.printInfos();
 	if (checkpassword(sd, usr) == false)
 		return ;
-	users[usr.getUserName()] = usr;
+	users[usr.getNickName()] = usr;
+	// for (std::map<std::string, User>::iterator it = users.begin(); it != users.end(); ++it)
+	// 	it->second.printInfos();
 
 	std::string msg001;
 	msg001 = ":server 001 " + usr.getNickName() + " :Welcome to the Internet Relay Network, " + usr.getNickName() + "!\r\n";
@@ -140,7 +139,7 @@ bool	IRCServer::checkpassword(int sd, User client) {
 	{
 		std::cout << "client try to connect with wrong password" << std::endl;
 		msg = ":server 464 " + client.getNickName() + " :Password incorrect\r\n";
-		send(sd, (char*)msg.c_str(), msg.size(), 0);
+		send(sd, msg.c_str(), msg.size(), 0);
 		return (false);
 	}
 	return (true);
@@ -178,8 +177,8 @@ std::string	IRCServer::getCompleteMsg(int sd, size_t *i) {
 }
 
 t_cmd    IRCServer::parseCmd(std::string buf) {
-    size_t        posSpace = buf.find(" ");
-    t_cmd        command;
+    size_t	posSpace = buf.find(" ");
+    t_cmd	command;
 
     if (posSpace != std::string::npos)
     {
@@ -189,27 +188,61 @@ t_cmd    IRCServer::parseCmd(std::string buf) {
     return command;
 }
 
-void	IRCServer::checkCmd(t_cmd cmd) {
-	typedef void	(IRCServer::*functionPtr)(std::string);
+void	IRCServer::checkCmd(t_cmd cmd, int sd) {
+	typedef void	(IRCServer::*functionPtr)(std::string, int);
 
-	std::string cmdArr[1] = {"JOIN",/*  "PRIVMSG" */};
-	functionPtr	functPtr[1] = {&IRCServer::join/* , &IRCServer::privmsg */};
+	std::string cmdArr[2] = {"JOIN", "PRIVMSG"};
+	functionPtr	functPtr[2] = {&IRCServer::join, &IRCServer::privmsg};
 
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < 2; i++) {
 		if (cmd.typeCmd == cmdArr[i])
-			(this->*functPtr[i])(cmd.text);
+			(this->*functPtr[i])(cmd.text, sd);
 	}
 }
 
-void	IRCServer::join(std::string input) {
+void	IRCServer::join(std::string input, int sd) {
 	std::istringstream iss(input);
 	std::string	name;
 	std::string pass;
 
 	iss >> name >> pass;
-	Channel newChannel(name, pass);
+	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
+		if (!name.empty() && !it->first.empty() && it->first.compare(name) == 0) {
+			it->second.setMember(findUserInstance(sd));
+			return;
+		}
+	}
+	Channel newChannel('#' + name, pass);
+	newChannel.setMember(findUserInstance(sd));
 	channels[name] = newChannel;
+	std::cout << "Channels: " << std::endl;
+	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it)
+		std::cout << it->first << std::endl;
 }
+
+void	IRCServer::privmsg(std::string input, int sd) {
+	char		col;
+	std::string	msg;
+	std::string channelName;
+	std::string channelMsg;
+	std::vector<User> members;
+	std::istringstream iss(input);
+	User		sender = findUserInstance(sd);
+	size_t pos = channelName.find_first_of("+?#");
+
+	iss >> channelName >> col >> channelMsg;
+	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
+		if (it->first == channelName) {
+			members = it->second.getMembers();
+			break;
+		}
+	}
+	msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + "localhost PRIVMSG " + channelName + " :" + channelMsg + "\r\n";
+	for (size_t i = 0; i < members.size(); i++) {
+		send(members[i].getSd(), msg.c_str(), msg.size(), 0);
+	}
+}
+
 // void	IRCServer::privateMsg(t_cmd	priv)
 // {
 // 	size_t	posCol = priv.text.find(":", 0);
@@ -218,20 +251,19 @@ void	IRCServer::join(std::string input) {
 // 	{
 // 		std::string	nick = priv.text.substr(0, posCol - 1);
 // 		std::string	msg = priv.text.substr(posCol + 1, priv.text.length() - posCol);
-// 		User	*sender = findUser(fds[*nowFd].fd);
-// 		User	*receiver = findUser(nick);
-// 		if (!receiver)
-// 		{
+// 		User	sender = findUser(fds[*nowFd].fd);
+// 		User	receiver = findUser(nick);
+// 		if (!receiver) {
 // 			std::cout << "Client not found" << std::endl;
-// 			return ;
+// 			return;
 // 		}
-// 		msg = ":" + sender->getNickName() +"!~" + sender->getUserName() +"@localhost PRIVMSG " + receiver->getNickName() + " :" + msg + "\r\n";
-// 		send(receiver->getSd(), (char*)msg.c_str(), msg.size(), 0);
+// 		msg = ":" + sender.getNickName() +"!~" + sender.getUserName() +"@localhost PRIVMSG " + receiver.getNickName() + " :" + msg + "\r\n";
+// 		send(receiver.getSd(), (char*)msg.c_str(), msg.size(), 0);
 // 	}
 // 	return ;
 // }
 
-// User	*IRCServer::findUser(std::string nick)
+// User	IRCServer::findUser(std::string nick)
 // {
 // 	std::map<std::string, User*>::iterator	it = users.find(nick);
 // 	if (it != users.end())
@@ -240,14 +272,27 @@ void	IRCServer::join(std::string input) {
 // 		return (NULL);
 // }
 
-// User	*IRCServer::findUser(int sd)
-// {
-// 	std::map<std::string, User*>::iterator	it = users.begin();
-// 	while (it != users.end())
-// 	{
-// 		if (it->second->getSd() == sd)
-// 			return (it->second);
-// 		it++;
-// 	}
-// 	return (NULL);
-// }
+User	IRCServer::findUserInstance(int sd)
+{
+	std::map<std::string, User>::iterator	it = users.begin();
+	while (it != users.end())
+	{
+		if (it->second.getSd() == sd)
+			return (it->second);
+		it++;
+	}
+	User nul;
+	return (nul);
+}
+
+std::string	IRCServer::findUserNickName(int sd)
+{
+	std::map<std::string, User>::iterator	it = users.begin();
+	while (it != users.end())
+	{
+		if (it->second.getSd() == sd)
+			return (it->first);
+		it++;
+	}
+	return (NULL);
+}

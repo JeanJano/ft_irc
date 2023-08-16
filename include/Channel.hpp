@@ -23,6 +23,8 @@ class Channel
 		std::vector<User>			getMembers();
 		std::vector<std::string>	getMessages();
 
+		void						setMember(User member);
+
 	private:
 		std::string					name;
 		std::string					pass;
