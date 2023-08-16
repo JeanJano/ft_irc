@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/15 16:51:14 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/15 19:19:07 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,27 @@ class IRCServer {
 		void		handleEvents();
 		void		newConnexionMsg(int sd);
 		bool		checkpassword(int sd, User client);
-		t_cmd    	parseCmd(char *buffer);
-		std::string	getCompleteMsg(int sd);
+		t_cmd    	parseCmd(std::string buf);
+		std::string	getCompleteMsg(int sd, size_t *i);
+		void		checkCmd(t_cmd cmd);
+
+		// events
+		void	join(std::string intput);
+		// void	privmsg();
+		void		privateMsg(t_cmd msg);
+		User		*findUser(std::string nick);
+		User		*findUser(int sd);
 
 	private:
 		sockaddr_in						servAddr;
 		int								serverSd;
 		fd_set							readfds;
 		int								newSd;
+		size_t							*nowFd;
 		std::string						password;
 		std::vector<struct pollfd>		fds;
-		std::map<std::string, Channel*>	channels;
-		std::map<std::string, User*>	users;
+		std::map<std::string, Channel>	channels;
+		std::map<std::string, User>	users;
 };
 
 

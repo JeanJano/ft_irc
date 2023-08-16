@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/15 14:08:54 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/15 18:53:44 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Channel::Channel() : name("default") {}
 
-Channel::Channel(std::string n) : name(n) {}
+Channel::Channel(std::string n, std::string p) : name(n), pass(p) {}
 
 Channel::Channel(const Channel &cpy) : name(cpy.name), members(cpy.members) {}
 
@@ -40,6 +40,10 @@ void	Channel::removeUser(User *user) {
 
 std::string	Channel::getName() {
 	return (name);
+}
+
+std::string	Channel::getPass() {
+	return (pass);
 }
 
 std::vector<User> Channel::getMembers() {
