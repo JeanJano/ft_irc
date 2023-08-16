@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/16 21:17:14 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/16 23:40:40 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void	IRCServer::handleEvents() {
 			std::string	buf = getCompleteMsg(fds[i].fd, &i);
 			if (!buf.empty())
 			{
-				std::string	nickSender = findUserNickName(fds[i].fd);
+				// std::string	nickSender = findUserNickName(fds[i].fd);
 				t_cmd		cmd = parseCmd(buf);
 				std::cout << buf << std::endl;
 				checkCmd(cmd, fds[i].fd);
@@ -223,21 +223,33 @@ void	IRCServer::join(std::string input, int sd) {
 void	IRCServer::privmsg(std::string input, int sd) {
 	char		col;
 	std::string	msg;
-	std::string channelName;
-	std::string channelMsg;
+	std::string name;
+	std::string userMsg;
 	std::vector<User> members;
 	std::istringstream iss(input);
 	User		sender = findUserInstance(sd);
-	size_t pos = channelName.find_first_of("+?#");
-
-	iss >> channelName >> col >> channelMsg;
-	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
-		if (it->first == channelName) {
-			members = it->second.getMembers();
-			break;
+	iss >> name >> col >> userMsg;
+	size_t pos = name.find_first_of("+?#");
+	
+	if (pos == 0)
+	{
+		for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
+			if (it->first == name) {
+				members = it->second.getMembers();
+				break;
+			}
 		}
 	}
-	msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + "localhost PRIVMSG " + channelName + " :" + channelMsg + "\r\n";
+	else
+	{
+		for (std::map<std::string, User>::iterator it = users.begin(); it != users.end(); ++it) {
+			if (it->first == name) {
+				members.push_back(it->second);
+				break;
+			}
+		}
+	}
+	msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + "localhost PRIVMSG " + name + " :" + userMsg + "\r\n";
 	for (size_t i = 0; i < members.size(); i++) {
 		send(members[i].getSd(), msg.c_str(), msg.size(), 0);
 	}
