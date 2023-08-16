@@ -24,8 +24,10 @@ class Channel
 
 	private:
 		std::string					name;
+		std::string					topic;
 		std::vector<User>			members;
-		std::vector<std::string>	messages;
+		std::vector<User>			banList;
+		std::map<std::string, bool>	mode;
 };
 
 #endif

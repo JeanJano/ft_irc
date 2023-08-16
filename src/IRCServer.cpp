@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/15 16:54:52 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/16 17:34:58 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,9 +180,9 @@ std::string	IRCServer::getCompleteMsg(int sd) {
 }
 
 t_cmd    IRCServer::parseCmd(char *buffer) {
-    std::string    buf = buffer;
-    size_t        posSpace = buf.find(" ");
-    t_cmd        command;
+    std::string		buf = buffer;
+    size_t			posSpace = buf.find(" ");
+    t_cmd			command;
 
     if (posSpace != std::string::npos)
     {
