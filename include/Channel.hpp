@@ -20,7 +20,7 @@ class Channel
 
 		std::string					getName();
 		std::string					getPass();
-		std::vector<User>			getMembers();
+		std::vector<User>			getMembers(std::string skip);
 		std::vector<std::string>	getMessages();
 
 		void						setMember(User member);

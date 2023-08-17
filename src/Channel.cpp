@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/16 19:34:57 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/17 20:28:18 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,16 @@ std::string	Channel::getPass() {
 	return (pass);
 }
 
-std::vector<User> Channel::getMembers() {
+std::vector<User> Channel::getMembers(std::string skip) {
+	std::vector<User>	vctr;
+	size_t j = 0;
+	for (size_t i = 0; i < members.size(); i++) {
+		if (members[i].getNickName() == skip) {
+			continue;
+		} else {
+			vctr[j++] = members[i];
+		}
+	}
 	return (members);
 }
 
