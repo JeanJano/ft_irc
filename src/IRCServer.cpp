@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/17 21:25:04 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/17 21:26:29 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,13 +191,18 @@ t_cmd    IRCServer::parseCmd(std::string buf) {
 void	IRCServer::checkCmd(t_cmd cmd, int sd) {
 	typedef void	(IRCServer::*functionPtr)(std::string, int);
 
-	std::string cmdArr[2] = {"JOIN", "PRIVMSG"};
-	functionPtr	functPtr[2] = {&IRCServer::join, &IRCServer::privmsg};
+	std::string cmdArr[3] = {"JOIN", "PRIVMSG", "PING"};
+	functionPtr	functPtr[3] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping};
 
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 3; i++) {
 		if (cmd.typeCmd == cmdArr[i])
 			(this->*functPtr[i])(cmd.text, sd);
 	}
+}
+
+void	IRCServer::ping(std::string input, int sd) {
+	std::string response = "PONG " + input + "\r\n";
+	send(sd, response.c_str(), response.size(), 0);
 }
 
 void	IRCServer::join(std::string input, int sd) {

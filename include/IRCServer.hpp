@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/17 21:25:12 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/17 21:26:33 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ class IRCServer {
 		// events
 		void		join(std::string input, int sd);
 		void		privmsg(std::string, int);
+		void		ping(std::string, int);
+		
 		void		privateMsg(t_cmd msg);
 		User		findUserInstance(int sd);
 		std::string	findUserNickName(int sd);
