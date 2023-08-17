@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/15 13:49:57 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/16 19:41:31 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "User.hpp"
 
-User::User() {
+User::User() {}
+
+User::User(int newSd) : sd(newSd) {
 	userName = "default";
 	nickName = "default";
 	realName = "default";
@@ -32,6 +34,7 @@ User	&User::operator=(const User &cpy) {
 		nickName = cpy.nickName;
 		realName = cpy.realName;
 		passWord = cpy.passWord;
+		sd = cpy.sd;
 	}
 	return (*this);
 }
@@ -54,6 +57,10 @@ std::string	User::getPassWord() const {
 
 bool	User::getStatus() const {
 	return (isConnected);
+}
+
+int	User::getSd() const {
+	return (sd);
 }
 
 void	User::setStatus(bool status) {}
@@ -80,10 +87,13 @@ void	User::parseInput(std::string input) {
 }
 
 void	User::printInfos() {
-	std::cout << "Username: " << userName << std::endl;
-	std::cout << "Nickname: " << nickName << std::endl;
-	std::cout << "Realname: " << realName << std::endl;
-	std::cout << "Password: " << passWord << std::endl;
+	std::cout << std::endl;
+	std::cout << "Username:	" << userName << std::endl;
+	std::cout << "Nickname:	" << nickName << std::endl;
+	std::cout << "Realname:	" << realName << std::endl;
+	std::cout << "Password:	" << passWord << std::endl;
+	std::cout << "SocketDe:	" << sd << std::endl;
+	std::cout << std::endl;
 }
 
 User::~User() {}

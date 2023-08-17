@@ -9,7 +9,7 @@ class Channel
 {
 	public:
 		Channel();
-		Channel(std::string n);
+		Channel(std::string n, std::string p);
 		Channel(const Channel &cpy);
 		~Channel();
 		Channel& operator=(const Channel &cpy);
@@ -19,13 +19,19 @@ class Channel
 		void	addMessage(std::string msg);
 
 		std::string					getName();
-		std::vector<User>			getMembers();
+		std::string					getPass();
+		std::vector<User>			getMembers(std::string skip);
 		std::vector<std::string>	getMessages();
+
+		void						setMember(User member);
 
 	private:
 		std::string					name;
+		std::string					pass;
+		std::string					topic;
 		std::vector<User>			members;
-		std::vector<std::string>	messages;
+		std::vector<User>			banList;
+		std::map<std::string, bool>	mode;
 };
 
 #endif

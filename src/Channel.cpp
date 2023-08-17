@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/15 14:08:54 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/17 20:28:18 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Channel::Channel() : name("default") {}
 
-Channel::Channel(std::string n) : name(n) {}
+Channel::Channel(std::string n, std::string p) : name(n), pass(p) {}
 
 Channel::Channel(const Channel &cpy) : name(cpy.name), members(cpy.members) {}
 
@@ -42,10 +42,23 @@ std::string	Channel::getName() {
 	return (name);
 }
 
-std::vector<User> Channel::getMembers() {
+std::string	Channel::getPass() {
+	return (pass);
+}
+
+std::vector<User> Channel::getMembers(std::string skip) {
+	std::vector<User>	vctr;
+	size_t j = 0;
+	for (size_t i = 0; i < members.size(); i++) {
+		if (members[i].getNickName() == skip) {
+			continue;
+		} else {
+			vctr[j++] = members[i];
+		}
+	}
 	return (members);
 }
 
-std::vector<std::string>	Channel::getMessages() {
-	return (messages);
+void	Channel::setMember(User member) {
+	members.push_back(member);
 }
