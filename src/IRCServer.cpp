@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/17 19:10:38 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/17 20:34:53 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,37 +220,48 @@ void	IRCServer::join(std::string input, int sd) {
 		std::cout << it->first << std::endl;
 }
 
-void	IRCServer::privmsg(std::string input, int sd) {
-	char		col;
-	std::string	msg;
-	std::string name;
-	std::string userMsg;
+std::vector<User>	IRCServer::getChannelMembers(std::string name, std::string sender) {
+	std::vector<User>	members;
+	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
+		if (it->first == name) {
+			members = it->second.getMembers(sender);
+			break;
+		}
+	}
+	return (members);
+}
+
+std::vector<User>	IRCServer::getPrivateMember(std::string name) {
 	std::vector<User> members;
-	std::istringstream iss(input);
-	User		sender = findUserInstance(sd);
-	iss >> name >> col >> userMsg;
+	for (std::map<std::string, User>::iterator it = users.begin(); it != users.end(); ++it) {
+		if (it->first == name) {
+			members.push_back(it->second);
+			break;
+		}
+	}
+	return (members);
+}
+
+
+void	IRCServer::privmsg(std::string input, int sd) {
+	char				col;
+	std::string			msg;
+	std::string			name;
+	std::string			userMsg;
+	std::vector<User>	members;
+	std::istringstream	iss(input);
+	User				sender = findUserInstance(sd);
+	iss >> name >> col;
+	getline(iss, userMsg);
+	userMsg.resize(userMsg.size() - 1);
 	size_t pos = name.find_first_of("+?#");
-	
 	if (pos == 0)
-	{
-		for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
-			if (it->first == name) {
-				members = it->second.getMembers();
-				break;
-			}
-		}
-	}
+		members = getChannelMembers(name, sender.getNickName());
 	else
-	{
-		for (std::map<std::string, User>::iterator it = users.begin(); it != users.end(); ++it) {
-			if (it->first == name) {
-				members.push_back(it->second);
-				break;
-			}
-		}
-	}
+		members = getPrivateMember(name);
 	msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + "localhost PRIVMSG " + name + " :" + userMsg + "\r\n";
 	for (size_t i = 0; i < members.size(); i++) {
+		std::cout << members[i].getNickName() << std::endl;
 		send(members[i].getSd(), msg.c_str(), msg.size(), 0);
 	}
 }

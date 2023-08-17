@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/17 18:52:32 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/17 20:35:09 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ class IRCServer {
 		void		privateMsg(t_cmd msg);
 		User		findUserInstance(int sd);
 		std::string	findUserNickName(int sd);
+		std::vector<User>	getChannelMembers(std::string name, std::string sender);
+		std::vector<User>	getPrivateMember(std::string name);
 
 	private:
 		sockaddr_in						servAddr;
