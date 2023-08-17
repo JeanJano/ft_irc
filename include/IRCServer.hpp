@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/17 20:25:37 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/17 21:25:12 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class IRCServer {
 		void		serverManager(char **av);
 		bool		connectClient();
 		void		handleEvents();
-		void		newConnexionMsg(int sd);
+		void		newConnexionMsg(int sd, sockaddr_in addr);
 		bool		checkpassword(int sd, User client);
 		t_cmd    	parseCmd(std::string buf);
 		std::string	getCompleteMsg(int sd, size_t *i);

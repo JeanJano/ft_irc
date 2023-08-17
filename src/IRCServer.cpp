@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/17 20:26:04 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/17 21:25:04 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ bool	IRCServer::connectClient() {
 			return false;
 		}
 		// welcome message to client
-		newConnexionMsg(newSd);
+		newConnexionMsg(newSd, newSockAddress);
 		fds.push_back({newSd, POLLIN | POLLOUT, 0});
 	}
 	return (true);
@@ -116,7 +116,7 @@ void	IRCServer::handleEvents() {
 	}
 }
 
-void	IRCServer::newConnexionMsg(int sd) {
+void	IRCServer::newConnexionMsg(int sd, sockaddr_in addr) {
 	std::cout << "new client connected" << std::endl;
 	std::string input(getCompleteMsg(sd, NULL));
 	std::cout << input << std::endl;
@@ -124,9 +124,12 @@ void	IRCServer::newConnexionMsg(int sd) {
 	usr.parseInput(input);
 	if (checkpassword(sd, usr) == false)
 		return ;
+	usr.setIp(inet_ntoa(addr.sin_addr));
+	std::cout << "addr ip: " << usr.getIp() << std::endl;
 	users[usr.getNickName()] = usr;
-	std::string msg001;
-	msg001 = ":server 001 " + usr.getNickName() + " :Welcome to the Internet Relay Network, " + usr.getNickName() + "!\r\n";
+	// for (std::map<std::string, User>::iterator it = users.begin(); it != users.end(); ++it)
+	// 	it->second.printInfos();
+	std::string msg001 = ":server 001 " + usr.getNickName() + " :Welcome to the Internet Relay Network, " + usr.getNickName() + "!\r\n";
 	send(sd, (char*)msg001.c_str(), msg001.size(), 0);
 }
 
