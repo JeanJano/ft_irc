@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/16 19:41:31 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/17 19:14:50 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ User	&User::operator=(const User &cpy) {
 		realName = cpy.realName;
 		passWord = cpy.passWord;
 		sd = cpy.sd;
+		ip = cpy.ip;
 	}
 	return (*this);
 }
@@ -63,7 +64,15 @@ int	User::getSd() const {
 	return (sd);
 }
 
+std::string	User::getIp() const {
+	return (ip);
+}
+
 void	User::setStatus(bool status) {}
+
+void	User::setIp(std::string ip) {
+	this->ip = ip;
+}
 
 void	User::parseInput(std::string input) {
 	std::stringstream	ss(input);
