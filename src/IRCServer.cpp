@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/18 14:33:53 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/18 16:26:14 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,10 +107,10 @@ void	IRCServer::handleEvents() {
 			std::string	buf = getCompleteMsg(fds[i].fd, &i);
 			if (!buf.empty())
 			{
-				// std::string	nickSender = findUserNickName(fds[i].fd);
-				t_cmd		cmd = parseCmd(buf);
-				std::cout << buf << std::endl;
-				checkCmd(cmd, fds[i].fd);
+				std::cout << buf << "|" << std::endl;
+				parseCmd(buf);
+				while (cmd.size() > 0)
+					checkCmd(fds[i].fd);
 			}
 		}
 	}
@@ -176,27 +176,29 @@ std::string	IRCServer::getCompleteMsg(int sd, size_t *i) {
 	return (received);
 }
 
-t_cmd    IRCServer::parseCmd(std::string buf) {
-    size_t	posSpace = buf.find(" ");
-    t_cmd	command;
-
-    if (posSpace != std::string::npos)
-    {
-        command.typeCmd = buf.substr(0, posSpace);
-        command.text = buf.substr(posSpace + 1, buf.length() - posSpace);
-    }
-    return command;
+void    IRCServer::parseCmd(std::string buf) {
+	std::istringstream	iss(buf);
+	std::string	line;
+	while (getline(iss, line)) {
+		t_cmd	command;
+		size_t	pos = line.find(' ');
+        command.typeCmd = line.substr(0, pos);
+        command.text = line.substr(pos + 1);
+		cmd.push(command);
+	}
 }
 
-void	IRCServer::checkCmd(t_cmd cmd, int sd) {
+void	IRCServer::checkCmd(int sd) {
 	typedef void	(IRCServer::*functionPtr)(std::string, int);
+	t_cmd	tmp = cmd.front();
+	cmd.pop();
 
 	std::string cmdArr[3] = {"JOIN", "PRIVMSG", "PING"};
 	functionPtr	functPtr[3] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping};
 
 	for (int i = 0; i < 3; i++) {
-		if (cmd.typeCmd == cmdArr[i])
-			(this->*functPtr[i])(cmd.text, sd);
+		if (tmp.typeCmd == cmdArr[i])
+			(this->*functPtr[i])(tmp.text, sd);
 	}
 }
 
@@ -256,6 +258,7 @@ void	IRCServer::privmsg(std::string input, int sd) {
 	std::vector<User>	members;
 	std::istringstream	iss(input);
 	User				sender = findUserInstance(sd);
+
 	iss >> name >> col;
 	getline(iss, userMsg);
 	userMsg.resize(userMsg.size() - 1);
@@ -264,7 +267,7 @@ void	IRCServer::privmsg(std::string input, int sd) {
 		members = getChannelMembers(name, sender.getNickName());
 	else
 		members = getPrivateMember(name);
-	msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + "localhost PRIVMSG " + name + " :" + userMsg + "\r\n";
+	msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@localhost PRIVMSG " + name + " :" + userMsg + "\r\n";
 	for (size_t i = 0; i < members.size(); i++) {
 		std::cout << members[i].getNickName() << std::endl;
 		send(members[i].getSd(), msg.c_str(), msg.size(), 0);

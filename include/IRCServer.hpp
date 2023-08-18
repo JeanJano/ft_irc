@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/18 14:33:58 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/18 16:09:13 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ class IRCServer {
 		void		handleEvents();
 		void		newConnexionMsg(int sd, sockaddr_in addr);
 		bool		checkpassword(int sd, User client);
-		t_cmd    	parseCmd(std::string buf);
+		void    	parseCmd(std::string buf);
 		std::string	getCompleteMsg(int sd, size_t *i);
-		void		checkCmd(t_cmd cmd, int sd);
+		void		checkCmd(int sd);
 
 		// events
 		void		join(std::string input, int sd);
@@ -61,6 +61,7 @@ class IRCServer {
 		std::vector<struct pollfd>		fds;
 		std::map<std::string, Channel>	channels;
 		std::map<std::string, User>		users;
+		std::queue<t_cmd>				cmd;
 };
 
 
