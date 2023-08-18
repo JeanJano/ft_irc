@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/18 16:26:14 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/18 18:06:55 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,8 +267,8 @@ void	IRCServer::privmsg(std::string input, int sd) {
 		members = getChannelMembers(name, sender.getNickName());
 	else
 		members = getPrivateMember(name);
-	msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@localhost PRIVMSG " + name + " :" + userMsg + "\r\n";
 	for (size_t i = 0; i < members.size(); i++) {
+		msg = ":" + sender.getNickName() + "!" + sender.getUserName() + members[i].getIp() + " PRIVMSG " + name + " :" + userMsg + "\r\n";
 		std::cout << members[i].getNickName() << std::endl;
 		send(members[i].getSd(), msg.c_str(), msg.size(), 0);
 	}
