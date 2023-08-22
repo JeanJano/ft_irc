@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/18 18:06:55 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/22 14:13:37 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void	IRCServer::handleEvents() {
 			std::string	buf = getCompleteMsg(fds[i].fd, &i);
 			if (!buf.empty())
 			{
-				std::cout << buf << "|" << std::endl;
+				// std::cout << buf << "|" << std::endl;
 				parseCmd(buf);
 				while (cmd.size() > 0)
 					checkCmd(fds[i].fd);
@@ -193,10 +193,10 @@ void	IRCServer::checkCmd(int sd) {
 	t_cmd	tmp = cmd.front();
 	cmd.pop();
 
-	std::string cmdArr[3] = {"JOIN", "PRIVMSG", "PING"};
-	functionPtr	functPtr[3] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping};
+	std::string cmdArr[4] = {"JOIN", "PRIVMSG", "PING", "QUIT"};
+	functionPtr	functPtr[4] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit};
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 4; i++) {
 		if (tmp.typeCmd == cmdArr[i])
 			(this->*functPtr[i])(tmp.text, sd);
 	}
@@ -215,12 +215,12 @@ void	IRCServer::join(std::string input, int sd) {
 	iss >> name >> pass;
 	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
 		if (!name.empty() && !it->first.empty() && it->first.compare(name) == 0) {
-			it->second.setMember(findUserInstance(sd));
+			it->second.addUser(findUserInstance(sd));
 			return;
 		}
 	}
 	Channel newChannel('#' + name, pass);
-	newChannel.setMember(findUserInstance(sd));
+	newChannel.addUser(findUserInstance(sd));
 	channels[name] = newChannel;
 	std::cout << "Channels: " << std::endl;
 	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it)
@@ -274,6 +274,22 @@ void	IRCServer::privmsg(std::string input, int sd) {
 	}
 }
 
+void	IRCServer::quit(std::string input, int sd) {
+	User quit = findUserInstance(sd);
+	
+	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); it++) {
+		std::vector<User> cmp = it->second.getMembers("");
+		for (size_t i = 0; i < cmp.size(); i++) {
+			if (quit.getNickName() == cmp[i].getNickName())
+				it->second.removeUser(quit);
+		}
+	}
+	users.erase(quit.getNickName());
+	close(sd);
+	for (std::map<std::string, User>::iterator it = users.begin(); it != users.end(); ++it)
+		it->second.printInfos();
+}
+
 // void	IRCServer::privateMsg(t_cmd	priv)
 // {
 // 	size_t	posCol = priv.text.find(":", 0);
@@ -303,8 +319,7 @@ void	IRCServer::privmsg(std::string input, int sd) {
 // 		return (NULL);
 // }
 
-User	IRCServer::findUserInstance(int sd)
-{
+User	IRCServer::findUserInstance(int sd) {
 	std::map<std::string, User>::iterator	it = users.begin();
 	while (it != users.end())
 	{
@@ -316,8 +331,7 @@ User	IRCServer::findUserInstance(int sd)
 	return (nul);
 }
 
-std::string	IRCServer::findUserNickName(int sd)
-{
+std::string	IRCServer::findUserNickName(int sd) {
 	std::map<std::string, User>::iterator	it = users.begin();
 	while (it != users.end())
 	{

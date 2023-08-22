@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/17 19:14:50 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/22 11:19:58 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,10 @@ User	&User::operator=(const User &cpy) {
 		ip = cpy.ip;
 	}
 	return (*this);
+}
+
+bool	User::operator==(const User &cmp) const {
+	return this->getNickName() == cmp.getNickName();
 }
 
 std::string	User::getUserName() const {

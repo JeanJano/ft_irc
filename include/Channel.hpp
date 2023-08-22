@@ -14,8 +14,8 @@ class Channel
 		~Channel();
 		Channel& operator=(const Channel &cpy);
 
-		void	addUser(User *user);
-		void	removeUser(User *user);
+		void	addUser(User user);
+		void	removeUser(User user);
 		void	addMessage(std::string msg);
 
 		std::string					getName();

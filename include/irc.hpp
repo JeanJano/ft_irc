@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/18 17:56:08 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/22 11:11:16 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 # include "Channel.hpp"
 # include "IRCServer.hpp"
 # include <netinet/tcp.h>
+# include <algorithm>
 
 # define BUFFER_SIZE 1024
 

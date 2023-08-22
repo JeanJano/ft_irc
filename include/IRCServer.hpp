@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/18 17:56:17 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/22 11:26:02 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ class IRCServer {
 		void		checkCmd(int sd);
 
 		// events
-		void		join(std::string input, int sd);
+		void		join(std::string, int);
 		void		privmsg(std::string, int);
 		void		ping(std::string, int);
+		void		quit(std::string, int);
 		
 		void		privateMsg(t_cmd msg);
 		User		findUserInstance(int sd);

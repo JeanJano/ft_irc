@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:46 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/17 19:11:44 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/22 11:19:07 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ class User
 		User(int newSd);
 		User(const User &cpy);
 		~User();
-		User& operator=(const User &cpy);
+		User&	operator=(const User &cpy);
+		bool	operator==(const User &cmp) const;
 
 		std::string	getUserName() const;
 		std::string	getNickName() const;

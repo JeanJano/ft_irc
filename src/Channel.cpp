@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/17 20:52:09 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/22 11:20:30 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,15 @@ Channel	&Channel::operator=(const Channel &cpy) {
 	return (*this);
 }
 
-void	Channel::addUser(User *user) {
-	if (user->getStatus() == true) {
-		members.push_back(*user);
+void	Channel::addUser(User user) {
+	if (user.getStatus() == true) {
+		members.push_back(user);
 	}
 }
 
-void	Channel::removeUser(User *user) {
-	for (size_t i = 0; i < members.size(); i++) {
-		
-	}
+void	Channel::removeUser(User user) {
+	std::vector<User>::iterator it = std::remove(members.begin(), members.end(), user);
+	members.erase(it, members.end());
 }
 
 std::string	Channel::getName() {
@@ -56,8 +55,4 @@ std::vector<User> Channel::getMembers(std::string skip) {
 		}
 	}
 	return (vctr);
-}
-
-void	Channel::setMember(User member) {
-	members.push_back(member);
 }
