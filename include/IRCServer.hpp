@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/18 17:56:17 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/22 14:16:37 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ class IRCServer {
 		void		serverManager(char **av);
 		bool		connectClient();
 		void		handleEvents();
-		void		newConnexionMsg(int sd, sockaddr_in addr);
-		bool		checkpassword(int sd, User client);
+		void		newConnexionMsg(int sd, sockaddr_in addr, User usr);
+		bool		checkNewClient(int sd, User client);
 		void    	parseCmd(std::string buf);
 		std::string	getCompleteMsg(int sd, size_t *i);
 		void		checkCmd(int sd);
@@ -49,6 +49,7 @@ class IRCServer {
 		void		privateMsg(t_cmd msg);
 		User		findUserInstance(int sd);
 		std::string	findUserNickName(int sd);
+		bool		nickIsUsed(std::string nickname);
 		std::vector<User>	getChannelMembers(std::string name, std::string sender);
 		std::vector<User>	getPrivateMember(std::string name);
 
