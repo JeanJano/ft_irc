@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/22 14:13:37 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/22 14:21:26 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,19 @@ bool	IRCServer::connectClient() {
 			return false;
 		}
 		// welcome message to client
-		newConnexionMsg(newSd, newSockAddress);
-		fds.push_back({newSd, POLLIN | POLLOUT, 0});
+		std::string input(getCompleteMsg(newSd, NULL));
+		User	usr(newSd);
+		usr.parseInput(input);
+		if (checkNewClient(newSd, usr))
+		{
+			newConnexionMsg(newSd, newSockAddress, usr);
+			fds.push_back({newSd, POLLIN | POLLOUT, 0});
+		}
+		else
+		{
+			close(newSd);
+			return (false);
+		}
 	}
 	return (true);
 }
@@ -116,14 +127,8 @@ void	IRCServer::handleEvents() {
 	}
 }
 
-void	IRCServer::newConnexionMsg(int sd, sockaddr_in addr) {
+void	IRCServer::newConnexionMsg(int sd, sockaddr_in addr, User usr) {
 	std::cout << "new client connected" << std::endl;
-	std::string input(getCompleteMsg(sd, NULL));
-	std::cout << input << std::endl;
-	User usr(sd);
-	usr.parseInput(input);
-	if (checkpassword(sd, usr) == false)
-		return ;
 	usr.setIp(inet_ntoa(addr.sin_addr));
 	std::cout << "addr ip: " << usr.getIp() << std::endl;
 	users[usr.getNickName()] = usr;
@@ -133,12 +138,20 @@ void	IRCServer::newConnexionMsg(int sd, sockaddr_in addr) {
 	send(sd, (char*)msg001.c_str(), msg001.size(), 0);
 }
 
-bool	IRCServer::checkpassword(int sd, User client) {
+bool	IRCServer::checkNewClient(int sd, User client) {
 	std::string msg;
 	if (client.getPassWord().compare(password) != 0)
 	{
 		std::cout << "client try to connect with wrong password" << std::endl;
 		msg = ":server 464 " + client.getNickName() + " :Password incorrect\r\n";
+		send(sd, msg.c_str(), msg.size(), 0);
+		return (false);
+	}
+	if (nickIsUsed(client.getNickName()))
+	{
+		std::cout << "client try to connect with used nickname" << std::endl;
+		msg = ":server 433 * " + client.getNickName() + " :Nickname is already in use\r\n";
+		std::cout << msg << std::endl;
 		send(sd, msg.c_str(), msg.size(), 0);
 		return (false);
 	}
@@ -339,5 +352,18 @@ std::string	IRCServer::findUserNickName(int sd) {
 			return (it->first);
 		it++;
 	}
-	return (NULL);
+	std::string	empty = "";
+	return (empty);
+}
+
+bool	IRCServer::nickIsUsed(std::string nickname)
+{
+	std::map<std::string, User>::iterator	it = users.begin();
+	while (it != users.end())
+	{
+		if (it->first == nickname)
+			return (1);
+		it++;
+	}
+	return (0);
 }
