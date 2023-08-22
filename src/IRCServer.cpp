@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/22 14:28:17 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/22 15:31:42 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void	IRCServer::handleEvents() {
 			std::string	buf = getCompleteMsg(fds[i].fd, &i);
 			if (!buf.empty())
 			{
-				// std::cout << buf << "|" << std::endl;
+				std::cout << buf << "|" << std::endl;
 				parseCmd(buf);
 				while (cmd.size() > 0)
 					checkCmd(fds[i].fd);
@@ -132,8 +132,6 @@ void	IRCServer::newConnexionMsg(int sd, sockaddr_in addr, User usr) {
 	usr.setIp(inet_ntoa(addr.sin_addr));
 	std::cout << "addr ip: " << usr.getIp() << std::endl;
 	users[usr.getNickName()] = usr;
-	// for (std::map<std::string, User>::iterator it = users.begin(); it != users.end(); ++it)
-	// 	it->second.printInfos();
 	std::string msg001 = ":server 001 " + usr.getNickName() + " :Welcome to the Internet Relay Network, " + usr.getNickName() + "!\r\n";
 	send(sd, (char*)msg001.c_str(), msg001.size(), 0);
 }
@@ -171,16 +169,8 @@ std::string	IRCServer::getCompleteMsg(int sd, size_t *i) {
 	{
 		memset(&msg, 0, sizeof(msg));
 		bytesread = recv(sd, msg, sizeof(msg), 0);
-		if (bytesread <= 0)
-		{
-			if (bytesread == 0)
-				std::cout << "Client disconnected" << std::endl;
-			else
-				break ;
-			close(sd);
-			fds.erase(fds.begin() + *i);
-			*i = *i - 1;
-		}
+		if (bytesread < 0)
+			break ;
 		msg[bytesread] = '\0';
 		received += msg;
 		if (received.length() >= 2 && received.substr(received.length() - 2) == "/r/n")
@@ -290,47 +280,19 @@ void	IRCServer::privmsg(std::string input, int sd) {
 void	IRCServer::quit(std::string input, int sd) {
 	User quit = findUserInstance(sd);
 	
-	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); it++) {
-		std::vector<User> cmp = it->second.getMembers("");
-		for (size_t i = 0; i < cmp.size(); i++) {
-			if (quit.getNickName() == cmp[i].getNickName())
-				it->second.removeUser(quit);
-		}
-	}
-	users.erase(quit.getNickName());
+	// for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); it++) {
+	// 	std::vector<User> cmp = it->second.getMembers("");
+	// 	for (size_t i = 0; i < cmp.size(); i++) {
+	// 		if (quit.getNickName() == cmp[i].getNickName())
+	// 			it->second.removeUser(quit);
+	// 	}
+	// }
 	close(sd);
-	for (std::map<std::string, User>::iterator it = users.begin(); it != users.end(); ++it)
-		it->second.printInfos();
+	fds.erase(fds.begin() + *nowFd);
+	*nowFd = *nowFd - 1;
+	std::cout << "Client: " << quit.getNickName() << " disconnected" << std::endl;
+	users.erase(quit.getNickName());
 }
-
-// void	IRCServer::privateMsg(t_cmd	priv)
-// {
-// 	size_t	posCol = priv.text.find(":", 0);
-// 	std::string	msg;
-// 	if (posCol != std::string::npos)
-// 	{
-// 		std::string	nick = priv.text.substr(0, posCol - 1);
-// 		std::string	msg = priv.text.substr(posCol + 1, priv.text.length() - posCol);
-// 		User	sender = findUser(fds[*nowFd].fd);
-// 		User	receiver = findUser(nick);
-// 		if (!receiver) {
-// 			std::cout << "Client not found" << std::endl;
-// 			return;
-// 		}
-// 		msg = ":" + sender.getNickName() +"!~" + sender.getUserName() +"@localhost PRIVMSG " + receiver.getNickName() + " :" + msg + "\r\n";
-// 		send(receiver.getSd(), (char*)msg.c_str(), msg.size(), 0);
-// 	}
-// 	return ;
-// }
-
-// User	IRCServer::findUser(std::string nick)
-// {
-// 	std::map<std::string, User*>::iterator	it = users.find(nick);
-// 	if (it != users.end())
-// 		return (it->second);
-// 	else
-// 		return (NULL);
-// }
 
 User	IRCServer::findUserInstance(int sd) {
 	std::map<std::string, User>::iterator	it = users.begin();

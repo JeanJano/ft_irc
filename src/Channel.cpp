@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/22 11:20:30 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/22 15:30:32 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,7 @@ Channel	&Channel::operator=(const Channel &cpy) {
 }
 
 void	Channel::addUser(User user) {
-	if (user.getStatus() == true) {
-		members.push_back(user);
-	}
+	members.push_back(user);
 }
 
 void	Channel::removeUser(User user) {
