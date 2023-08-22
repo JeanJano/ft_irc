@@ -4,6 +4,7 @@
 # include "irc.hpp"
 
 class User;
+class Role;
 
 class Channel
 {
@@ -18,20 +19,21 @@ class Channel
 		void	removeUser(User user);
 		void	addMessage(std::string msg);
 
-		std::string					getName();
-		std::string					getPass();
-		std::vector<User>			getMembers(std::string skip);
-		std::vector<std::string>	getMessages();
+		std::string						getName();
+		std::string						getPass();
+		std::vector<User>				getMembers(std::string skip);
+		std::vector<std::string>		getMessages();
+		std::map<std::string, Role*>	getMode();
 
 		void						setMember(User member);
 
 	private:
-		std::string					name;
-		std::string					pass;
-		std::string					topic;
-		std::vector<User>			members;
-		std::vector<User>			banList;
-		std::map<std::string, bool>	mode;
+		std::string						name;
+		std::string						pass;
+		std::string						topic;
+		std::vector<User>				members;
+		std::vector<User>				banList;
+		std::map<std::string, Role *>	mode;
 };
 
 #endif

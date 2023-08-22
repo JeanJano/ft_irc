@@ -3,23 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/22 11:19:58 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/22 18:41:21 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "User.hpp"
 
-User::User() {}
+User::User() {
+	userName = "default";
+	nickName = "default";
+	realName = "default";
+	passWord = "default";
+}
 
 User::User(int newSd) : sd(newSd) {
 	userName = "default";
 	nickName = "default";
 	realName = "default";
 	passWord = "default";
-	isConnected = false;
 }
 
 User::User(const User &cpy) {
@@ -58,10 +62,6 @@ std::string	User::getRealName() const {
 
 std::string	User::getPassWord() const {
 	return (passWord);
-}
-
-bool	User::getStatus() const {
-	return (isConnected);
 }
 
 int	User::getSd() const {

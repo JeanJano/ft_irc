@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:46 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/22 11:19:07 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/22 18:11:14 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,14 @@ class User
 		User(int newSd);
 		User(const User &cpy);
 		~User();
-		User&	operator=(const User &cpy);
-		bool	operator==(const User &cmp) const;
-
+		User& operator=(const User &cpy);
+		bool		operator==(const User &cmp) const;
 		std::string	getUserName() const;
 		std::string	getNickName() const;
 		std::string	getRealName() const;
 		std::string	getPassWord() const;
 		std::string	getIp() const;
 		int			getSd() const;
-		bool		getStatus() const;
 
 		void		setStatus(bool status);
 		void		setIp(std::string ip);
@@ -44,9 +42,7 @@ class User
 		std::string realName;
 		std::string passWord;
 		std::string	ip;
-		bool		isConnected;
 		int			sd;
 };
-
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/22 15:31:42 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/22 19:23:18 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,10 +196,10 @@ void	IRCServer::checkCmd(int sd) {
 	t_cmd	tmp = cmd.front();
 	cmd.pop();
 
-	std::string cmdArr[4] = {"JOIN", "PRIVMSG", "PING", "QUIT"};
-	functionPtr	functPtr[4] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit};
+	std::string cmdArr[5] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK"};
+	functionPtr	functPtr[5] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick};
 
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 5; i++) {
 		if (tmp.typeCmd == cmdArr[i])
 			(this->*functPtr[i])(tmp.text, sd);
 	}
@@ -280,18 +280,34 @@ void	IRCServer::privmsg(std::string input, int sd) {
 void	IRCServer::quit(std::string input, int sd) {
 	User quit = findUserInstance(sd);
 	
-	// for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); it++) {
-	// 	std::vector<User> cmp = it->second.getMembers("");
-	// 	for (size_t i = 0; i < cmp.size(); i++) {
-	// 		if (quit.getNickName() == cmp[i].getNickName())
-	// 			it->second.removeUser(quit);
-	// 	}
-	// }
+	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); it++) {
+		std::vector<User> cmp = it->second.getMembers("");
+		for (size_t i = 0; i < cmp.size(); i++) {
+			if (quit.getNickName() == cmp[i].getNickName())
+				it->second.removeUser(quit);
+		}
+	}
 	close(sd);
 	fds.erase(fds.begin() + *nowFd);
 	*nowFd = *nowFd - 1;
 	std::cout << "Client: " << quit.getNickName() << " disconnected" << std::endl;
 	users.erase(quit.getNickName());
+}
+
+void	IRCServer::kick(std::string input, int sd) {
+	std::istringstream iss(input);
+	std::string channelName;
+	std::string	nick;
+	std::map<std::string, Role*>	mode;
+
+	iss >> channelName >> nick;
+	mode = channels[channelName].getMode();
+	// mode[nick]->kick();
+	for (std::map<std::string, Role *>::iterator it = mode.begin(); it != mode.end(); it++)
+	{
+		if (nick == it->first)
+			it->second->kick();
+	}
 }
 
 User	IRCServer::findUserInstance(int sd) {

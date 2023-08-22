@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/22 15:30:32 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/22 19:44:20 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,13 @@ Channel	&Channel::operator=(const Channel &cpy) {
 
 void	Channel::addUser(User user) {
 	members.push_back(user);
+	// if (members.size() == 1)
+	// 	mode[user.getNickName()] = new Operator(user, name); 
+	// else
+	std::cout << "NICKKKKKKK: " << user.getNickName() << std::endl;
+	mode[user.getNickName()] = new Regular(user.getNickName(), user.getSd(), name);
+	// std::cout << mode.begin()->first << std::endl;
+
 }
 
 void	Channel::removeUser(User user) {
@@ -53,4 +60,8 @@ std::vector<User> Channel::getMembers(std::string skip) {
 		}
 	}
 	return (vctr);
+}
+
+std::map<std::string, Role*>	Channel::getMode() {
+	return (mode);
 }
