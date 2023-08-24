@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Role.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:53 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/22 19:44:52 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/24 13:48:19 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ class Role
 {
 	public:
 		virtual ~Role();
-		
+
 		virtual	void	kick() = 0;
 		// virtual	void	invite(std::string nick) = 0;
 		// virtual	void	topic(std::string topic) = 0;
@@ -46,9 +46,12 @@ class Operator : public Role
 class Regular : public Role
 {
 	public:
-		Regular(std::string nickname, int sd, std::string channelName);
+		Regular(std::string n, int s, std::string c);
 		~Regular();
 		Regular();
+
+		std::string	getNickName();
+
 		void	kick();
 		// void	invite(std::string nick);
 		// void	topic(std::string topic);

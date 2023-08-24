@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/22 18:47:59 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/24 14:04:09 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class IRCServer {
 		void		kick(std::string, int);
 		
 		void		privateMsg(t_cmd msg);
-		User		findUserInstance(int sd);
+		User		&findUserInstance(int sd);
 		std::string	findUserNickName(int sd);
 		bool		nickIsUsed(std::string nickname);
 		std::vector<User>	getChannelMembers(std::string name, std::string sender);

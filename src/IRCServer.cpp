@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/22 19:23:18 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/24 14:13:50 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,7 @@ void	IRCServer::serverManager(char **av) {
 
 	fds.push_back({serverSd, POLLIN, 0});
 
-	while (true)
-	{
+	while (true) {
 		if ((poll(fds.data(), fds.size(), -1)) < 0)
 		{
 			std::cerr << "Error poll" << std::endl;
@@ -118,7 +117,7 @@ void	IRCServer::handleEvents() {
 			std::string	buf = getCompleteMsg(fds[i].fd, &i);
 			if (!buf.empty())
 			{
-				std::cout << buf << "|" << std::endl;
+				std::cout << buf << std::endl;
 				parseCmd(buf);
 				while (cmd.size() > 0)
 					checkCmd(fds[i].fd);
@@ -138,15 +137,13 @@ void	IRCServer::newConnexionMsg(int sd, sockaddr_in addr, User usr) {
 
 bool	IRCServer::checkNewClient(int sd, User client) {
 	std::string msg;
-	if (client.getPassWord().compare(password) != 0)
-	{
+	if (client.getPassWord().compare(password) != 0) {
 		std::cout << "client try to connect with wrong password" << std::endl;
 		msg = ":server 464 " + client.getNickName() + " :Password incorrect\r\n";
 		send(sd, msg.c_str(), msg.size(), 0);
 		return (false);
 	}
-	if (nickIsUsed(client.getNickName()))
-	{
+	if (nickIsUsed(client.getNickName())) {
 		std::cout << "client try to connect with used nickname" << std::endl;
 		msg = ":server 433 * " + client.getNickName() + " :Nickname is already in use\r\n";
 		std::cout << msg << std::endl;
@@ -222,7 +219,7 @@ void	IRCServer::join(std::string input, int sd) {
 			return;
 		}
 	}
-	Channel newChannel('#' + name, pass);
+	Channel newChannel(name, pass);
 	newChannel.addUser(findUserInstance(sd));
 	channels[name] = newChannel;
 	std::cout << "Channels: " << std::endl;
@@ -298,19 +295,27 @@ void	IRCServer::kick(std::string input, int sd) {
 	std::istringstream iss(input);
 	std::string channelName;
 	std::string	nick;
-	std::map<std::string, Role*>	mode;
 
 	iss >> channelName >> nick;
-	mode = channels[channelName].getMode();
-	// mode[nick]->kick();
-	for (std::map<std::string, Role *>::iterator it = mode.begin(); it != mode.end(); it++)
-	{
-		if (nick == it->first)
-			it->second->kick();
-	}
+
+	// Check if the channel exists
+    if (channels.find(channelName) == channels.end()) {
+        std::cerr << "Channel does not exist!" << std::endl;
+        return;
+    }
+
+    std::map<std::string, Role*> mode = channels[channelName].getMode();
+
+    // Check if the user exists in the mode map
+    if (mode.find(nick) == mode.end()) {
+        std::cerr << "User not found in the channel!" << std::endl;
+        return;
+    }
+
+    mode[nick]->kick();
 }
 
-User	IRCServer::findUserInstance(int sd) {
+User	&IRCServer::findUserInstance(int sd) {
 	std::map<std::string, User>::iterator	it = users.begin();
 	while (it != users.end())
 	{
@@ -318,8 +323,7 @@ User	IRCServer::findUserInstance(int sd) {
 			return (it->second);
 		it++;
 	}
-	User nul;
-	return (nul);
+	return (it->second);
 }
 
 std::string	IRCServer::findUserNickName(int sd) {
