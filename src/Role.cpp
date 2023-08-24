@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:43 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/25 00:15:56 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/25 01:44:19 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,10 @@ Operator::~Operator() {}
 
 void	Operator::kick(const std::string& kicked, Channel& channel) {
 	std::vector<User> channelMembers = channel.getMembers();
+
+	std::string kickMsg = ":" + nickname + "!~user@host KICK " + channelName + " " + kicked + " :Kicked by operator";
+	for (size_t i = 0; i < channelMembers.size(); i++)
+        send(channelMembers[i].getSd() , kickMsg.c_str(), kickMsg.size(), 0);
 
     for (size_t i = 0; i < channelMembers.size(); i++) {
         if (channelMembers[i].getNickName() == kicked)

@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/25 00:27:49 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/25 01:46:33 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,41 +284,41 @@ void	IRCServer::quit(std::string input, int sd) {
 	users.erase(quit.getNickName());
 }
 
-void	IRCServer::kick(std::string input, int sd) {
-	std::istringstream iss(input);
-	std::string channelName;
-	std::string	kicked;
-
-	iss >> channelName >> kicked;
-
-	std::vector<User> channel = channels[channelName].getMembers();
-	std::cout << "Channel: " << channels[channelName].getName() << " before" << std::endl;
-	for (size_t i = 0; i < channel.size(); i++)
-		std::cout << channel[i].getNickName() << std::endl;
-	std::cout << std::endl;
-    std::map<std::string, Role*> mode = channels[channelName].getMode();
-
-	User kicker = findUserInstance(sd);
-    mode[kicker.getNickName()]->kick(kicked, channels[channelName]);
-	std::cout << "Size: " << mode.size() << std::endl;
-	std::cout << "Channel: " << channels[channelName].getName() << " after" << std::endl;
-	for (size_t i = 0; i < channel.size(); i++)
-		std::cout << channel[i].getNickName() << std::endl;
-	std::cout << std::endl;
-}
-
 // void	IRCServer::kick(std::string input, int sd) {
 // 	std::istringstream iss(input);
-//     std::string channelName;
-//     std::string kicked;
+// 	std::string channelName;
+// 	std::string	kicked;
 
-//     iss >> channelName >> kicked;
+// 	iss >> channelName >> kicked;
 
+// 	std::vector<User> channel = channels[channelName].getMembers();
+// 	std::cout << "Channel: " << channels[channelName].getName() << " before" << std::endl;
+// 	for (size_t i = 0; i < channel.size(); i++)
+// 		std::cout << channel[i].getNickName() << std::endl;
+// 	std::cout << std::endl;
 //     std::map<std::string, Role*> mode = channels[channelName].getMode();
-//     User kicker = findUserInstance(sd);
 
+// 	User kicker = findUserInstance(sd);
 //     mode[kicker.getNickName()]->kick(kicked, channels[channelName]);
+// 	std::cout << "Size: " << mode.size() << std::endl;
+// 	std::cout << "Channel: " << channels[channelName].getName() << " after" << std::endl;
+// 	for (size_t i = 0; i < channel.size(); i++)
+// 		std::cout << channel[i].getNickName() << std::endl;
+// 	std::cout << std::endl;
 // }
+
+void	IRCServer::kick(std::string input, int sd) {
+	std::istringstream iss(input);
+    std::string channelName;
+    std::string kicked;
+
+    iss >> channelName >> kicked;
+
+    std::map<std::string, Role*> mode = channels[channelName].getMode();
+    User kicker = findUserInstance(sd);
+
+    mode[kicker.getNickName()]->kick(kicked, channels[channelName]);
+}
 
 User	&IRCServer::findUserInstance(int sd) {
 	std::map<std::string, User>::iterator	it = users.begin();
