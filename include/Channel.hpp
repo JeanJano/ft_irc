@@ -19,11 +19,10 @@ class Channel
 		void	removeUser(User user);
 		void	addMessage(std::string msg);
 
-		std::string						getName();
-		std::string						getPass();
-		std::vector<User>				getMembers(std::string skip);
-		std::vector<std::string>		getMessages();
-		std::map<std::string, Role*>	getMode();
+		std::string						&getName();
+		std::string						&getPass();
+		std::vector<User>				&getMembers();
+		std::map<std::string, Role*>	&getMode();
 
 		void						setMember(User member);
 
@@ -33,7 +32,7 @@ class Channel
 		std::string						topic;
 		std::vector<User>				members;
 		std::vector<User>				banList;
-		std::map<std::string, Role *>	mode;
+		std::map<std::string, Role*>	mode;
 };
 
 #endif
