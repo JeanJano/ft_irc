@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/25 15:32:48 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/25 16:48:16 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,16 @@ void	Channel::removeUser(User &user) {
 	members.erase(std::remove(members.begin(), members.end(), user), members.end());
 }
 
+void	Channel::setTopic(std::string newTopic) {
+	this->topic = newTopic;
+}
+
 std::string	&Channel::getName() {
 	return (name);
+}
+
+std::string	&Channel::getTopic() {
+	return (topic);
 }
 
 std::string	&Channel::getPass() {

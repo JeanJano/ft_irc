@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/25 17:06:20 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/25 18:09:06 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ class IRCServer {
 		void		ping(std::string, int);
 		void		quit(std::string, int);
 		void		kick(std::string, int);
-
+		void		topic(std::string input, int sd);
 		// errors
 		
 		void		privateMsg(t_cmd msg);

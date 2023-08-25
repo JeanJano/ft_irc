@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:43 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/25 16:57:15 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/25 18:07:11 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,14 @@ void	Regular::kick(const std::string& kicked, Channel& channel) {
 	send(sender->getSd(), msg.c_str(), msg.size(), 0);
 }
 
-Operator::Operator(User *sender, std::string c) {
+void	Regular::topic(const std::string& topic, Channel& channel) {
+	std::string msg;
+
+	msg = ":server 482 " + sender->getNickName() + " " + channelName + " :You're not channel operator\r\n";
+	send(sender->getSd(), msg.c_str(), msg.size(), 0);
+}
+
+Operator::Operator(User *sender, std::string channelName) {
 	this->sender = sender;
     this->channelName = channelName;
 }
@@ -59,4 +66,13 @@ void	Operator::kick(const std::string& kicked, Channel& channel) {
         if (channelMembers[i].getNickName() == kicked)
 			channel.removeUser(channelMembers[i]);
     }
+}
+
+void	Operator::topic(const std::string& topic, Channel& channel) {
+	channel.setTopic(topic);
+	std::vector<User> &channelMembers = channel.getMembers();
+
+	std::string	topicMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " TOPIC " + channelName + " :" + topic + "\r\n";
+	for (size_t i = 0; i < channelMembers.size(); i++)
+		send(channelMembers[i].getSd() , topicMsg.c_str(), topicMsg.size(), 0);
 }
