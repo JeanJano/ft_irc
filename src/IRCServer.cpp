@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/25 15:23:37 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/25 17:38:56 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,9 +248,11 @@ void IRCServer::join(std::string input, int sd)
 		std::cout << it->first << std::endl;
 }
 
-std::vector<User> &IRCServer::getChannelMembers(std::string name, std::string sender)
+std::vector<User> IRCServer::getChannelMembers(std::string name, std::string sender)
 {
 	std::map<std::string, Channel>::iterator it = channels.begin();
+	std::vector<User>							empty;
+	
 	while (it != channels.end())
 	{
 		if (it->first == name)
@@ -259,7 +261,7 @@ std::vector<User> &IRCServer::getChannelMembers(std::string name, std::string se
 		}
 		it++;
 	}
-	return (it->second.getMembers());
+	return (empty);
 }
 
 std::vector<User> IRCServer::getPrivateMember(std::string name)
@@ -294,7 +296,22 @@ void IRCServer::privmsg(std::string input, int sd)
 		members = getChannelMembers(name, sender.getNickName());
 	else
 		members = getPrivateMember(name);
-	members.erase(std::remove(members.begin(), members.end(), sender), members.end());
+		
+	// Check errors, user unknown, channel unknown, user not in channel
+
+	std::vector<User>::iterator it = members.erase(std::remove(members.begin(), members.end(), sender), members.end());
+	if (members.empty())
+	{
+		msg = ":server 401 " + sender.getNickName() + " " + name + " :No such nick/channel\r\n";
+		send(sender.getSd(), msg.c_str(), msg.size(), 0);
+		return ;
+	}
+	// if (it == members.end())
+	// {
+	// 	msg = ":server 442 " + sender.getNickName() + " " + name + " :User not in channel\r\n";
+	// 	send(sender.getSd(), msg.c_str(), msg.size(), 0);
+	// 	return ;
+	// }
 	for (size_t i = 0; i < members.size(); i++)
 	{
 		msg = ":" + sender.getNickName() + "!" + sender.getUserName() + members[i].getIp() + " PRIVMSG " + name + " :" + userMsg + "\r\n";
@@ -358,10 +375,10 @@ void IRCServer::kick(std::string input, int sd)
 
 	mode[kicker.getNickName()]->kick(kicked, channels[channelName]);
 
-	std::cout << "Channel: " << channelName << " after" << std::endl;
-	for (size_t i = 0; i < channels[channelName].getMembers().size(); i++)
-		std::cout << channels[channelName].getMembers()[i].getNickName() << std::endl;
-	std::cout << std::endl;
+	// std::cout << "Channel: " << channelName << " after" << std::endl;
+	// for (size_t i = 0; i < channels[channelName].getMembers().size(); i++)
+	// 	std::cout << channels[channelName].getMembers()[i].getNickName() << std::endl;
+	// std::cout << std::endl;
 }
 
 User &IRCServer::findUserInstance(int sd)
