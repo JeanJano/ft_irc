@@ -17,14 +17,14 @@ class Channel
 
 		void	addUser(User &user);
 		void	removeUser(User &user);
-		void	addMessage(std::string msg);
+		void	setTopic(std::string newTopic);
 
 		std::string						&getName();
+		std::string						&getTopic();
 		std::string						&getPass();
 		std::vector<User>				&getMembers();
 		std::map<std::string, Role*>	&getMode();
 
-		void						setMember(User member);
 
 	private:
 		std::string						name;

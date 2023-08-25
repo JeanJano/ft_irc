@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/25 15:23:37 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/25 17:05:25 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,10 +207,10 @@ void IRCServer::treatCmd(int sd)
 	t_cmd tmp = cmd.front();
 	cmd.pop();
 
-	std::string cmdArr[5] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK"};
-	functionPtr functPtr[5] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick};
+	std::string cmdArr[6] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK", "TOPIC"};
+	functionPtr functPtr[6] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick, &IRCServer::topic};
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		if (tmp.typeCmd == cmdArr[i])
 			(this->*functPtr[i])(tmp.text, sd);
@@ -362,6 +362,22 @@ void IRCServer::kick(std::string input, int sd)
 	for (size_t i = 0; i < channels[channelName].getMembers().size(); i++)
 		std::cout << channels[channelName].getMembers()[i].getNickName() << std::endl;
 	std::cout << std::endl;
+}
+
+void	IRCServer::topic(std::string input, int sd) {
+	std::istringstream	iss(input);
+	std::string			channelName;
+	std::string			topic;
+	char				col;
+
+	iss >> channelName >> col;
+	getline(iss, topic);
+	topic.resize(topic.size() - 1);
+
+	std::map<std::string, Role *> mode = channels[channelName].getMode();
+	User sender = findUserInstance(sd);
+
+	mode[sender.getNickName()]->topic(topic, channels[channelName]);
 }
 
 User &IRCServer::findUserInstance(int sd)

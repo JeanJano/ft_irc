@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/24 19:49:20 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/25 16:13:37 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ class IRCServer {
 		void		ping(std::string, int);
 		void		quit(std::string, int);
 		void		kick(std::string, int);
+		void		topic(std::string, int);
 		
 		void		privateMsg(t_cmd msg);
 		User		&findUserInstance(int sd);
