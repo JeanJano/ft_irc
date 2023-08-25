@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/22 18:41:21 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/25 14:55:46 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ User::User() {
 	nickName = "default";
 	realName = "default";
 	passWord = "default";
+	ip = "default";
+	sd = 0;
 }
 
 User::User(int newSd) : sd(newSd) {
@@ -24,6 +26,7 @@ User::User(int newSd) : sd(newSd) {
 	nickName = "default";
 	realName = "default";
 	passWord = "default";
+	ip = "default";
 }
 
 User::User(const User &cpy) {
@@ -34,12 +37,12 @@ User::User(const User &cpy) {
 User	&User::operator=(const User &cpy) {
 	if (this != &cpy)
 	{
-		userName = cpy.userName;
-		nickName = cpy.nickName;
-		realName = cpy.realName;
-		passWord = cpy.passWord;
-		sd = cpy.sd;
-		ip = cpy.ip;
+		this->userName = cpy.userName;
+		this->nickName = cpy.nickName;
+		this->realName = cpy.realName;
+		this->passWord = cpy.passWord;
+		this->sd = cpy.sd;
+		this->ip = cpy.ip;
 	}
 	return (*this);
 }

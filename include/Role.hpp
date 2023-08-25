@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Role.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:53 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/25 00:18:33 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/25 14:44:01 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 # include "irc.hpp"
 # include "User.hpp"
-class User;
+
+// class User;
 class Channel;
 
 class Role {
@@ -27,14 +28,13 @@ class Role {
 		// virtual	void	topic(std::string topic) = 0;
 		// virtual	void	mode(std::string token) = 0;
 	protected:
-		int			sd;
-		std::string nickname;
+		User		*sender;
 		std::string	channelName;
 };
 
 class Operator : public Role {
 	public:
-		Operator(std::string n, int s, std::string c);
+		Operator(User *sender, std::string c);
 		~Operator();
 		void	kick(const std::string& kicked, Channel& channel);
 		// void	invite(std::string nick);
@@ -44,7 +44,7 @@ class Operator : public Role {
  
 class Regular : public Role {
 	public:
-		Regular(std::string n, int s, std::string c);
+		Regular(User *sender, std::string c);
 		~Regular();
 		Regular();
 

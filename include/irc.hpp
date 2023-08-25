@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/22 18:02:59 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/25 14:36:09 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@
 # include <vector>
 # include <map>
 # include "User.hpp"
-# include "Role.hpp"
 # include "Channel.hpp"
+# include "Role.hpp"
 # include "IRCServer.hpp"
 # include <netinet/tcp.h>
 # include <algorithm>
