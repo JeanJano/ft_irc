@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/25 18:09:06 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/27 16:03:50 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,17 @@ class IRCServer {
 		void		quit(std::string, int);
 		void		kick(std::string, int);
 		void		topic(std::string input, int sd);
+		void		invite(std::string input, int sd);
 		// errors
 		
 		void		privateMsg(t_cmd msg);
 		User		&findUserInstance(int sd);
+		User 		findUserInstance(std::string nick);
 		std::string	findUserNickName(int sd);
 		bool		nickIsUsed(std::string nickname);
 		std::vector<User>	getChannelMembers(std::string name, std::string sender);
 		std::vector<User>	getPrivateMember(std::string name);
+		bool				userInChannel(std::vector<User> &members, std::string nick);
 
 	private:
 		sockaddr_in						servAddr;

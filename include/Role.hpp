@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Role.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:53 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/25 17:09:19 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/27 16:04:57 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Role {
 		virtual ~Role();
 
 		virtual	void	kick(const std::string& kicked, Channel& channel) = 0;
-		// virtual	void	invite(std::string nick) = 0;
+		virtual	void	invite(User receiver) = 0;
 		virtual	void	topic(const std::string& topic, Channel& channel) = 0;
 		// virtual	void	mode(std::string token) = 0;
 	protected:
@@ -37,7 +37,7 @@ class Operator : public Role {
 		Operator(User *sender, std::string c);
 		~Operator();
 		void	kick(const std::string& kicked, Channel& channel);
-		// void	invite(std::string nick);
+		void	invite(User receiver);
 		void	topic(const std::string& topic, Channel& channel);
 		// void	mode(std::string token);	
 };
@@ -51,7 +51,7 @@ class Regular : public Role {
 		std::string	getNickName();
 
 		void	kick(const std::string& kicked, Channel& channel);
-		// void	invite(std::string nick);
+		void	invite(User receiver);
 		void	topic(const std::string& topic, Channel& channel);
 		// void	mode(std::string token);
 };

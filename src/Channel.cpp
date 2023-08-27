@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/25 16:48:16 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/27 12:08:33 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ Channel::Channel(std::string n, std::string p) : name(n), pass(p) {}
 
 Channel::Channel(const Channel &cpy) : name(cpy.name), members(cpy.members) {}
 
-Channel::~Channel() {}
+Channel::~Channel() {
+	// Free Mode Operators
+}
 
 Channel	&Channel::operator=(const Channel &cpy) {
 	name = cpy.name;

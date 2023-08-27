@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/25 18:07:03 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/27 16:20:05 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,13 +149,14 @@ bool IRCServer::checkNewClient(int sd, User client)
 	{
 		std::cout << "client try to connect with wrong password" << std::endl;
 		msg = ":server 464 " + client.getNickName() + " :Password incorrect\r\n";
+		std::cout << msg << std::endl;
 		send(sd, msg.c_str(), msg.size(), 0);
 		return (false);
 	}
 	if (nickIsUsed(client.getNickName()))
 	{
 		std::cout << "client try to connect with used nickname" << std::endl;
-		msg = ":server 433 * " + client.getNickName() + " :Nickname is already in use\r\n";
+		msg = ":server 433 " + client.getNickName() + " :Nickname is already in use\r\n";
 		std::cout << msg << std::endl;
 		send(sd, msg.c_str(), msg.size(), 0);
 		return (false);
@@ -207,10 +208,10 @@ void IRCServer::treatCmd(int sd)
 	t_cmd tmp = cmd.front();
 	cmd.pop();
 
-	std::string cmdArr[6] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK", "TOPIC"};
-	functionPtr functPtr[6] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick, &IRCServer::topic};
+	std::string cmdArr[7] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK", "TOPIC", "INVITE"};
+	functionPtr functPtr[7] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick, &IRCServer::topic, &IRCServer::invite};
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		if (tmp.typeCmd == cmdArr[i])
 			(this->*functPtr[i])(tmp.text, sd);
@@ -298,7 +299,12 @@ void IRCServer::privmsg(std::string input, int sd)
 		members = getPrivateMember(name);
 		
 	// Check errors, user unknown, channel unknown, user not in channel
-
+	if (pos == 0 && !userInChannel(members, sender.getNickName()))
+	{
+		msg = ":server 442 " + sender.getNickName() + " " + name + " :User not in channel\r\n";
+		send(sender.getSd(), msg.c_str(), msg.size(), 0);
+		return ;
+	}
 	std::vector<User>::iterator it = members.erase(std::remove(members.begin(), members.end(), sender), members.end());
 	if (members.empty())
 	{
@@ -306,12 +312,6 @@ void IRCServer::privmsg(std::string input, int sd)
 		send(sender.getSd(), msg.c_str(), msg.size(), 0);
 		return ;
 	}
-	// if (it == members.end())
-	// {
-	// 	msg = ":server 442 " + sender.getNickName() + " " + name + " :User not in channel\r\n";
-	// 	send(sender.getSd(), msg.c_str(), msg.size(), 0);
-	// 	return ;
-	// }
 	for (size_t i = 0; i < members.size(); i++)
 	{
 		msg = ":" + sender.getNickName() + "!" + sender.getUserName() + members[i].getIp() + " PRIVMSG " + name + " :" + userMsg + "\r\n";
@@ -338,29 +338,6 @@ void IRCServer::quit(std::string input, int sd)
 	std::cout << "Client: " << quit.getNickName() << " disconnected" << std::endl;
 	users.erase(quit.getNickName());
 }
-
-// void	IRCServer::kick(std::string input, int sd) {
-// 	std::istringstream iss(input);
-// 	std::string channelName;
-// 	std::string	kicked;
-
-// 	iss >> channelName >> kicked;
-
-// 	std::vector<User> channel = channels[channelName].getMembers();
-// std::cout << "Channel: " << channels[channelName].getName() << " before" << std::endl;
-// for (size_t i = 0; i < channel.size(); i++)
-// 	std::cout << channel[i].getNickName() << std::endl;
-// std::cout << std::endl;
-//     std::map<std::string, Role*> mode = channels[channelName].getMode();
-
-// 	User kicker = findUserInstance(sd);
-//     mode[kicker.getNickName()]->kick(kicked, channels[channelName]);
-// 	std::cout << "Size: " << mode.size() << std::endl;
-// 	std::cout << "Channel: " << channels[channelName].getName() << " after" << std::endl;
-// 	for (size_t i = 0; i < channel.size(); i++)
-// 		std::cout << channel[i].getNickName() << std::endl;
-// 	std::cout << std::endl;
-// }
 
 void IRCServer::kick(std::string input, int sd)
 {
@@ -397,6 +374,31 @@ void	IRCServer::topic(std::string input, int sd) {
 	mode[sender.getNickName()]->topic(topic, channels[channelName]);
 }
 
+void	IRCServer::invite(std::string input, int sd)
+{
+	std::istringstream	iss(input);
+	std::string			nick;
+	std::string			channelName;
+
+	iss >> nick >> channelName;
+	// Need to Check existence of channel
+	std::map<std::string, Channel>::iterator it = channels.find(channelName);
+	User sender = findUserInstance(sd);
+	User receiver = findUserInstance(nick);
+	std::cout << receiver.getNickName() << std::endl;
+	// Pourquoi ca marche si ca rentre dans le premiere condition mais pas dans la deuxieme
+	// LE MESSAGE EST LE MEEEEEEME
+	if (it == channels.end() || receiver.getNickName() == "default")
+	{
+		std::string msg = ":server 401 " + sender.getNickName() + " " + channelName + " :No such nick/channel\r\n";
+		std::cout << msg << std::endl;
+		send(sender.getSd(), msg.c_str(), msg.size(), 0);
+		return ;
+	}
+	std::map<std::string, Role *> mode = channels[channelName].getMode();
+	mode[sender.getNickName()]->invite(receiver);
+}
+
 User &IRCServer::findUserInstance(int sd)
 {
 	std::map<std::string, User>::iterator it = users.begin();
@@ -407,6 +409,19 @@ User &IRCServer::findUserInstance(int sd)
 		it++;
 	}
 	return (it->second);
+}
+
+User IRCServer::findUserInstance(std::string nick)
+{
+	User	empty;
+	std::map<std::string, User>::iterator it = users.begin();
+	while (it != users.end())
+	{
+		if (it->first == nick)
+			return (it->second);
+		it++;
+	}
+	return (empty);
 }
 
 std::string IRCServer::findUserNickName(int sd)
@@ -432,4 +447,14 @@ bool IRCServer::nickIsUsed(std::string nickname)
 		it++;
 	}
 	return (0);
+}
+
+bool	IRCServer::userInChannel(std::vector<User> &members, std::string nick)
+{
+	for (int i = 0; i < members.size(); i++)
+	{
+		if (members[i].getNickName() == nick)
+			return (true);
+	}
+	return (false);
 }

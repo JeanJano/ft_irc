@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:43 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/25 18:07:11 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/27 16:05:52 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,18 @@ void	Regular::kick(const std::string& kicked, Channel& channel) {
 	std::string msg;
 
 	msg = ":server 482 " + sender->getNickName() + " " + channelName + " :You're not channel operator\r\n";
-	send(sender->getSd(), msg.c_str(), msg.size(), 0);
+	send(sender->getSd(), (char *)msg.c_str(), msg.size(), 0);
 }
 
 void	Regular::topic(const std::string& topic, Channel& channel) {
+	std::string msg;
+
+	msg = ":server 482 " + sender->getNickName() + " " + channelName + " :You're not channel operator\r\n";
+	send(sender->getSd(), msg.c_str(), msg.size(), 0);
+}
+
+void	Regular::invite(User receiver)
+{
 	std::string msg;
 
 	msg = ":server 482 " + sender->getNickName() + " " + channelName + " :You're not channel operator\r\n";
@@ -75,4 +83,10 @@ void	Operator::topic(const std::string& topic, Channel& channel) {
 	std::string	topicMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " TOPIC " + channelName + " :" + topic + "\r\n";
 	for (size_t i = 0; i < channelMembers.size(); i++)
 		send(channelMembers[i].getSd() , topicMsg.c_str(), topicMsg.size(), 0);
+}
+
+void	Operator::invite(User receiver)
+{
+	std::string	inviteMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " INVITE " + receiver.getNickName() + " :" + channelName + "\r\n";
+	send(receiver.getSd(), inviteMsg.c_str(), inviteMsg.size(), 0);
 }
