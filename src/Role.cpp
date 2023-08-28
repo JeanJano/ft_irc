@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Role.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:43 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 14:53:38 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/28 17:44:03 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,4 +14,11 @@
 
 Role::~Role() {
 	return ;
+}
+
+Role	&Role::operator=(const Role &cpy)
+{
+	sender = cpy.sender;
+	channelName = channelName;
+	return *this;
 }

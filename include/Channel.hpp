@@ -15,7 +15,7 @@ class Channel
 		~Channel();
 		Channel& operator=(const Channel &cpy);
 
-		void	addUser(User &user);
+		void	addUser(User user);
 		void	removeUser(User &user);
 		void	setTopic(std::string newTopic);
 		void	setTimeStamp(std::time_t newTimeStamp);

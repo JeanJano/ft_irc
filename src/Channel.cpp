@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 15:37:49 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 17:51:07 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ Channel	&Channel::operator=(const Channel &cpy) {
 	return (*this);
 }
 
-void	Channel::addUser(User &user) {
+void	Channel::addUser(User user) {
 	members.push_back(user);
 	if (members.size() == 1)
-		mode[user.getNickName()] = new Operator(&user, name); 
+		mode[user.getNickName()] = new Operator(user, name); 
 	else
-		mode[user.getNickName()] = new Regular(&user, name);
+		mode[user.getNickName()] = new Regular(user, name);
 	std::cout << "Joined: " << user.getNickName() << std::endl;
 	// std::cout << "Nick: " << user.getNickName() << " Channel: " << name << std::endl;
 }

@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 14:04:36 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 15:41:13 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 17:54:12 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,26 @@ Operator::Operator() {
 	return ;
 }
 
-Operator::Operator(User *sender, std::string channelName) {
-	this->sender = sender;
+Operator::Operator(User &sender, std::string channelName) {
+	this->sender = new User(sender);
     this->channelName = channelName;
 }
 
+Operator	&Operator::operator=(const Operator &cpy)
+{
+	if (this != &cpy) {
+        Role::operator=(cpy);
+    }
+	return *this;
+}
+
 Operator::~Operator() {
-	
+	delete sender;
 }
 
 void	Operator::kick(const std::string& kicked, Channel& channel) {
 	std::vector<User> &channelMembers = channel.getMembers();
 		
-	// std::string kickMsg = ":" + sender->getNickName() + "!"+ sender->getUserName() +"@" + sender->getIp() + " KICK " + channelName + " " + kicked + " :Kicked by operator\r\n";
 	for (size_t i = 0; i < channelMembers.size(); i++)
 		reply(channelMembers[i].getSd(), RPL_KICK(sender->getNickName() + "!"+ sender->getUserName() +"@" + sender->getIp(), channelName, kicked, "No reason specified"));
 

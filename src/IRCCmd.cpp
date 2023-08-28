@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 15:25:58 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 17:35:27 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,9 +123,21 @@ void IRCServer::kick(std::string input, int sd)
 		reply(kicker.getSd(), ERR_NOSUCHNICK(kicker.getNickName(), channelName));
 		return ;
 	}
-	std::map<std::string, Role *> mode = channels[channelName].getMode();
-
-	mode[kicker.getNickName()]->kick(kicked, channels[channelName]);
+	if (!userInChannel(channels[channelName].getMembers(), kickedUsr.getNickName()))
+	{
+		reply(kicker.getSd(), ERR_NOTONCHANNEL(kickedUsr.getNickName(), channelName));
+		return ;
+	}
+	std::map<std::string, Role *> &mode = channels[channelName].getMode();
+	for (std::map<std::string, Role *>::iterator it = mode.begin(); it != mode.end(); it++)
+	{
+		if (it->first == kicker.getNickName())
+		{
+			std::cout << "NICK: " << kicker.getNickName() << std::endl;
+			it->second->kick(kicked, channels[channelName]);
+		}
+	}
+	// mode[kicker.getNickName()]->kick(kicked, channels[channelName]);
 }
 
 void	IRCServer::topic(std::string input, int sd) {
