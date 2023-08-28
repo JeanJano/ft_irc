@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/27 16:20:05 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 11:20:10 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,22 +301,17 @@ void IRCServer::privmsg(std::string input, int sd)
 	// Check errors, user unknown, channel unknown, user not in channel
 	if (pos == 0 && !userInChannel(members, sender.getNickName()))
 	{
-		msg = ":server 442 " + sender.getNickName() + " " + name + " :User not in channel\r\n";
-		send(sender.getSd(), msg.c_str(), msg.size(), 0);
+		reply(sender.getSd(), ":server " + ERR_NOTONCHANNEL(sender.getNickName(), name));
 		return ;
 	}
 	std::vector<User>::iterator it = members.erase(std::remove(members.begin(), members.end(), sender), members.end());
 	if (members.empty())
 	{
-		msg = ":server 401 " + sender.getNickName() + " " + name + " :No such nick/channel\r\n";
-		send(sender.getSd(), msg.c_str(), msg.size(), 0);
+		reply(sender.getSd(), ":server " + ERR_NOSUCHNICK(sender.getNickName(), name));
 		return ;
 	}
 	for (size_t i = 0; i < members.size(); i++)
-	{
-		msg = ":" + sender.getNickName() + "!" + sender.getUserName() + members[i].getIp() + " PRIVMSG " + name + " :" + userMsg + "\r\n";
-		send(members[i].getSd(), msg.c_str(), msg.size(), 0);
-	}
+		reply(members[i].getSd(), RPL_PRIVMSG(sender.getNickName() + "!" + sender.getUserName() + members[i].getIp(), name, userMsg));
 }
 
 void IRCServer::quit(std::string input, int sd)
@@ -390,9 +385,7 @@ void	IRCServer::invite(std::string input, int sd)
 	// LE MESSAGE EST LE MEEEEEEME
 	if (it == channels.end() || receiver.getNickName() == "default")
 	{
-		std::string msg = ":server 401 " + sender.getNickName() + " " + channelName + " :No such nick/channel\r\n";
-		std::cout << msg << std::endl;
-		send(sender.getSd(), msg.c_str(), msg.size(), 0);
+		reply(sender.getSd(), ":server " + ERR_NOSUCHNICK(sender.getNickName(), channelName));
 		return ;
 	}
 	std::map<std::string, Role *> mode = channels[channelName].getMode();

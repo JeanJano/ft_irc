@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/25 14:36:09 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 11:03:49 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,10 @@
 # include "Channel.hpp"
 # include "Role.hpp"
 # include "IRCServer.hpp"
+# include "replies.hpp"
 # include <netinet/tcp.h>
 # include <algorithm>
-
 # define BUFFER_SIZE 1024
 
+void	reply(int sd, std::string msg);
 #endif

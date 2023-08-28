@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:43 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/27 16:05:52 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 11:22:49 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,25 +33,15 @@ Regular::~Regular() {
 }
 
 void	Regular::kick(const std::string& kicked, Channel& channel) {
-	std::string msg;
-
-	msg = ":server 482 " + sender->getNickName() + " " + channelName + " :You're not channel operator\r\n";
-	send(sender->getSd(), (char *)msg.c_str(), msg.size(), 0);
+	reply(sender->getSd(), ERR_CHANOPRIVSNEEDED(sender->getNickName(), channelName));
 }
 
 void	Regular::topic(const std::string& topic, Channel& channel) {
-	std::string msg;
-
-	msg = ":server 482 " + sender->getNickName() + " " + channelName + " :You're not channel operator\r\n";
-	send(sender->getSd(), msg.c_str(), msg.size(), 0);
+	reply(sender->getSd(), ERR_CHANOPRIVSNEEDED(sender->getNickName(), channelName));
 }
 
-void	Regular::invite(User receiver)
-{
-	std::string msg;
-
-	msg = ":server 482 " + sender->getNickName() + " " + channelName + " :You're not channel operator\r\n";
-	send(sender->getSd(), msg.c_str(), msg.size(), 0);
+void	Regular::invite(User receiver) {
+	reply(sender->getSd(), ERR_CHANOPRIVSNEEDED(sender->getNickName(), channelName));
 }
 
 Operator::Operator(User *sender, std::string channelName) {
