@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Role.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:53 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/27 16:04:57 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 14:54:19 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class Role {
 
 class Operator : public Role {
 	public:
-		Operator(User *sender, std::string c);
+		Operator(User *sender, std::string channelName);
 		~Operator();
 		void	kick(const std::string& kicked, Channel& channel);
 		void	invite(User receiver);
@@ -44,7 +44,7 @@ class Operator : public Role {
  
 class Regular : public Role {
 	public:
-		Regular(User *sender, std::string c);
+		Regular(User *sender, std::string channelName);
 		~Regular();
 		Regular();
 

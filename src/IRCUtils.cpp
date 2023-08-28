@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCUtils.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:30:49 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 13:32:00 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 14:51:14 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ bool IRCServer::nickIsUsed(std::string nickname)
 
 bool	IRCServer::userInChannel(std::vector<User> &members, std::string nick)
 {
-	for (int i = 0; i < members.size(); i++)
+	for (size_t i = 0; i < members.size(); i++)
 	{
 		if (members[i].getNickName() == nick)
 			return (true);
