@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 17:35:27 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 18:26:53 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void IRCServer::join(std::string input, int sd)
 		std::stringstream ss;
 		ss << channels[name].getTimeStamp();
 		User	newUser = findUserInstance(sd);
-		std::cout << "Channel exists !" << std::endl;
 		channels[name].addUser(newUser);
 		std::string msg333 = ":server 333 " + newUser.getNickName() + " " +channels[name].getName() + " " + newUser.getNickName() + "!" + newUser.getUserName() + "@" + newUser.getIp() + " " + ss.str() + "\r\n";
 		if (channels[name].getTopic() != "default")
@@ -41,14 +40,10 @@ void IRCServer::join(std::string input, int sd)
 	}
 	else
 	{
-		std::cout << "Channel created !" << std::endl;
 		Channel newChannel(name, pass);
 		channels[name] = newChannel;
 		channels[name].addUser(findUserInstance(sd));
 	}
-	std::cout << "Channels: " << std::endl;
-	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it)
-		std::cout << it->first << std::endl;
 }
 
 void IRCServer::privmsg(std::string input, int sd)
@@ -79,7 +74,6 @@ void IRCServer::privmsg(std::string input, int sd)
 	std::vector<User>::iterator it = members.erase(std::remove(members.begin(), members.end(), sender), members.end());
 	if (members.empty())
 	{
-		std::cout << "QUT" << std::endl;
 		reply(sender.getSd(), ERR_NOSUCHNICK(sender.getNickName(), name));
 		return ;
 	}
@@ -103,7 +97,6 @@ void IRCServer::quit(std::string input, int sd)
 	close(sd);
 	fds.erase(fds.begin() + *nowFd);
 	*nowFd = *nowFd - 1;
-	std::cout << "Client: " << quit.getNickName() << " disconnected" << std::endl;
 	users.erase(quit.getNickName());
 }
 
@@ -132,10 +125,7 @@ void IRCServer::kick(std::string input, int sd)
 	for (std::map<std::string, Role *>::iterator it = mode.begin(); it != mode.end(); it++)
 	{
 		if (it->first == kicker.getNickName())
-		{
-			std::cout << "NICK: " << kicker.getNickName() << std::endl;
 			it->second->kick(kicked, channels[channelName]);
-		}
 	}
 	// mode[kicker.getNickName()]->kick(kicked, channels[channelName]);
 }
@@ -172,7 +162,6 @@ void	IRCServer::invite(std::string input, int sd)
 	std::map<std::string, Channel>::iterator it = channels.find(channelName);
 	User sender = findUserInstance(sd);
 	User receiver = findUserInstance(nick);
-	std::cout << receiver.getNickName() << std::endl;
 	// Pourquoi ca marche si ca rentre dans le premiere condition mais pas dans la deuxieme
 	// LE MESSAGE EST LE MEEEEEEME
 	if (it == channels.end() || receiver.getNickName() == "default")

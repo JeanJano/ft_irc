@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 13:31:52 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 18:43:22 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 
 IRCServer::IRCServer(char **av)
 {
+	std::time_t now;
+	creation = std::ctime(&now);
+    if (!creation.empty() && creation[creation.size() - 1] == '\n') {
+        creation.resize(creation.size() - 1);
+    }
 	init(av);
 	serverManager(av);
 }

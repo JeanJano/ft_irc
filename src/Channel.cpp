@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 17:51:07 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 18:26:16 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,9 @@ void	Channel::addUser(User user) {
 		mode[user.getNickName()] = new Operator(user, name); 
 	else
 		mode[user.getNickName()] = new Regular(user, name);
-	std::cout << "Joined: " << user.getNickName() << std::endl;
-	// std::cout << "Nick: " << user.getNickName() << " Channel: " << name << std::endl;
 }
 
 void	Channel::removeUser(User &user) {
-	// std::vector<User>::iterator it = std::remove(members.begin(), members.end(), user);
 	members.erase(std::remove(members.begin(), members.end(), user), members.end());
 }
 

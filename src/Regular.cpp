@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 14:04:52 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 17:54:05 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 18:27:18 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,6 @@ Regular::~Regular() {
 }
 
 void	Regular::kick(const std::string& kicked, Channel& channel) {
-	std::cout << "Sender REG: "<< this->sender->getNickName() << std::endl;
-	std::cout << "SD REG: "<< this->sender->getSd() << std::endl;
 	reply(sender->getSd(), ERR_CHANOPRIVSNEEDED(sender->getNickName(), channelName));
 }
 

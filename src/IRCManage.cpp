@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:29:21 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 14:01:17 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 18:41:33 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void IRCServer::handleEvents()
 			std::string buf = getCompleteMsg(fds[i].fd, &i);
 			if (!buf.empty())
 			{
-				std::cout << buf << std::endl;
 				parseCmd(buf);
 				while (cmd.size() > 0)
 					treatCmd(fds[i].fd);
@@ -33,11 +32,12 @@ void IRCServer::handleEvents()
 
 void IRCServer::newConnexionMsg(int sd, sockaddr_in addr, User &usr)
 {
-	std::cout << "New client connected" << std::endl;
 	usr.setIp(inet_ntoa(addr.sin_addr));
-	std::cout << "addr ip: " << usr.getIp() << std::endl;
 	users[usr.getNickName()] = usr;
 	reply(sd, RPL_WELCOME(usr.getNickName(), usr.getNickName()));
+	reply(sd, RPL_YOURHOST(usr.getNickName(), "server", "0.1"));
+	reply(sd, RPL_CREATED(usr.getNickName(), creation));
+	// reply(sd, )
 }
 
 bool IRCServer::checkNewClient(int sd, User client)
@@ -50,7 +50,6 @@ bool IRCServer::checkNewClient(int sd, User client)
 	}
 	if (nickIsUsed(client.getNickName()))
 	{
-		std::cout << "client try to connect with used nickname" << std::endl;
 		reply(sd, ERR_NICKNAMEINUSE(client.getNickName(), client.getNickName()));
 		return (false);
 	}
@@ -78,5 +77,6 @@ std::string IRCServer::getCompleteMsg(int sd, size_t *i)
 		if (received.length() >= 2 && received.substr(received.length() - 2) == "/r/n")
 			break;
 	}
+	std::cout << "Received: " << received << std::endl;
 	return (received);
 }

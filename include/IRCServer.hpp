@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 13:32:25 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 18:37:24 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ class IRCServer {
 		std::map<std::string, Channel>	channels;
 		std::map<std::string, User>		users;
 		std::queue<t_cmd>				cmd;
+		std::string						creation;
 };
 
 
