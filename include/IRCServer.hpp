@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/27 16:03:50 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 13:32:25 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,21 +37,21 @@ class IRCServer {
 		void		handleEvents();
 		void		newConnexionMsg(int sd, sockaddr_in addr, User &usr);
 		bool		checkNewClient(int sd, User client);
-		void    	parseCmd(std::string buf);
 		std::string	getCompleteMsg(int sd, size_t *i);
-		void		treatCmd(int sd);
 
-		// events
+		// COMMANDS
+		void		ping(std::string, int);
 		void		join(std::string, int);
 		void		privmsg(std::string, int);
-		void		ping(std::string, int);
 		void		quit(std::string, int);
 		void		kick(std::string, int);
 		void		topic(std::string input, int sd);
 		void		invite(std::string input, int sd);
 		// errors
 		
-		void		privateMsg(t_cmd msg);
+		//UTILS
+		void    	parseCmd(std::string buf);
+		void		treatCmd(int sd);
 		User		&findUserInstance(int sd);
 		User 		findUserInstance(std::string nick);
 		std::string	findUserNickName(int sd);

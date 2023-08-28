@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:43 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 11:29:22 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 11:37:51 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ Operator::~Operator() {
 void	Operator::kick(const std::string& kicked, Channel& channel) {
 	std::vector<User> &channelMembers = channel.getMembers();
 		
-	std::string kickMsg = ":" + sender->getNickName() + "!"+ sender->getUserName() +"@" + sender->getIp() + " KICK " + channelName + " " + kicked + " :Kicked by operator\r\n";
+	// std::string kickMsg = ":" + sender->getNickName() + "!"+ sender->getUserName() +"@" + sender->getIp() + " KICK " + channelName + " " + kicked + " :Kicked by operator\r\n";
 	for (size_t i = 0; i < channelMembers.size(); i++)
-        send(channelMembers[i].getSd() , kickMsg.c_str(), kickMsg.size(), 0);
+		reply(channelMembers[i].getSd(), RPL_KICK(sender->getNickName() + "!"+ sender->getUserName() +"@" + sender->getIp(), channelName, kicked, "No reason specified"));
 
     for (size_t i = 0; i < channelMembers.size(); i++) {
         if (channelMembers[i].getNickName() == kicked)
@@ -73,13 +73,13 @@ void	Operator::topic(const std::string& topic, Channel& channel) {
 	channel.setTimeStamp(now);
 	std::vector<User> &channelMembers = channel.getMembers();
 
-	std::string	topicMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " TOPIC " + channelName + " :" + topic + "\r\n";
+	std::string	topicMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " TOPIC " + channelName + " :" + topic;
 	for (size_t i = 0; i < channelMembers.size(); i++)
-		send(channelMembers[i].getSd() , topicMsg.c_str(), topicMsg.size(), 0);
+		reply(channelMembers[i].getSd(), topicMsg);
 }
 
 void	Operator::invite(User receiver)
 {
-	std::string	inviteMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " INVITE " + receiver.getNickName() + " :" + channelName + "\r\n";
-	send(receiver.getSd(), inviteMsg.c_str(), inviteMsg.size(), 0);
+	std::string	inviteMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " INVITE " + receiver.getNickName() + " :" + channelName;
+	reply(receiver.getSd(), inviteMsg);
 }
