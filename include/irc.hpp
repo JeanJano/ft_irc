@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/25 14:36:09 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 10:34:29 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <unistd.h>
 # include <string.h>
 # include <netdb.h>
+# include <ctime>
 # include <sys/uio.h>
 # include <sys/time.h>
 # include <sys/wait.h>
