@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 11:20:10 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 11:30:10 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,14 +233,20 @@ void IRCServer::join(std::string input, int sd)
 	iss >> name >> pass;
 	if (channels.find(name) != channels.end())
 	{
+		std::stringstream ss;
+		ss << channels[name].getTimeStamp();
+		User	newUser = findUserInstance(sd);
 		std::cout << "Channel exists !" << std::endl;
-		channels[name].addUser(findUserInstance(sd));
+		channels[name].addUser(newUser);
+		std::string msg332 = ":server 332 " + newUser.getNickName() + " " +channels[name].getName() + " :" + channels[name].getTopic() + "\r\n";
+		std::string msg333 = ":server 333 " + newUser.getNickName() + " " +channels[name].getName() + " " + newUser.getNickName() + "!" + newUser.getUserName() + "@" + newUser.getIp() + " " + ss.str() + "\r\n";
+		send(newUser.getSd(), msg332.c_str(), msg332.size(), 0);
+		send(newUser.getSd(), msg333.c_str(), msg333.size(), 0);
 	}
 	else
 	{
 		std::cout << "Channel created !" << std::endl;
 		Channel newChannel(name, pass);
-		// newChannel.addUser(findUserInstance(sd)); This was the problem
 		channels[name] = newChannel;
 		channels[name].addUser(findUserInstance(sd));
 	}

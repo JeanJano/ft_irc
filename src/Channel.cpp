@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/27 12:08:33 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 10:40:38 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ Channel	&Channel::operator=(const Channel &cpy) {
 	name = cpy.name;
 	pass = cpy.pass;
 	topic = cpy.topic;
+	timestamp = cpy.timestamp;
 	members = cpy.members;
 	banList = cpy.banList;
 	mode = cpy.mode;
@@ -51,12 +52,20 @@ void	Channel::setTopic(std::string newTopic) {
 	this->topic = newTopic;
 }
 
+void	Channel::setTimeStamp(std::time_t newTimeStamp) {
+	this->timestamp = newTimeStamp;
+}
+
 std::string	&Channel::getName() {
 	return (name);
 }
 
 std::string	&Channel::getTopic() {
 	return (topic);
+}
+
+std::time_t	&Channel::getTimeStamp() {
+	return (timestamp);
 }
 
 std::string	&Channel::getPass() {

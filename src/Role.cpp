@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:43 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 11:22:49 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 11:29:22 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,9 @@ void	Operator::kick(const std::string& kicked, Channel& channel) {
 
 void	Operator::topic(const std::string& topic, Channel& channel) {
 	channel.setTopic(topic);
+	std::time_t now;
+	std::time(&now);
+	channel.setTimeStamp(now);
 	std::vector<User> &channelMembers = channel.getMembers();
 
 	std::string	topicMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " TOPIC " + channelName + " :" + topic + "\r\n";

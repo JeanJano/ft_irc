@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/28 11:03:49 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 11:29:28 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <unistd.h>
 # include <string.h>
 # include <netdb.h>
+# include <ctime>
 # include <sys/uio.h>
 # include <sys/time.h>
 # include <sys/wait.h>
