@@ -3,20 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 10:40:38 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/28 15:37:49 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Channel.hpp"
 
-Channel::Channel() : name("default") {}
+Channel::Channel() : name("default") {
+	pass = "default";
+	topic = "default";
+	timestamp = 0;
+}
 
-Channel::Channel(std::string n, std::string p) : name(n), pass(p) {}
+Channel::Channel(std::string n, std::string p) : name(n), pass(p) {
+	topic = "default";
+	timestamp = 0;
+}
 
-Channel::Channel(const Channel &cpy) : name(cpy.name), members(cpy.members) {}
+Channel::Channel(const Channel &cpy) {
+	if (this != &cpy)
+	{
+		*this = cpy;
+	}
+}
 
 Channel::~Channel() {
 	// Free Mode Operators

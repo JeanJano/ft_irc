@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 15:03:32 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 15:25:58 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,11 @@ void IRCServer::join(std::string input, int sd)
 		std::cout << "Channel exists !" << std::endl;
 		channels[name].addUser(newUser);
 		std::string msg333 = ":server 333 " + newUser.getNickName() + " " +channels[name].getName() + " " + newUser.getNickName() + "!" + newUser.getUserName() + "@" + newUser.getIp() + " " + ss.str() + "\r\n";
-		reply(newUser.getSd(), RPL_TOPIC(newUser.getNickName(), channels[name].getName(), channels[name].getTopic()));
-		reply(newUser.getSd(), msg333);
+		if (channels[name].getTopic() != "default")
+		{
+			reply(newUser.getSd(), RPL_TOPIC(newUser.getNickName(), channels[name].getName(), channels[name].getTopic()));
+			reply(newUser.getSd(), msg333);
+		}
 	}
 	else
 	{
@@ -73,8 +76,7 @@ void IRCServer::privmsg(std::string input, int sd)
 		reply(sender.getSd(), ERR_NOTONCHANNEL(sender.getNickName(), name));
 		return ;
 	}
-	if (members.size() > 1)
-		std::vector<User>::iterator it = members.erase(std::remove(members.begin(), members.end(), sender), members.end());
+	std::vector<User>::iterator it = members.erase(std::remove(members.begin(), members.end(), sender), members.end());
 	if (members.empty())
 	{
 		std::cout << "QUT" << std::endl;
@@ -113,8 +115,10 @@ void IRCServer::kick(std::string input, int sd)
 
 	iss >> channelName >> kicked;
 	User kicker = findUserInstance(sd);
+	User kickedUsr = findUserInstance(kicked);
+	
 	std::map<std::string, Channel>::iterator it = channels.find(channelName);
-	if (it == channels.end())
+	if (it == channels.end() || kickedUsr.getNickName() == "default")
 	{
 		reply(kicker.getSd(), ERR_NOSUCHNICK(kicker.getNickName(), channelName));
 		return ;

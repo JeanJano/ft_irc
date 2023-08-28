@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   Operator.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 14:04:36 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 14:50:01 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/28 15:41:13 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Role.hpp"
+
+Operator::Operator() {
+	sender = NULL;
+	channelName = "Default";
+	return ;
+}
 
 Operator::Operator(User *sender, std::string channelName) {
 	this->sender = sender;
