@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 13:38:29 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 15:03:32 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,9 +112,14 @@ void IRCServer::kick(std::string input, int sd)
 	std::string kicked;
 
 	iss >> channelName >> kicked;
-
-	std::map<std::string, Role *> mode = channels[channelName].getMode();
 	User kicker = findUserInstance(sd);
+	std::map<std::string, Channel>::iterator it = channels.find(channelName);
+	if (it == channels.end())
+	{
+		reply(kicker.getSd(), ERR_NOSUCHNICK(kicker.getNickName(), channelName));
+		return ;
+	}
+	std::map<std::string, Role *> mode = channels[channelName].getMode();
 
 	mode[kicker.getNickName()]->kick(kicked, channels[channelName]);
 }
@@ -128,9 +133,14 @@ void	IRCServer::topic(std::string input, int sd) {
 	iss >> channelName >> col;
 	getline(iss, topic);
 	topic.resize(topic.size() - 1);
-
-	std::map<std::string, Role *> mode = channels[channelName].getMode();
 	User sender = findUserInstance(sd);
+	std::map<std::string, Channel>::iterator it = channels.find(channelName);
+	if (it == channels.end())
+	{
+		reply(sender.getSd(), ERR_NOSUCHNICK(sender.getNickName(), channelName));
+		return ;
+	}
+	std::map<std::string, Role *> mode = channels[channelName].getMode();
 
 	mode[sender.getNickName()]->topic(topic, channels[channelName]);
 }
