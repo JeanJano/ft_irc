@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/29 12:30:57 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/29 12:41:55 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ class IRCServer {
 		std::map<std::string, Channel>	channels;
 		std::map<std::string, User>		users;
 		std::queue<t_cmd>				cmd;
+		std::string						creation;
 };
 
 

@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/29 14:30:55 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/29 14:35:57 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,10 @@ void	Channel::addUser(User user) {
 	if (members.size() == 1)
 		role[user.getNickName()] = new Operator(user, name); 
 	else
-		role[user.getNickName()] = new Regular(user, name);
-	std::cout << "Joined: " << user.getNickName() << std::endl;
-	// std::cout << "Nick: " << user.getNickName() << " Channel: " << name << std::endl;
+		mode[user.getNickName()] = new Regular(user, name);
 }
 
 void	Channel::removeUser(User &user) {
-	// std::vector<User>::iterator it = std::remove(members.begin(), members.end(), user);
 	members.erase(std::remove(members.begin(), members.end(), user), members.end());
 }
 

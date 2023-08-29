@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 10:58:04 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 11:05:14 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/28 18:15:47 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,4 +18,5 @@ void	reply(int sd, std::string msg)
 	int val = send(sd, msg.c_str(), msg.size(), 0);
 	if (val < 0)
 		std::cout << "Message not complete" << std::endl;
+	std::cout << "Sent: " << msg;
 }
