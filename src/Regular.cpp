@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 14:04:52 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 18:27:18 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/29 12:17:44 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,10 @@ Regular	&Regular::operator=(const Regular &cpy)
 
 Regular::~Regular() {
 	delete sender;
+}
+
+std::string	Regular::getNickName() {
+	return (this->sender->getNickName());
 }
 
 void	Regular::kick(const std::string& kicked, Channel& channel) {

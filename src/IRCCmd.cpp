@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 18:26:53 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/29 12:37:39 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,29 +21,43 @@ void IRCServer::ping(std::string input, int sd)
 void IRCServer::join(std::string input, int sd)
 {
 	std::istringstream iss(input);
+	User	newUser = findUserInstance(sd);
 	std::string name;
 	std::string pass;
 
 	iss >> name >> pass;
 	if (channels.find(name) != channels.end())
 	{
-		std::stringstream ss;
-		ss << channels[name].getTimeStamp();
-		User	newUser = findUserInstance(sd);
 		channels[name].addUser(newUser);
-		std::string msg333 = ":server 333 " + newUser.getNickName() + " " +channels[name].getName() + " " + newUser.getNickName() + "!" + newUser.getUserName() + "@" + newUser.getIp() + " " + ss.str() + "\r\n";
-		if (channels[name].getTopic() != "default")
-		{
-			reply(newUser.getSd(), RPL_TOPIC(newUser.getNickName(), channels[name].getName(), channels[name].getTopic()));
-			reply(newUser.getSd(), msg333);
-		}
-	}
-	else
-	{
+	} else {
 		Channel newChannel(name, pass);
 		channels[name] = newChannel;
-		channels[name].addUser(findUserInstance(sd));
+		channels[name].addUser(newUser);
 	}
+	std::vector<User>	members = channels[name].getMembers();
+	std::map<std::string, Role *> mode = channels[name].getMode();
+	std::string			names;
+	for (size_t i = 0; i < members.size(); i++) {
+		names += mode[members[i].getNickName()]->getNickName();
+		if (i < members.size() - 1)
+			names += " ";
+	}
+	// std::cout << "Names: " << names <<"i"<<std::endl;
+	for (size_t i = 0; i < members.size(); ++i) {
+		// std::cout << "CA PASSE" << std::endl;
+		std::string	joinMsg = ":" + newUser.getNickName() + "!" + newUser.getUserName() + "@" + newUser.getIp() + " JOIN" + " :" + channels[name].getName();
+		reply(members[i].getSd(), joinMsg);
+	}
+	if (channels[name].getTopic() != "default") {
+		std::stringstream ss;
+		ss << channels[name].getTimeStamp();
+		std::string msg333 = ":server 333 " + newUser.getNickName() + " " + channels[name].getName() + " " + newUser.getNickName() + "!" + newUser.getUserName() + "@" + newUser.getIp() + " " + ss.str() + "\r\n";
+		reply(newUser.getSd(), RPL_TOPIC(newUser.getNickName(), channels[name].getName(), channels[name].getTopic()));
+		reply(newUser.getSd(), msg333);
+	} else
+		reply(newUser.getSd(), RPL_NOTOPIC(newUser.getNickName(), channels[name].getName()));
+	reply(sd, RPL_NAMREPLY(newUser.getNickName(), name, names));
+	reply(sd, RPL_ENDOFNAMES(newUser.getNickName(), name));
 }
 
 void IRCServer::privmsg(std::string input, int sd)
