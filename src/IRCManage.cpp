@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCManage.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:29:21 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 18:41:33 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/29 12:41:05 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void IRCServer::handleEvents()
 		nowFd = &i;
 		if (fds[i].revents & POLLIN)
 		{
-			std::string buf = getCompleteMsg(fds[i].fd, &i);
+			std::string buf = getCompleteMsg(fds[i].fd);
 			if (!buf.empty())
 			{
 				parseCmd(buf);
@@ -56,7 +56,7 @@ bool IRCServer::checkNewClient(int sd, User client)
 	return (true);
 }
 
-std::string IRCServer::getCompleteMsg(int sd, size_t *i)
+std::string IRCServer::getCompleteMsg(int sd)
 {
 	char msg[1500];
 	int bytesread;

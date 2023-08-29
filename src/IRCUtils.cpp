@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCUtils.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:30:49 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 14:51:14 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/29 12:30:31 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void IRCServer::treatCmd(int sd)
 }
 
 
-std::vector<User> IRCServer::getChannelMembers(std::string name, std::string sender)
+std::vector<User> IRCServer::getChannelMembers(std::string name)
 {
 	std::map<std::string, Channel>::iterator it = channels.begin();
 	std::vector<User>							empty;
