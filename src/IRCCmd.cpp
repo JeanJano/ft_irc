@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/29 12:30:22 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/29 14:24:42 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,8 @@ void IRCServer::kick(std::string input, int sd)
 		reply(kicker.getSd(), ERR_NOTONCHANNEL(kickedUsr.getNickName(), channelName));
 		return ;
 	}
-	std::map<std::string, Role *> &mode = channels[channelName].getMode();
-	for (std::map<std::string, Role *>::iterator it = mode.begin(); it != mode.end(); it++)
+	std::map<std::string, Role *> &role = channels[channelName].getRole();
+	for (std::map<std::string, Role *>::iterator it = role.begin(); it != role.end(); it++)
 	{
 		if (it->first == kicker.getNickName())
 		{
@@ -138,7 +138,7 @@ void IRCServer::kick(std::string input, int sd)
 			it->second->kick(kicked, channels[channelName]);
 		}
 	}
-	// mode[kicker.getNickName()]->kick(kicked, channels[channelName]);
+	// role[kicker.getNickName()]->kick(kicked, channels[channelName]);
 }
 
 void	IRCServer::topic(std::string input, int sd) {
@@ -157,9 +157,9 @@ void	IRCServer::topic(std::string input, int sd) {
 		reply(sender.getSd(), ERR_NOSUCHNICK(sender.getNickName(), channelName));
 		return ;
 	}
-	std::map<std::string, Role *> mode = channels[channelName].getMode();
+	std::map<std::string, Role *> role = channels[channelName].getRole();
 
-	mode[sender.getNickName()]->topic(topic, channels[channelName]);
+	role[sender.getNickName()]->topic(topic, channels[channelName]);
 }
 
 void	IRCServer::invite(std::string input, int sd)
@@ -181,6 +181,6 @@ void	IRCServer::invite(std::string input, int sd)
 		reply(sender.getSd(), ERR_NOSUCHNICK(sender.getNickName(), channelName));
 		return ;
 	}
-	std::map<std::string, Role *> mode = channels[channelName].getMode();
-	mode[sender.getNickName()]->invite(receiver);
+	std::map<std::string, Role *> role = channels[channelName].getRole();
+	role[sender.getNickName()]->invite(receiver);
 }

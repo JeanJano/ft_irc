@@ -25,7 +25,8 @@ class Channel
 		std::time_t						&getTimeStamp();
 		std::string						&getPass();
 		std::vector<User>				&getMembers();
-		std::map<std::string, Role*>	&getMode();
+		std::map<std::string, Role*>	&getRole();
+		std::map<std::string, bool>		&getMode();
 
 
 	private:
@@ -35,7 +36,8 @@ class Channel
 		std::time_t						timestamp;
 		std::vector<User>				members;
 		std::vector<User>				banList;
-		std::map<std::string, Role*>	mode;
+		std::map<std::string, Role*>	role;
+		std::map<std::string, bool>		mode;
 };
 
 #endif

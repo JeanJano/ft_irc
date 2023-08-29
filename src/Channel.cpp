@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 17:51:07 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/29 14:30:55 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,30 @@ Channel::Channel() : name("default") {
 	pass = "default";
 	topic = "default";
 	timestamp = 0;
+	mode["i"] = false;
+	mode["t"] = false;
+	mode["k"] = false;
+	mode["o"] = false;
+	mode["l"] = false;
 }
 
 Channel::Channel(std::string n, std::string p) : name(n), pass(p) {
 	topic = "default";
 	timestamp = 0;
+	mode["i"] = false;
+	mode["t"] = false;
+	mode["k"] = false;
+	mode["o"] = false;
+	mode["l"] = false;
 }
 
 Channel::Channel(const Channel &cpy) {
 	if (this != &cpy)
-	{
 		*this = cpy;
-	}
 }
 
 Channel::~Channel() {
-	// Free Mode Operators
+	// Free role Operators
 }
 
 Channel	&Channel::operator=(const Channel &cpy) {
@@ -41,6 +49,7 @@ Channel	&Channel::operator=(const Channel &cpy) {
 	timestamp = cpy.timestamp;
 	members = cpy.members;
 	banList = cpy.banList;
+	role = cpy.role;
 	mode = cpy.mode;
 	return (*this);
 }
@@ -48,9 +57,9 @@ Channel	&Channel::operator=(const Channel &cpy) {
 void	Channel::addUser(User user) {
 	members.push_back(user);
 	if (members.size() == 1)
-		mode[user.getNickName()] = new Operator(user, name); 
+		role[user.getNickName()] = new Operator(user, name); 
 	else
-		mode[user.getNickName()] = new Regular(user, name);
+		role[user.getNickName()] = new Regular(user, name);
 	std::cout << "Joined: " << user.getNickName() << std::endl;
 	// std::cout << "Nick: " << user.getNickName() << " Channel: " << name << std::endl;
 }
@@ -88,6 +97,10 @@ std::vector<User> &Channel::getMembers() {
 	return (members);
 }
 
-std::map<std::string, Role*>	&Channel::getMode() {
+std::map<std::string, Role*>	&Channel::getRole() {
+	return (role);
+}
+
+std::map<std::string, bool>	&Channel::getMode() {
 	return (mode);
 }
