@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 13:31:52 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/29 11:15:09 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 IRCServer::IRCServer(char **av)
 {
 	init(av);
-	serverManager(av);
+	serverManager();
 }
 
 IRCServer::~IRCServer() {}
@@ -60,10 +60,13 @@ void IRCServer::init(char **av)
 	}
 }
 
-void IRCServer::serverManager(char **av)
+void IRCServer::serverManager()
 {
-
-	fds.push_back({serverSd, POLLIN, 0});
+	pollfd tmp;
+	tmp.fd = serverSd;
+	tmp.events = POLLIN;
+	tmp.revents = 0;
+	fds.push_back(tmp);
 
 	while (true)
 	{
@@ -86,6 +89,10 @@ bool IRCServer::connectClient()
 {
 	sockaddr_in newSockAddress;
 	socklen_t newSockAddressSize = sizeof(newSockAddress);
+	pollfd tmp;
+	tmp.fd = serverSd;
+	tmp.events = POLLIN;
+	tmp.revents = 0;
 
 	if (fds[0].revents & POLLIN)
 	{
@@ -96,13 +103,13 @@ bool IRCServer::connectClient()
 			return false;
 		}
 		// welcome message to client
-		std::string input(getCompleteMsg(newSd, NULL));
+		std::string input(getCompleteMsg(newSd));
 		User usr(newSd);
 		usr.parseInput(input);
 		if (checkNewClient(newSd, usr))
 		{
 			newConnexionMsg(newSd, newSockAddress, usr);
-			fds.push_back({newSd, POLLIN | POLLOUT, 0});
+			fds.push_back(tmp);
 		}
 		else
 		{

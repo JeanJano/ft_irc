@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 13:32:25 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/29 11:16:12 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@ class IRCServer {
 		Channel	*getChannel();
 		
 		void		init(char **av);
-		void		serverManager(char **av);
+		void		serverManager();
 		bool		connectClient();
 		void		handleEvents();
 		void		newConnexionMsg(int sd, sockaddr_in addr, User &usr);
 		bool		checkNewClient(int sd, User client);
-		std::string	getCompleteMsg(int sd, size_t *i);
+		std::string	getCompleteMsg(int sd);
 
 		// COMMANDS
 		void		ping(std::string, int);
@@ -56,7 +56,7 @@ class IRCServer {
 		User 		findUserInstance(std::string nick);
 		std::string	findUserNickName(int sd);
 		bool		nickIsUsed(std::string nickname);
-		std::vector<User>	getChannelMembers(std::string name, std::string sender);
+		std::vector<User>	getChannelMembers(std::string name);
 		std::vector<User>	getPrivateMember(std::string name);
 		bool				userInChannel(std::vector<User> &members, std::string nick);
 

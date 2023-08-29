@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCCmd.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/28 17:35:27 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/29 11:16:36 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void IRCServer::privmsg(std::string input, int sd)
 	userMsg.resize(userMsg.size() - 1);
 	size_t pos = name.find_first_of("+?#");
 	if (pos == 0)
-		members = getChannelMembers(name, sender.getNickName());
+		members = getChannelMembers(name);
 	else
 		members = getPrivateMember(name);
 		
@@ -76,7 +76,7 @@ void IRCServer::privmsg(std::string input, int sd)
 		reply(sender.getSd(), ERR_NOTONCHANNEL(sender.getNickName(), name));
 		return ;
 	}
-	std::vector<User>::iterator it = members.erase(std::remove(members.begin(), members.end(), sender), members.end());
+	// std::vector<User>::iterator it = members.erase(std::remove(members.begin(), members.end(), sender), members.end());
 	if (members.empty())
 	{
 		std::cout << "QUT" << std::endl;
@@ -89,6 +89,7 @@ void IRCServer::privmsg(std::string input, int sd)
 
 void IRCServer::quit(std::string input, int sd)
 {
+	(void)input;
 	User quit = findUserInstance(sd);
 
 	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); it++)

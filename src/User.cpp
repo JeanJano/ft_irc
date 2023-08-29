@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/25 14:55:46 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/29 11:22:24 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,6 @@ int	User::getSd() const {
 std::string	User::getIp() const {
 	return (ip);
 }
-
-void	User::setStatus(bool status) {}
 
 void	User::setIp(std::string ip) {
 	this->ip = ip;
