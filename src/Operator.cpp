@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Operator.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 14:04:36 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/29 11:37:22 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/29 17:41:12 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ Operator::~Operator() {
 
 std::string	Operator::getNickName() {
 	return ("@" + this->sender->getNickName());
+}
+
+int	Operator::getSd() {
+	return (this->sender->getSd());
 }
 
 void	Operator::kick(const std::string& kicked, Channel& channel) {

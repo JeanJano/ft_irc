@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/29 12:41:55 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/29 15:33:56 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,10 @@ class IRCServer {
 		void		privmsg(std::string, int);
 		void		quit(std::string, int);
 		void		kick(std::string, int);
-		void		topic(std::string input, int sd);
-		void		invite(std::string input, int sd);
+		void		topic(std::string, int);
+		void		invite(std::string, int);
+		void		modeManager(std::string, int);
+
 		// errors
 		
 		//UTILS

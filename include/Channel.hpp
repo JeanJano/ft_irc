@@ -15,10 +15,14 @@ class Channel
 		~Channel();
 		Channel& operator=(const Channel &cpy);
 
+		// setters
+
 		void	addUser(User user);
 		void	removeUser(User &user);
 		void	setTopic(std::string newTopic);
 		void	setTimeStamp(std::time_t newTimeStamp);
+
+		// getters
 
 		std::string						&getName();
 		std::string						&getTopic();
@@ -26,8 +30,18 @@ class Channel
 		std::string						&getPass();
 		std::vector<User>				&getMembers();
 		std::map<std::string, Role*>	&getRole();
-		std::map<std::string, bool>		&getMode();
+		std::map<char, bool>			&getMode();
 
+		// mode
+		void	changeStatut(char mod, char operand);
+		void	modeManager(std::string, User&);
+		void	inviteOnly(char, char, std::string, std::string, User&);
+		void	channelKey(char, char, std::string, std::string, User&);
+		void	userLimit(char, char, std::string, std::string, User&);
+		void	operatorPriv(char, char, std::string, std::string, User&);
+		void	topicRestr(char, char, std::string, std::string, User&);
+
+		bool	isOperator(Role* role);
 
 	private:
 		std::string						name;
@@ -37,7 +51,7 @@ class Channel
 		std::vector<User>				members;
 		std::vector<User>				banList;
 		std::map<std::string, Role*>	role;
-		std::map<std::string, bool>		mode;
+		std::map<char, bool>			mode;
 };
 
 #endif

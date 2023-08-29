@@ -6,11 +6,12 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/29 14:36:52 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/29 18:33:55 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IRCServer.hpp"
+#include "../include/Channel.hpp"
 
 void IRCServer::ping(std::string input, int sd)
 {
@@ -26,25 +27,26 @@ void IRCServer::join(std::string input, int sd)
 	std::string pass;
 
 	iss >> name >> pass;
-	if (channels.find(name) != channels.end())
-	{
-		channels[name].addUser(newUser);
+	if (channels.find(name) != channels.end()) {
+		if (channels[name].getMode()['i'] == true) {
+			reply(sd, ERR_INVITONLYCHAN(newUser.getNickName(), name));
+			return ;
+		} else
+			channels[name].addUser(newUser);
 	} else {
 		Channel newChannel(name, pass);
 		channels[name] = newChannel;
 		channels[name].addUser(newUser);
 	}
 	std::vector<User>	members = channels[name].getMembers();
-	std::map<std::string, Role *> mode = channels[name].getRole();
+	std::map<std::string, Role *> role = channels[name].getRole();
 	std::string			names;
 	for (size_t i = 0; i < members.size(); i++) {
-		names += mode[members[i].getNickName()]->getNickName();
+		names += role[members[i].getNickName()]->getNickName();
 		if (i < members.size() - 1)
 			names += " ";
 	}
-	// std::cout << "Names: " << names <<"i"<<std::endl;
 	for (size_t i = 0; i < members.size(); ++i) {
-		// std::cout << "CA PASSE" << std::endl;
 		std::string	joinMsg = ":" + newUser.getNickName() + "!" + newUser.getUserName() + "@" + newUser.getIp() + " JOIN" + " :" + channels[name].getName();
 		reply(members[i].getSd(), joinMsg);
 	}
@@ -186,4 +188,22 @@ void	IRCServer::invite(std::string input, int sd)
 	}
 	std::map<std::string, Role *> role = channels[channelName].getRole();
 	role[sender.getNickName()]->invite(receiver);
+}
+
+void	IRCServer::modeManager(std::string input, int sd) {
+	std::istringstream iss(input);
+	std::string channelName;
+	iss >> channelName;
+	if (channelName == "pong" || channelName == "ping")
+		return ;
+	std::cout << "channel Name: " << channelName << std::endl;
+
+	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
+		if (it->first == channelName) {
+			it->second.modeManager(input, findUserInstance(sd));
+			return ;
+		}
+	}
+
+	std::cout << "CHANNEL DOESNT EXIST" << std::endl;
 }

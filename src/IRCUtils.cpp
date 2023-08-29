@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:30:49 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/29 12:30:31 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/29 15:33:18 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ void IRCServer::treatCmd(int sd)
 	t_cmd tmp = cmd.front();
 	cmd.pop();
 
-	std::string cmdArr[7] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK", "TOPIC", "INVITE"};
-	functionPtr functPtr[7] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick, &IRCServer::topic, &IRCServer::invite};
+	std::string cmdArr[8] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK", "TOPIC", "INVITE", "MODE"};
+	functionPtr functPtr[8] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick, &IRCServer::topic, &IRCServer::invite, &IRCServer::modeManager};
 
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 8; i++)
 	{
 		if (tmp.typeCmd == cmdArr[i])
 			(this->*functPtr[i])(tmp.text, sd);
