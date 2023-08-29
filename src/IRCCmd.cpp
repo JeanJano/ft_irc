@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/29 11:16:36 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/29 12:30:22 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void IRCServer::privmsg(std::string input, int sd)
 		reply(sender.getSd(), ERR_NOTONCHANNEL(sender.getNickName(), name));
 		return ;
 	}
-	// std::vector<User>::iterator it = members.erase(std::remove(members.begin(), members.end(), sender), members.end());
+	members.erase(std::remove(members.begin(), members.end(), sender), members.end());
 	if (members.empty())
 	{
 		std::cout << "QUT" << std::endl;

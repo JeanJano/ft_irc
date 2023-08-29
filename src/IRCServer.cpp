@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/29 11:15:09 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/29 12:30:08 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,7 @@ bool IRCServer::connectClient()
 {
 	sockaddr_in newSockAddress;
 	socklen_t newSockAddressSize = sizeof(newSockAddress);
-	pollfd tmp;
-	tmp.fd = serverSd;
-	tmp.events = POLLIN;
-	tmp.revents = 0;
+	pollfd	tmp;
 
 	if (fds[0].revents & POLLIN)
 	{
@@ -109,6 +106,9 @@ bool IRCServer::connectClient()
 		if (checkNewClient(newSd, usr))
 		{
 			newConnexionMsg(newSd, newSockAddress, usr);
+			tmp.fd = newSd;
+			tmp.events = POLLIN;
+			tmp.revents = 0;
 			fds.push_back(tmp);
 		}
 		else
