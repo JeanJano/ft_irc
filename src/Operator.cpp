@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Operator.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 14:04:36 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/29 11:37:22 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/29 14:58:21 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void	Operator::kick(const std::string& kicked, Channel& channel) {
 		
 	for (size_t i = 0; i < channelMembers.size(); i++)
 		reply(channelMembers[i].getSd(), RPL_KICK(sender->getNickName() + "!"+ sender->getUserName() +"@" + sender->getIp(), channelName, kicked, "No reason specified"));
-
     for (size_t i = 0; i < channelMembers.size(); i++) {
         if (channelMembers[i].getNickName() == kicked)
 			channel.removeUser(channelMembers[i]);
@@ -56,6 +55,7 @@ void	Operator::topic(const std::string& topic, Channel& channel) {
 	std::time_t now;
 	std::time(&now);
 	channel.setTimeStamp(now);
+	channel.setTopicSetter(*sender);
 	std::vector<User> &channelMembers = channel.getMembers();
 
 	std::string	topicMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " TOPIC " + channelName + " :" + topic;

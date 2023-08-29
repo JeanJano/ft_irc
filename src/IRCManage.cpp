@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCManage.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:29:21 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/29 12:41:05 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/29 15:36:05 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void IRCServer::newConnexionMsg(int sd, sockaddr_in addr, User &usr)
 	reply(sd, RPL_WELCOME(usr.getNickName(), usr.getNickName()));
 	reply(sd, RPL_YOURHOST(usr.getNickName(), "server", "0.1"));
 	reply(sd, RPL_CREATED(usr.getNickName(), creation));
-	// reply(sd, )
 }
 
 bool IRCServer::checkNewClient(int sd, User client)

@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/28 18:26:16 by smessal          ###   ########.fr       */
+/*   Updated: 2023/08/29 15:17:51 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,13 @@ Channel::Channel() : name("default") {
 	pass = "default";
 	topic = "default";
 	timestamp = 0;
+	topicSetter = NULL;
 }
 
 Channel::Channel(std::string n, std::string p) : name(n), pass(p) {
 	topic = "default";
 	timestamp = 0;
+	topicSetter = NULL;
 }
 
 Channel::Channel(const Channel &cpy) {
@@ -32,6 +34,7 @@ Channel::Channel(const Channel &cpy) {
 
 Channel::~Channel() {
 	// Free Mode Operators
+	delete topicSetter;
 }
 
 Channel	&Channel::operator=(const Channel &cpy) {
@@ -42,6 +45,9 @@ Channel	&Channel::operator=(const Channel &cpy) {
 	members = cpy.members;
 	banList = cpy.banList;
 	mode = cpy.mode;
+	topicSetter = NULL;
+	if (cpy.topicSetter)
+		topicSetter = new User(*cpy.topicSetter);
 	return (*this);
 }
 
@@ -87,4 +93,14 @@ std::vector<User> &Channel::getMembers() {
 
 std::map<std::string, Role*>	&Channel::getMode() {
 	return (mode);
+}
+
+User	*Channel::getTopicSetter() {
+	return (topicSetter);
+}
+
+void	Channel::setTopicSetter(User topicSet) {
+	if (topicSetter)
+		delete topicSetter;
+	topicSetter = new User(topicSet);	
 }

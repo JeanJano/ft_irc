@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCCmd.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/29 12:42:18 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/29 15:38:57 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ void IRCServer::join(std::string input, int sd)
 	if (channels[name].getTopic() != "default") {
 		std::stringstream ss;
 		ss << channels[name].getTimeStamp();
-		std::string msg333 = ":server 333 " + newUser.getNickName() + " " + channels[name].getName() + " " + newUser.getNickName() + "!" + newUser.getUserName() + "@" + newUser.getIp() + " " + ss.str() + "\r\n";
+		User	*topicSetter = channels[name].getTopicSetter();
+		std::string msg333 = ":server 333 " + newUser.getNickName() + " " + channels[name].getName() + " " + topicSetter->getNickName() + "!" + topicSetter->getUserName() + "@" + topicSetter->getIp() + " " + ss.str() + "\r\n";
 		reply(newUser.getSd(), RPL_TOPIC(newUser.getNickName(), channels[name].getName(), channels[name].getTopic()));
 		reply(newUser.getSd(), msg333);
 	} else
@@ -85,12 +86,12 @@ void IRCServer::privmsg(std::string input, int sd)
 		reply(sender.getSd(), ERR_NOTONCHANNEL(sender.getNickName(), name));
 		return ;
 	}
-	members.erase(std::remove(members.begin(), members.end(), sender), members.end());
 	if (members.empty())
 	{
 		reply(sender.getSd(), ERR_NOSUCHNICK(sender.getNickName(), name));
 		return ;
 	}
+	members.erase(std::remove(members.begin(), members.end(), sender), members.end());
 	for (size_t i = 0; i < members.size(); i++)
 		reply(members[i].getSd(), RPL_PRIVMSG(sender.getNickName() + "!" + sender.getUserName() + members[i].getIp(), name, userMsg));
 }
@@ -133,7 +134,7 @@ void IRCServer::kick(std::string input, int sd)
 	}
 	if (!userInChannel(channels[channelName].getMembers(), kickedUsr.getNickName()))
 	{
-		reply(kicker.getSd(), ERR_NOTONCHANNEL(kickedUsr.getNickName(), channelName));
+		reply(kicker.getSd(), ERR_USERNOTINCHANNEL(kicker.getNickName(), kickedUsr.getNickName(),channelName));
 		return ;
 	}
 	std::map<std::string, Role *> &mode = channels[channelName].getMode();

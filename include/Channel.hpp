@@ -26,12 +26,15 @@ class Channel
 		std::string						&getPass();
 		std::vector<User>				&getMembers();
 		std::map<std::string, Role*>	&getMode();
+		User							*getTopicSetter();
+		void							setTopicSetter(User topicSet);
 
 
 	private:
 		std::string						name;
 		std::string						pass;
 		std::string						topic;
+		User							*topicSetter;
 		std::time_t						timestamp;
 		std::vector<User>				members;
 		std::vector<User>				banList;
