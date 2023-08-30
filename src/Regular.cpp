@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 14:04:52 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/29 17:59:14 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/30 17:59:58 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,21 @@ void	Regular::kick(const std::string& kicked, Channel& channel) {
 }
 
 void	Regular::topic(const std::string& topic, Channel& channel) {
-	(void)topic;
-	(void)channel;
-	reply(sender->getSd(), ERR_CHANOPRIVSNEEDED(sender->getNickName(), channelName));
+	std::map<char, bool> mode = channel.getMode();
+
+	if (mode['t'] == false) {
+		channel.setTopic(topic);
+		std::time_t now;
+		std::time(&now);
+		channel.setTimeStamp(now);
+		std::vector<User> &channelMembers = channel.getMembers();
+
+		std::string	topicMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " TOPIC " + channelName + " :" + topic;
+		for (size_t i = 0; i < channelMembers.size(); i++)
+			reply(channelMembers[i].getSd(), topicMsg);
+	} else {
+		reply(sender->getSd(), ERR_CHANOPRIVSNEEDED(sender->getNickName(), channelName));
+	}
 }
 
 void	Regular::invite(User receiver) {

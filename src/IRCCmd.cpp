@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/30 15:43:07 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/30 19:02:05 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,10 +199,10 @@ void	IRCServer::invite(std::string input, int sd)
 void	IRCServer::modeManager(std::string input, int sd) {
 	std::istringstream iss(input);
 	std::string channelName;
-	iss >> channelName;
-	if (channelName == "pong" || channelName == "ping")
+	std::string param;
+	iss >> channelName >> param;
+	if (param.empty())
 		return ;
-	std::cout << "channel Name: " << channelName << std::endl;
 
 	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
 		if (it->first == channelName) {
@@ -210,6 +210,4 @@ void	IRCServer::modeManager(std::string input, int sd) {
 			return ;
 		}
 	}
-
-	std::cout << "CHANNEL DOESNT EXIST" << std::endl;
 }

@@ -34,7 +34,7 @@ class Channel
 		int								&getLimit();
 
 		// mode
-		void	changeStatut(char mod, char operand);
+		void	changeStatus(char mod, char operand);
 		void	modeManager(std::string, User&);
 		void	inviteOnly(char, char, std::string, std::string, User&);
 		void	channelKey(char, char, std::string, std::string, User&);
@@ -43,6 +43,7 @@ class Channel
 		void	topicRestr(char, char, std::string, std::string, User&);
 
 		bool	isOperator(Role* role);
+		void	changeRole(User& user, char operand, std::string channelName);
 
 	private:
 		std::string						name;

@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/30 15:38:42 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/30 18:53:35 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ Channel::Channel() : name("default") {
 	mode['k'] = false;
 	mode['l'] = false;
 	mode['o'] = false;
-	mode['t'] = false;
+	mode['t'] = true;
 }
 
 Channel::Channel(std::string n, std::string p) : name(n), pass(p) {
@@ -32,7 +32,7 @@ Channel::Channel(std::string n, std::string p) : name(n), pass(p) {
 	mode['k'] = false;
 	mode['l'] = false;
 	mode['o'] = false;
-	mode['t'] = false;
+	mode['t'] = true;
 }
 
 Channel::Channel(const Channel &cpy) {
@@ -54,6 +54,7 @@ Channel	&Channel::operator=(const Channel &cpy) {
 	banList = cpy.banList;
 	role = cpy.role;
 	limit = cpy.limit;
+	mode = cpy.mode;
 	return (*this);
 }
 
@@ -117,7 +118,11 @@ void	Channel::modeManager(std::string input, User &sender) {
 	std::string			param;
 	
 	iss >> channelName >> operand >> mode >> param;
-	
+	std::cout << "TEST: " << isOperator(role[sender.getNickName()]) << std::endl;
+	if (isOperator(role[sender.getNickName()]) == false) {
+		reply(sender.getSd(), ERR_CHANOPRIVSNEEDED(sender.getNickName(), channelName));
+		return ;
+	}
 	typedef void	(Channel::*functionPtr)(char, char, std::string, std::string, User&);
 
 	char			modeArr[5] = {'i', 'k', 'l', 'o', 't'};
@@ -128,7 +133,7 @@ void	Channel::modeManager(std::string input, User &sender) {
 	}
 }
 
-void	Channel::changeStatut(char mod, char operand) {
+void	Channel::changeStatus(char mod, char operand) {
 	if (operand == '+')
 		mode[mod] = true;
 	else if (operand == '-')
@@ -142,7 +147,7 @@ void	Channel::inviteOnly(char operand, char mod, std::string channelName, std::s
 	for (size_t i = 0; i < members.size(); i++) {
 		reply(members[i].getSd(), msg);
 	}
-	changeStatut(mod, operand);
+	changeStatus(mod, operand);
 }
 
 void	Channel::channelKey(char operand, char mod, std::string channelName, std::string param, User& sender) {
@@ -152,7 +157,7 @@ void	Channel::channelKey(char operand, char mod, std::string channelName, std::s
 	for (size_t i = 0; i < members.size(); i++) {
 		reply(members[i].getSd(), msg);
 	}
-	changeStatut(mod, operand);
+	changeStatus(mod, operand);
 	if (operand == '+')
 		pass = param;
 	else if (operand == '-')
@@ -166,7 +171,7 @@ void	Channel::userLimit(char operand, char mod, std::string channelName, std::st
 	for (size_t i = 0; i < members.size(); i++) {
 		reply(members[i].getSd(), msg);
 	}
-	changeStatut(mod, operand);
+	changeStatus(mod, operand);
 	if (operand == '+')
 		limit = atoi(param.c_str());
 	else if (operand == '-')
@@ -174,15 +179,45 @@ void	Channel::userLimit(char operand, char mod, std::string channelName, std::st
 }
 
 void	Channel::operatorPriv(char operand, char mod, std::string channelName,  std::string param, User& sender) {
-	
+	(void)mod;
+	User	usr;
+	for (size_t i = 0; i < members.size(); i++) {
+		if (members[i].getNickName() == param)
+			usr = members[i];
+	}
+	changeRole(usr, operand, channelName);
+	std::string msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " MODE " + channelName + " " + operand + mod + " " + param;
+	for (size_t i = 0; i < members.size(); i++)
+		reply(members[i].getSd(), msg);
 }
 
 void	Channel::topicRestr(char operand, char mod, std::string channelName,  std::string param, User& sender) {
-	
+	changeStatus(mod, operand);
+	std::string msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " MODE " + channelName + " " + operand + mod;
+	for (size_t i = 0; i < members.size(); i++)
+		reply(members[i].getSd(), msg);
 }
 
 bool	Channel::isOperator(Role* role) {
 	if (dynamic_cast<Operator*>(role))
 		return (true);
 	return (false);
+}
+
+void	Channel::changeRole(User &user, char operand, std::string channelName) {
+	if (operand == '+') {
+		Operator *newOp = new Operator(user, channelName);
+		std::map<std::string, Role*>::iterator it = role.find(user.getNickName());
+		if (it != role.end()) {
+			delete it->second;
+			it->second = newOp;
+		}
+	} else if (operand == '-') {
+		Regular *newReg = new Regular(user, channelName);
+		std::map<std::string, Role*>::iterator it = role.find(user.getNickName());
+		if (it != role.end()) {
+			delete it->second;
+			it->second = newReg;
+		}
+	}
 }
