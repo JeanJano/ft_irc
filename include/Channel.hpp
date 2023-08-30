@@ -31,6 +31,7 @@ class Channel
 		std::vector<User>				&getMembers();
 		std::map<std::string, Role*>	&getRole();
 		std::map<char, bool>			&getMode();
+		int								&getLimit();
 
 		// mode
 		void	changeStatut(char mod, char operand);
@@ -52,6 +53,7 @@ class Channel
 		std::vector<User>				banList;
 		std::map<std::string, Role*>	role;
 		std::map<char, bool>			mode;
+		int								limit;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/30 15:12:32 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/30 15:38:42 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ Channel::Channel() : name("default") {
 	pass = "default";
 	topic = "default";
 	timestamp = 0;
+	limit = -1;
 	mode['i'] = false;
 	mode['k'] = false;
 	mode['l'] = false;
@@ -26,6 +27,7 @@ Channel::Channel() : name("default") {
 Channel::Channel(std::string n, std::string p) : name(n), pass(p) {
 	topic = "default";
 	timestamp = 0;
+	limit = -1;
 	mode['i'] = false;
 	mode['k'] = false;
 	mode['l'] = false;
@@ -51,6 +53,7 @@ Channel	&Channel::operator=(const Channel &cpy) {
 	members = cpy.members;
 	banList = cpy.banList;
 	role = cpy.role;
+	limit = cpy.limit;
 	return (*this);
 }
 
@@ -102,6 +105,10 @@ std::map<char, bool>	&Channel::getMode() {
 	return (mode);
 }
 
+int	&Channel::getLimit() {
+	return (limit);
+}
+
 void	Channel::modeManager(std::string input, User &sender) {
 	std::istringstream	iss(input);
 	std::string			channelName;
@@ -140,6 +147,7 @@ void	Channel::inviteOnly(char operand, char mod, std::string channelName, std::s
 
 void	Channel::channelKey(char operand, char mod, std::string channelName, std::string param, User& sender) {
 	std::string	msg;
+
 	msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " MODE " + channelName + " " + operand + mod + " " + param;
 	for (size_t i = 0; i < members.size(); i++) {
 		reply(members[i].getSd(), msg);
@@ -152,7 +160,17 @@ void	Channel::channelKey(char operand, char mod, std::string channelName, std::s
 }
 
 void	Channel::userLimit(char operand, char mod, std::string channelName, std::string param, User& sender) {
-	
+	std::string	msg;
+
+	msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " MODE " + channelName + " " + operand + mod + " " + param;
+	for (size_t i = 0; i < members.size(); i++) {
+		reply(members[i].getSd(), msg);
+	}
+	changeStatut(mod, operand);
+	if (operand == '+')
+		limit = atoi(param.c_str());
+	else if (operand == '-')
+		limit = -1;
 }
 
 void	Channel::operatorPriv(char operand, char mod, std::string channelName,  std::string param, User& sender) {
