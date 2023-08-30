@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/29 18:36:46 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/30 15:12:32 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,16 @@ void	Channel::inviteOnly(char operand, char mod, std::string channelName, std::s
 }
 
 void	Channel::channelKey(char operand, char mod, std::string channelName, std::string param, User& sender) {
-	
+	std::string	msg;
+	msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " MODE " + channelName + " " + operand + mod + " " + param;
+	for (size_t i = 0; i < members.size(); i++) {
+		reply(members[i].getSd(), msg);
+	}
+	changeStatut(mod, operand);
+	if (operand == '+')
+		pass = param;
+	else if (operand == '-')
+		pass = "";
 }
 
 void	Channel::userLimit(char operand, char mod, std::string channelName, std::string param, User& sender) {
