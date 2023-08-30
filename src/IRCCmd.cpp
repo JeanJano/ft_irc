@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/30 19:02:05 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/30 19:06:04 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,19 +88,19 @@ void IRCServer::privmsg(std::string input, int sd)
 		members = getPrivateMember(name);
 		
 	// Check errors, user unknown, channel unknown, user not in channel
-	if (pos == 0 && !userInChannel(members, sender.getNickName()))
-	{
+	if (pos == 0 && !userInChannel(members, sender.getNickName())) {
 		reply(sender.getSd(), ERR_NOTONCHANNEL(sender.getNickName(), name));
 		return ;
 	}
-	members.erase(std::remove(members.begin(), members.end(), sender), members.end());
-	if (members.empty())
-	{
+	// members.erase(std::remove(members.begin(), members.end(), sender), members.end());
+	if (members.empty()) {
 		reply(sender.getSd(), ERR_NOSUCHNICK(sender.getNickName(), name));
 		return ;
 	}
-	for (size_t i = 0; i < members.size(); i++)
-		reply(members[i].getSd(), RPL_PRIVMSG(sender.getNickName() + "!" + sender.getUserName() + members[i].getIp(), name, userMsg));
+	for (size_t i = 0; i < members.size(); i++) {
+		if (members[i].getNickName() != sender.getNickName())
+			reply(members[i].getSd(), RPL_PRIVMSG(sender.getNickName() + "!" + sender.getUserName() + members[i].getIp(), name, userMsg));
+	}
 }
 
 void IRCServer::quit(std::string input, int sd)
