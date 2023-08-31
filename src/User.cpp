@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/29 12:30:43 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/31 19:58:59 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ User	&User::operator=(const User &cpy) {
 		this->passWord = cpy.passWord;
 		this->sd = cpy.sd;
 		this->ip = cpy.ip;
+		this->invit = cpy.invit;
 	}
 	return (*this);
 }
@@ -73,6 +74,10 @@ int	User::getSd() const {
 
 std::string	User::getIp() const {
 	return (ip);
+}
+
+std::vector<std::string> User::getInvit() const {
+	return (invit);
 }
 
 void	User::setIp(std::string ip) {
@@ -108,6 +113,29 @@ void	User::printInfos() {
 	std::cout << "Password:	" << passWord << std::endl;
 	std::cout << "SocketDe:	" << sd << std::endl;
 	std::cout << std::endl;
+}
+
+void	User::addInvit(std::string channelName) {
+	invit.push_back(channelName);
+}
+
+void	User::removeInvit(std::string channelName) {
+	int i = 0;
+	for (; i < invit.size(); i++) {
+		if (invit[i] == channelName) {
+			std::cout << "HEHO: " << invit[i] << std::endl;	
+			break ;
+		}
+	}
+	invit.erase(invit.begin() + i);
+}
+
+bool	User::isInvit(std::string channelName) {
+	for (size_t i = 0; i < invit.size(); i++) {
+		if (invit[i] == channelName)
+			return (true);
+	}
+	return (false);
 }
 
 User::~User() {}

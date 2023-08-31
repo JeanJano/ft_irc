@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 14:04:36 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/30 18:40:59 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/31 19:16:41 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,11 @@ void	Operator::topic(const std::string& topic, Channel& channel) {
 		reply(channelMembers[i].getSd(), topicMsg);
 }
 
-void	Operator::invite(User receiver)
+void	Operator::invite(User &receiver, Channel& channel)
 {
+	reply(sender->getSd(), RPL_INVITING(sender->getNickName(), receiver.getNickName(), channel.getName()));
+
 	std::string	inviteMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " INVITE " + receiver.getNickName() + " :" + channelName;
 	reply(receiver.getSd(), inviteMsg);
+	receiver.addInvit(channel.getName());
 }

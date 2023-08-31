@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 14:04:52 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/30 17:59:58 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/31 19:17:12 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	Regular::topic(const std::string& topic, Channel& channel) {
 	}
 }
 
-void	Regular::invite(User receiver) {
+void	Regular::invite(User &receiver, Channel& channel) {
 	(void)receiver;
 	reply(sender->getSd(), ERR_CHANOPRIVSNEEDED(sender->getNickName(), channelName));
 }

@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/31 15:13:19 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/31 19:40:47 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,15 @@ void IRCServer::join(std::string input, int sd)
 	std::string pass;
 
 	iss >> name >> pass;
+	std::cout << "new User Name: " << newUser.getNickName() << std::endl;
 	if (channels.find(name) != channels.end()) {
-		if (channels[name].getMode()['i'] == true) {
+		if (channels[name].getMode()['i'] && newUser.isInvit(name) == false) {
 			reply(sd, ERR_INVITONLYCHAN(newUser.getNickName(), name));
 			return ;
-		} else if (channels[name].getPass() != pass) {
+		} else if (channels[name].getPass() != pass && newUser.isInvit(name) == false) {
 			reply(sd, ERR_BADCHANNELKEY(newUser.getNickName(), name));
 			return ;
-		} else if (channels[name].getMembers().size() >= channels[name].getLimit()) {
+		} else if (channels[name].getMembers().size() >= channels[name].getLimit() && newUser.isInvit(name) == false) {
 			reply(sd, ERR_CHANNELISFULL(newUser.getNickName(), name));
 			return ;
 		} else
@@ -53,7 +54,7 @@ void IRCServer::join(std::string input, int sd)
 			names += " ";
 	}
 	for (size_t i = 0; i < members.size(); ++i) {
-		std::string	joinMsg = ":" + newUser.getNickName() + "!" + newUser.getUserName() + "@" + newUser.getIp() + " JOIN" + " :" + channels[name].getName();
+		std::string	joinMsg = ":" + newUser.getNickName() + "!" + newUser.getUserName() + "@" + newUser.getIp() + " JOIN :" + channels[name].getName();
 		reply(members[i].getSd(), joinMsg);
 	}
 	if (channels[name].getTopic() != "default") {
@@ -66,6 +67,8 @@ void IRCServer::join(std::string input, int sd)
 		reply(newUser.getSd(), RPL_NOTOPIC(newUser.getNickName(), channels[name].getName()));
 	reply(sd, RPL_NAMREPLY(newUser.getNickName(), name, names));
 	reply(sd, RPL_ENDOFNAMES(newUser.getNickName(), name));
+	if (newUser.isInvit(name) == true)
+		newUser.removeInvit(name);
 }
 
 void IRCServer::privmsg(std::string input, int sd)
@@ -181,19 +184,15 @@ void	IRCServer::invite(std::string input, int sd)
 	std::string			channelName;
 
 	iss >> nick >> channelName;
-	// Need to Check existence of channel
 	std::map<std::string, Channel>::iterator it = channels.find(channelName);
 	User sender = findUserInstance(sd);
-	User receiver = findUserInstance(nick);
-	// Pourquoi ca marche si ca rentre dans le premiere condition mais pas dans la deuxieme
-	// LE MESSAGE EST LE MEEEEEEME
-	if (it == channels.end() || receiver.getNickName() == "default")
-	{
+	User &receiver = findUserInstance(nick);
+	if (it == channels.end() || receiver.getNickName() == "default") {
 		reply(sender.getSd(), ERR_NOSUCHNICK(sender.getNickName(), channelName));
 		return ;
 	}
 	std::map<std::string, Role *> role = channels[channelName].getRole();
-	role[sender.getNickName()]->invite(receiver);
+	role[sender.getNickName()]->invite(receiver, channels[channelName]);
 }
 
 void	IRCServer::modeManager(std::string input, int sd) {
@@ -220,8 +219,6 @@ void	IRCServer::part(std::string input, int sd) {
 	iss >> channelName;
 	getline(iss, partMsg);
 	partMsg.resize(partMsg.size() - 1);
-	std::cout << "ChannelName: " << channelName << std::endl;
-	std::cout << "message: " << partMsg << std::endl;
 
 	User	sender = findUserInstance(sd);
 	if (!userInChannel(channels[channelName].getMembers(), sender.getNickName())) {

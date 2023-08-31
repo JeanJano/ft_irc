@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:53 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/30 18:20:27 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/31 19:01:22 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Role {
 		virtual ~Role();
 
 		virtual	void	kick(const std::string& kicked, Channel& channel) = 0;
-		virtual	void	invite(User receiver) = 0;
+		virtual	void	invite(User &receiver, Channel& channel) = 0;
 		virtual	void	topic(const std::string& topic, Channel& channel) = 0;
 		// virtual	void	mode(std::string token) = 0;
 		Role			&operator=(const Role &cpy);
@@ -42,7 +42,7 @@ class Operator : public Role {
 		Operator();
 		Operator	&operator=(const Operator &cpy);
 		void	kick(const std::string& kicked, Channel& channel);
-		void	invite(User receiver);
+		void	invite(User &receiver, Channel& channel);
 		void	topic(const std::string& topic, Channel& channel);
 		// void	mode(std::string token);
 		std::string	getNickName();
@@ -57,7 +57,7 @@ class Regular : public Role {
 		Regular	&operator=(const Regular &cpy);
 
 		void	kick(const std::string& kicked, Channel& channel);
-		void	invite(User receiver);
+		void	invite(User &receiver, Channel& channel);
 		void	topic(const std::string& topic, Channel& channel);
 		// void	mode(std::string token);
 		std::string	getNickName();
