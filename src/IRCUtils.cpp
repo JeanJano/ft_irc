@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:30:49 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/29 15:33:18 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/31 13:32:19 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ void IRCServer::treatCmd(int sd)
 	t_cmd tmp = cmd.front();
 	cmd.pop();
 
-	std::string cmdArr[8] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK", "TOPIC", "INVITE", "MODE"};
-	functionPtr functPtr[8] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick, &IRCServer::topic, &IRCServer::invite, &IRCServer::modeManager};
+	std::string cmdArr[9] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK", "TOPIC", "INVITE", "MODE", "PART"};
+	functionPtr functPtr[9] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick, &IRCServer::topic, &IRCServer::invite, &IRCServer::modeManager, &IRCServer::part};
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		if (tmp.typeCmd == cmdArr[i])
 			(this->*functPtr[i])(tmp.text, sd);

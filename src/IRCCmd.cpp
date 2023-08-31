@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/30 19:06:04 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/31 15:13:19 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,4 +210,28 @@ void	IRCServer::modeManager(std::string input, int sd) {
 			return ;
 		}
 	}
+}
+
+void	IRCServer::part(std::string input, int sd) {
+	std::istringstream	iss(input);
+	std::string			channelName;
+	std::string			partMsg;
+
+	iss >> channelName;
+	getline(iss, partMsg);
+	partMsg.resize(partMsg.size() - 1);
+	std::cout << "ChannelName: " << channelName << std::endl;
+	std::cout << "message: " << partMsg << std::endl;
+
+	User	sender = findUserInstance(sd);
+	if (!userInChannel(channels[channelName].getMembers(), sender.getNickName())) {
+		reply(sender.getSd(), ERR_NOTONCHANNEL(sender.getNickName(), channelName));
+		return ;
+	}
+
+	std::vector<User>	&channelMembers = channels[channelName].getMembers();
+	std::string msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " PART " + channelName + " :" + partMsg;
+	for (size_t i = 0; i < channelMembers.size(); i++) 
+		reply(channelMembers[i].getSd(), msg);
+	channels[channelName].removeUser(sender);
 }
