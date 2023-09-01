@@ -12,29 +12,31 @@ TARGET			:=	ircserv
 
 # Progress bar function
 define progress_bar
-		@echo "\033[1;34mCompiling:\033[0m\n"
-		@$(1)
-		@sleep 0.2
-		@echo "\033[1;32mDone\033[0m"
+		@echo "\033[1;34m$<\033[0m\r"
+		@$(CC) $(CPPFLAGS) -c $< -o $@
 endef
 
 # Targets
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-		$(call progress_bar,$(CC) $^ -o $(BIN_DIR)$@)
+		@echo "\n\033[1;34mLinking...\033[0m"
+		@$(CC) $^ -o $@
+		@echo "\033[1;32mDone linking: $(TARGET)\033[0m"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
-		@$(CC) $(CPPFLAGS) -c $< -o $@
+		$(call progress_bar)
 
 $(OBJ_DIR):
 		@mkdir -p $(OBJ_DIR)
 
 clean:
-		rm -rf $(OBJ_DIR)
+		@echo "\033[1;31mRemoving object files: $(OBJ_DIR)\033[0m"
+		@rm -rf $(OBJ_DIR)
 
 fclean: clean
-		rm -f $(TARGET)
+		@echo "\033[1;31mRemoving executable: $(TARGET)\033[0m\n"
+		@rm -f $(TARGET)
 
 re: fclean all
 

@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/31 19:20:21 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/01 15:01:57 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ void	Channel::changeStatus(char mod, char operand) {
 }
 
 void	Channel::inviteOnly(char operand, char mod, std::string channelName, std::string param, User& sender) {
+	(void)param;
 	std::string	msg;
 
 	msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " MODE " + channelName + " " + operand + mod;
@@ -192,6 +193,7 @@ void	Channel::operatorPriv(char operand, char mod, std::string channelName,  std
 }
 
 void	Channel::topicRestr(char operand, char mod, std::string channelName,  std::string param, User& sender) {
+	(void)param;
 	changeStatus(mod, operand);
 	std::string msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " MODE " + channelName + " " + operand + mod;
 	for (size_t i = 0; i < members.size(); i++)

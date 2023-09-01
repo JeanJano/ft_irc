@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/01 14:33:41 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/01 15:04:35 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void IRCServer::join(std::string input, int sd)
 		} else if (channels[name].getPass() != pass && newUser.isInvit(name) == false) {
 			reply(sd, ERR_BADCHANNELKEY(newUser.getNickName(), name));
 			return ;
-		} else if (channels[name].getMembers().size() >= channels[name].getLimit() && newUser.isInvit(name) == false) {
+		} else if (channels[name].getMembers().size() >= static_cast<size_t>(channels[name].getLimit()) && newUser.isInvit(name) == false) {
 			reply(sd, ERR_CHANNELISFULL(newUser.getNickName(), name));
 			return ;
 		} else

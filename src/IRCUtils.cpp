@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:30:49 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/31 19:35:53 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/01 15:07:19 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ User &IRCServer::findUserInstance(int sd)
 
 User &IRCServer::findUserInstance(std::string nick)
 {
-	User	empty;
 	std::map<std::string, User>::iterator it = users.begin();
 	while (it != users.end())
 	{
@@ -97,7 +96,8 @@ User &IRCServer::findUserInstance(std::string nick)
 			return (it->second);
 		it++;
 	}
-	return (empty);
+	User	*empty = new User;
+	return (*empty);
 }
 
 std::string IRCServer::findUserNickName(int sd)
