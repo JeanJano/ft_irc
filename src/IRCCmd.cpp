@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/31 19:40:47 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/01 14:33:41 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void IRCServer::join(std::string input, int sd)
 	std::string pass;
 
 	iss >> name >> pass;
-	std::cout << "new User Name: " << newUser.getNickName() << std::endl;
 	if (channels.find(name) != channels.end()) {
 		if (channels[name].getMode()['i'] && newUser.isInvit(name) == false) {
 			reply(sd, ERR_INVITONLYCHAN(newUser.getNickName(), name));
@@ -187,7 +186,16 @@ void	IRCServer::invite(std::string input, int sd)
 	std::map<std::string, Channel>::iterator it = channels.find(channelName);
 	User sender = findUserInstance(sd);
 	User &receiver = findUserInstance(nick);
-	if (it == channels.end() || receiver.getNickName() == "default") {
+	if (userInChannel(channels[channelName].getMembers(), receiver.getNickName())) {
+		reply(sd, ERR_USERONCHANNEL(sender.getNickName(), receiver.getNickName(), channelName));
+		return ;
+	} else if (!userInChannel(channels[channelName].getMembers(), sender.getNickName())) {
+		reply(sd, ERR_NOTONCHANNEL(sender.getNickName(), channelName));
+		return ;
+	} else if (it == channels.end()) {
+		reply(sd, ERR_NOSUCHCHANNEL(sender.getNickName(), channelName));
+		return ;
+	} else if (receiver.getNickName() == "default") {
 		reply(sender.getSd(), ERR_NOSUCHNICK(sender.getNickName(), channelName));
 		return ;
 	}

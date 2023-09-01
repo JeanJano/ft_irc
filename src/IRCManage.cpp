@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:29:21 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/29 12:41:05 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/01 14:41:20 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ std::string IRCServer::getCompleteMsg(int sd)
 	std::string received;
 
 	struct timeval tv;
-	tv.tv_sec = 1; // 5 seconds timeout
-	tv.tv_usec = 0;
+	tv.tv_sec = 0;
+	tv.tv_usec = 50;
 	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
 	while (true)
 	{

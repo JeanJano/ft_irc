@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/31 19:58:59 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/01 14:08:18 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,10 +122,8 @@ void	User::addInvit(std::string channelName) {
 void	User::removeInvit(std::string channelName) {
 	int i = 0;
 	for (; i < invit.size(); i++) {
-		if (invit[i] == channelName) {
-			std::cout << "HEHO: " << invit[i] << std::endl;	
+		if (invit[i] == channelName)
 			break ;
-		}
 	}
 	invit.erase(invit.begin() + i);
 }
