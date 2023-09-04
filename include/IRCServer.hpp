@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/04 16:20:04 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/04 17:17:32 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ class IRCServer {
 		void		invite(std::string, int);
 		void		modeManager(std::string, int);
 		void		part(std::string, int);
+		void		notice(std::string, int);
 
 		// errors
 		

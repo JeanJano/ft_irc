@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCUtils.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:30:49 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/04 16:15:54 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/04 17:17:24 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ void IRCServer::treatCmd(int sd)
 	t_cmd tmp = cmd.front();
 	cmd.pop();
 
-	std::string cmdArr[9] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK", "TOPIC", "INVITE", "MODE", "PART"};
-	functionPtr functPtr[9] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick, &IRCServer::topic, &IRCServer::invite, &IRCServer::modeManager, &IRCServer::part};
+	std::string cmdArr[10] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK", "TOPIC", "INVITE", "MODE", "PART", "NOTICE"};
+	functionPtr functPtr[10] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick, &IRCServer::topic, &IRCServer::invite, &IRCServer::modeManager, &IRCServer::part, &IRCServer::notice};
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		if (tmp.typeCmd == cmdArr[i])
 			(this->*functPtr[i])(tmp.text, sd);

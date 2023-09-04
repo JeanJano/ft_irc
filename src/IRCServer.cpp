@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/04 16:34:17 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/04 18:02:29 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ IRCServer::IRCServer(char **av)
     }
 	if (!init(av))
 		return ;
-	serverManager();
 	empty = new User;
+	serverManager();
 }
 
 IRCServer::~IRCServer() {

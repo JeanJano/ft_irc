@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/04 13:00:01 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/09/04 18:02:34 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,8 @@ void IRCServer::join(std::string input, int sd)
 			reply(sd, ERR_CHANNELISFULL(newUser.getNickName(), name));
 			return ;
 		} else {
-			if (newUser.isInvit(name) == true) {
-				std::cout << "CA PASSE" << std::endl;
+			if (newUser.isInvit(name) == true)
 				newUser.removeInvit(name);
-			}
 			channels[name].addUser(newUser);
 		}
 	} else {
@@ -72,10 +70,6 @@ void IRCServer::join(std::string input, int sd)
 		reply(newUser.getSd(), RPL_NOTOPIC(newUser.getNickName(), channels[name].getName()));
 	reply(sd, RPL_NAMREPLY(newUser.getNickName(), name, names));
 	reply(sd, RPL_ENDOFNAMES(newUser.getNickName(), name));
-	// if (newUser.isInvit(name) == true) {
-	// 	std::cout << "CA PASSE" << std::endl;
-	// 	newUser.removeInvit(name);
-	// }
 }
 
 void IRCServer::privmsg(std::string input, int sd)
@@ -247,4 +241,39 @@ void	IRCServer::part(std::string input, int sd) {
 	for (size_t i = 0; i < channelMembers.size(); i++) 
 		reply(channelMembers[i].getSd(), msg);
 	channels[channelName].removeUser(sender);
+}
+
+void	IRCServer::notice(std::string input, int sd) {
+	std::istringstream	iss(input);
+	std::string			noticeTarget;
+	char				col;
+	std::string			noticeMsg;
+	std::string			toSend;
+
+	iss >> noticeTarget >> col;
+	getline(iss, noticeMsg);
+	noticeMsg.resize(noticeMsg.size() - 1);
+	User	sender = findUserInstance(sd);
+
+	if (noticeTarget[0] == '#') {
+		std::vector<User> targets = getChannelMembers(noticeTarget);
+		if (targets.empty()) {
+			reply(sd, ERR_NOSUCHCHANNEL(sender.getNickName(), noticeTarget));
+			return ;
+		}
+		for (size_t i = 0; i < targets.size(); i++) {
+			toSend = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " NOTICE " + noticeTarget + " :" + noticeMsg;
+			if (sender.getNickName() != targets[i].getNickName())
+				reply(targets[i].getSd(), toSend);
+		}
+	} else {
+		User &target = findUserInstance(noticeTarget);
+		if (target.getNickName() == "default") {
+			std::cout << "CA PASSE" << std::endl;
+			reply(sender.getSd(), ERR_NOSUCHNICK(sender.getNickName(), noticeTarget));
+			return ;
+		}
+		toSend = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " NOTICE " + target.getNickName() + " :" + noticeMsg;
+		reply(target.getSd(), toSend);
+	}
 }
