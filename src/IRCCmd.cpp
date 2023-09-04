@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCCmd.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/04 12:10:04 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/04 13:00:01 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void IRCServer::ping(std::string input, int sd)
 void IRCServer::join(std::string input, int sd)
 {
 	std::istringstream iss(input);
-	User	newUser = findUserInstance(sd);
+	User	&newUser = findUserInstance(sd);
 	std::string name;
 	std::string pass;
 
@@ -37,8 +37,13 @@ void IRCServer::join(std::string input, int sd)
 		} else if (channels[name].getMembers().size() >= static_cast<size_t>(channels[name].getLimit()) && newUser.isInvit(name) == false) {
 			reply(sd, ERR_CHANNELISFULL(newUser.getNickName(), name));
 			return ;
-		} else
+		} else {
+			if (newUser.isInvit(name) == true) {
+				std::cout << "CA PASSE" << std::endl;
+				newUser.removeInvit(name);
+			}
 			channels[name].addUser(newUser);
+		}
 	} else {
 		Channel newChannel(name, pass);
 		channels[name] = newChannel;
@@ -67,8 +72,10 @@ void IRCServer::join(std::string input, int sd)
 		reply(newUser.getSd(), RPL_NOTOPIC(newUser.getNickName(), channels[name].getName()));
 	reply(sd, RPL_NAMREPLY(newUser.getNickName(), name, names));
 	reply(sd, RPL_ENDOFNAMES(newUser.getNickName(), name));
-	if (newUser.isInvit(name) == true)
-		newUser.removeInvit(name);
+	// if (newUser.isInvit(name) == true) {
+	// 	std::cout << "CA PASSE" << std::endl;
+	// 	newUser.removeInvit(name);
+	// }
 }
 
 void IRCServer::privmsg(std::string input, int sd)

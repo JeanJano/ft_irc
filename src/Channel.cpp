@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/04 12:14:18 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/04 12:22:43 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,6 @@ void	Channel::modeManager(std::string input, User &sender) {
 	std::string			param;
 	
 	iss >> channelName >> operand >> mode >> param;
-	std::cout << "TEST: " << isOperator(role[sender.getNickName()]) << std::endl;
 	if (isOperator(role[sender.getNickName()]) == false) {
 		reply(sender.getSd(), ERR_CHANOPRIVSNEEDED(sender.getNickName(), channelName));
 		return ;

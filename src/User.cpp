@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/09/01 15:04:01 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/04 12:46:25 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,10 +122,9 @@ void	User::addInvit(std::string channelName) {
 void	User::removeInvit(std::string channelName) {
 	size_t i = 0;
 	for (; i < invit.size(); i++) {
-		if (invit[i] == channelName)
-			break ;
+		std::cout << "Invit: " << invit[i] << std::endl;
 	}
-	invit.erase(invit.begin() + i);
+	invit.erase(std::remove(invit.begin(), invit.end(), channelName), invit.end());
 }
 
 bool	User::isInvit(std::string channelName) {
