@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/31 19:35:10 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/04 16:20:04 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class IRCServer {
 		void	createChannel(std::string name);
 		Channel	*getChannel();
 		
-		void		init(char **av);
+		int			init(char **av);
 		void		serverManager();
 		bool		connectClient();
 		void		handleEvents();
@@ -75,6 +75,7 @@ class IRCServer {
 		std::map<std::string, User>		users;
 		std::queue<t_cmd>				cmd;
 		std::string						creation;
+		User							*empty;
 };
 
 

@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/28 11:29:28 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/04 16:28:19 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,11 @@
 # include "replies.hpp"
 # include <netinet/tcp.h>
 # include <algorithm>
+# include <csignal>
 # define BUFFER_SIZE 1024
 
+extern bool run;
 void	reply(int sd, std::string msg);
+void	signalHandler(int num);
+
 #endif

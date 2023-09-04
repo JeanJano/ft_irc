@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/29 12:40:58 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/04 16:34:17 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,28 @@ IRCServer::IRCServer(char **av)
     if (!creation.empty() && creation[creation.size() - 1] == '\n') {
         creation.resize(creation.size() - 1);
     }
-	init(av);
+	if (!init(av))
+		return ;
 	serverManager();
+	empty = new User;
 }
 
-IRCServer::~IRCServer() {}
+IRCServer::~IRCServer() {
+	for(size_t i = 0; i < fds.size(); i++) {
+		close(fds[i].fd);
+	}
+	close(serverSd);
+	fds.clear();
+	channels.clear();
+	users.clear();
+	while (!cmd.empty()) {
+        cmd.pop(); // Remove the front element
+    }
+	if (empty)
+		delete empty;
+}
 
-void IRCServer::init(char **av)
+int IRCServer::init(char **av)
 {
 	password = av[2];
 
@@ -34,11 +49,11 @@ void IRCServer::init(char **av)
 	servAddr.sin_family = AF_INET;
 	servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	servAddr.sin_port = htons(atoi(av[1]));
-
+	
 	if ((serverSd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
 	{
 		std::cerr << "Error Socket" << std::endl;
-		exit(0);
+		return(0);
 	}
 
 	int opt = true;
@@ -46,14 +61,18 @@ void IRCServer::init(char **av)
 	if (setsockopt(serverSd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0)
 	{
 		std::cerr << "Error setsockopt" << std::endl;
-		exit(0);
+		return(0);
 	}
-
+	if (fcntl(serverSd, F_SETFL, O_NONBLOCK) < 0)
+	{
+		std::cerr << "Could not set fd to non blocking" << std::endl;
+		return(0);
+	}
 	if ((bind(serverSd, (struct sockaddr *)&servAddr, sizeof(servAddr))) < 0)
 	{
 		std::cerr << "Error bind" << std::endl;
 		close(serverSd);
-		exit(0);
+		return(0);
 	}
 
 	// listen for 5 request at a time
@@ -61,8 +80,9 @@ void IRCServer::init(char **av)
 	{
 		std::cerr << "error listen" << std::endl;
 		close(serverSd);
-		exit(0);
+		return(0);
 	}
+	return (1);
 }
 
 void IRCServer::serverManager()
@@ -72,8 +92,8 @@ void IRCServer::serverManager()
 	tmp.events = POLLIN;
 	tmp.revents = 0;
 	fds.push_back(tmp);
-
-	while (true)
+	signal(SIGINT, signalHandler);
+	while (run)
 	{
 		if ((poll(fds.data(), fds.size(), -1)) < 0)
 		{

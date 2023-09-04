@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/04 12:22:43 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/09/04 16:16:30 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,14 @@ Channel::Channel(const Channel &cpy) {
 }
 
 Channel::~Channel() {
-	// Free Mode Operators
-	delete topicSetter;
-	// Free role Operators
+	for (std::map<std::string, Role *>::iterator it = role.begin(); it != role.end(); it++)
+		delete it->second;
+	role.clear();
+	members.clear();
+	banList.clear();
+	mode.clear();
+	if (topicSetter)
+		delete topicSetter;
 }
 
 Channel	&Channel::operator=(const Channel &cpy) {

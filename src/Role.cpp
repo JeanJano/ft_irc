@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:43 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/29 15:07:00 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/04 16:16:10 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ Role::~Role() {
 
 Role	&Role::operator=(const Role &cpy)
 {
+	if (sender)
+		delete sender;
 	sender = new User (*cpy.sender);
 	channelName = channelName;
 	return *this;
