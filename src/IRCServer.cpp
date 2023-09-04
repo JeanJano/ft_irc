@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/04 18:02:29 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/09/04 18:05:35 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,12 @@ bool IRCServer::connectClient()
 		if (newSd < 0)
 		{
 			std::cerr << "Error accept" << std::endl;
+			return false;
+		}
+		if (fcntl(newSd, F_SETFL, O_NONBLOCK) < 0)
+		{
+			std::cerr << "Could not set fd to non blocking" << std::endl;
+			close(newSd);
 			return false;
 		}
 		// welcome message to client

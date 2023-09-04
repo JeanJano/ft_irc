@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:29:21 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/04 16:15:42 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/04 18:04:59 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,6 @@ void IRCServer::handleEvents()
 void IRCServer::newConnexionMsg(int sd, sockaddr_in addr, User &usr)
 {
 	usr.setIp(inet_ntoa(addr.sin_addr));
-	if (fcntl(sd, F_SETFL, O_NONBLOCK) < 0)
-	{
-		std::cerr << "Could not set fd to non blocking" << std::endl;
-		exit(0);
-	}
 	users[usr.getNickName()] = usr;
 	reply(sd, RPL_WELCOME(usr.getNickName(), usr.getNickName()));
 	reply(sd, RPL_YOURHOST(usr.getNickName(), "server", "0.1"));
