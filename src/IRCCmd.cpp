@@ -6,11 +6,12 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/29 15:38:57 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/04 12:10:04 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IRCServer.hpp"
+#include "../include/Channel.hpp"
 
 void IRCServer::ping(std::string input, int sd)
 {
@@ -26,26 +27,33 @@ void IRCServer::join(std::string input, int sd)
 	std::string pass;
 
 	iss >> name >> pass;
-	if (channels.find(name) != channels.end())
-	{
-		channels[name].addUser(newUser);
+	if (channels.find(name) != channels.end()) {
+		if (channels[name].getMode()['i'] && newUser.isInvit(name) == false) {
+			reply(sd, ERR_INVITONLYCHAN(newUser.getNickName(), name));
+			return ;
+		} else if (channels[name].getPass() != pass && newUser.isInvit(name) == false) {
+			reply(sd, ERR_BADCHANNELKEY(newUser.getNickName(), name));
+			return ;
+		} else if (channels[name].getMembers().size() >= static_cast<size_t>(channels[name].getLimit()) && newUser.isInvit(name) == false) {
+			reply(sd, ERR_CHANNELISFULL(newUser.getNickName(), name));
+			return ;
+		} else
+			channels[name].addUser(newUser);
 	} else {
 		Channel newChannel(name, pass);
 		channels[name] = newChannel;
 		channels[name].addUser(newUser);
 	}
 	std::vector<User>	members = channels[name].getMembers();
-	std::map<std::string, Role *> mode = channels[name].getMode();
+	std::map<std::string, Role *> role = channels[name].getRole();
 	std::string			names;
 	for (size_t i = 0; i < members.size(); i++) {
-		names += mode[members[i].getNickName()]->getNickName();
+		names += role[members[i].getNickName()]->getNickName();
 		if (i < members.size() - 1)
 			names += " ";
 	}
-	// std::cout << "Names: " << names <<"i"<<std::endl;
 	for (size_t i = 0; i < members.size(); ++i) {
-		// std::cout << "CA PASSE" << std::endl;
-		std::string	joinMsg = ":" + newUser.getNickName() + "!" + newUser.getUserName() + "@" + newUser.getIp() + " JOIN" + " :" + channels[name].getName();
+		std::string	joinMsg = ":" + newUser.getNickName() + "!" + newUser.getUserName() + "@" + newUser.getIp() + " JOIN :" + channels[name].getName();
 		reply(members[i].getSd(), joinMsg);
 	}
 	if (channels[name].getTopic() != "default") {
@@ -59,6 +67,8 @@ void IRCServer::join(std::string input, int sd)
 		reply(newUser.getSd(), RPL_NOTOPIC(newUser.getNickName(), channels[name].getName()));
 	reply(sd, RPL_NAMREPLY(newUser.getNickName(), name, names));
 	reply(sd, RPL_ENDOFNAMES(newUser.getNickName(), name));
+	if (newUser.isInvit(name) == true)
+		newUser.removeInvit(name);
 }
 
 void IRCServer::privmsg(std::string input, int sd)
@@ -81,19 +91,19 @@ void IRCServer::privmsg(std::string input, int sd)
 		members = getPrivateMember(name);
 		
 	// Check errors, user unknown, channel unknown, user not in channel
-	if (pos == 0 && !userInChannel(members, sender.getNickName()))
-	{
+	if (pos == 0 && !userInChannel(members, sender.getNickName())) {
 		reply(sender.getSd(), ERR_NOTONCHANNEL(sender.getNickName(), name));
 		return ;
 	}
-	if (members.empty())
-	{
+	// members.erase(std::remove(members.begin(), members.end(), sender), members.end());
+	if (members.empty()) {
 		reply(sender.getSd(), ERR_NOSUCHNICK(sender.getNickName(), name));
 		return ;
 	}
-	members.erase(std::remove(members.begin(), members.end(), sender), members.end());
-	for (size_t i = 0; i < members.size(); i++)
-		reply(members[i].getSd(), RPL_PRIVMSG(sender.getNickName() + "!" + sender.getUserName() + members[i].getIp(), name, userMsg));
+	for (size_t i = 0; i < members.size(); i++) {
+		if (members[i].getNickName() != sender.getNickName())
+			reply(members[i].getSd(), RPL_PRIVMSG(sender.getNickName() + "!" + sender.getUserName() + members[i].getIp(), name, userMsg));
+	}
 }
 
 void IRCServer::quit(std::string input, int sd)
@@ -137,13 +147,13 @@ void IRCServer::kick(std::string input, int sd)
 		reply(kicker.getSd(), ERR_USERNOTINCHANNEL(kicker.getNickName(), kickedUsr.getNickName(),channelName));
 		return ;
 	}
-	std::map<std::string, Role *> &mode = channels[channelName].getMode();
-	for (std::map<std::string, Role *>::iterator it = mode.begin(); it != mode.end(); it++)
+	std::map<std::string, Role *> &role = channels[channelName].getRole();
+	for (std::map<std::string, Role *>::iterator it = role.begin(); it != role.end(); it++)
 	{
 		if (it->first == kicker.getNickName())
 			it->second->kick(kicked, channels[channelName]);
 	}
-	// mode[kicker.getNickName()]->kick(kicked, channels[channelName]);
+	// role[kicker.getNickName()]->kick(kicked, channels[channelName]);
 }
 
 void	IRCServer::topic(std::string input, int sd) {
@@ -162,9 +172,9 @@ void	IRCServer::topic(std::string input, int sd) {
 		reply(sender.getSd(), ERR_NOSUCHNICK(sender.getNickName(), channelName));
 		return ;
 	}
-	std::map<std::string, Role *> mode = channels[channelName].getMode();
+	std::map<std::string, Role *> role = channels[channelName].getRole();
 
-	mode[sender.getNickName()]->topic(topic, channels[channelName]);
+	role[sender.getNickName()]->topic(topic, channels[channelName]);
 }
 
 void	IRCServer::invite(std::string input, int sd)
@@ -174,17 +184,60 @@ void	IRCServer::invite(std::string input, int sd)
 	std::string			channelName;
 
 	iss >> nick >> channelName;
-	// Need to Check existence of channel
 	std::map<std::string, Channel>::iterator it = channels.find(channelName);
 	User sender = findUserInstance(sd);
-	User receiver = findUserInstance(nick);
-	// Pourquoi ca marche si ca rentre dans le premiere condition mais pas dans la deuxieme
-	// LE MESSAGE EST LE MEEEEEEME
-	if (it == channels.end() || receiver.getNickName() == "default")
-	{
+	User &receiver = findUserInstance(nick);
+	if (userInChannel(channels[channelName].getMembers(), receiver.getNickName())) {
+		reply(sd, ERR_USERONCHANNEL(sender.getNickName(), receiver.getNickName(), channelName));
+		return ;
+	} else if (!userInChannel(channels[channelName].getMembers(), sender.getNickName())) {
+		reply(sd, ERR_NOTONCHANNEL(sender.getNickName(), channelName));
+		return ;
+	} else if (it == channels.end()) {
+		reply(sd, ERR_NOSUCHCHANNEL(sender.getNickName(), channelName));
+		return ;
+	} else if (receiver.getNickName() == "default") {
 		reply(sender.getSd(), ERR_NOSUCHNICK(sender.getNickName(), channelName));
 		return ;
 	}
-	std::map<std::string, Role *> mode = channels[channelName].getMode();
-	mode[sender.getNickName()]->invite(receiver);
+	std::map<std::string, Role *> role = channels[channelName].getRole();
+	role[sender.getNickName()]->invite(receiver, channels[channelName]);
+}
+
+void	IRCServer::modeManager(std::string input, int sd) {
+	std::istringstream iss(input);
+	std::string channelName;
+	std::string param;
+	iss >> channelName >> param;
+	if (param.empty())
+		return ;
+
+	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
+		if (it->first == channelName) {
+			it->second.modeManager(input, findUserInstance(sd));
+			return ;
+		}
+	}
+}
+
+void	IRCServer::part(std::string input, int sd) {
+	std::istringstream	iss(input);
+	std::string			channelName;
+	std::string			partMsg;
+
+	iss >> channelName;
+	getline(iss, partMsg);
+	partMsg.resize(partMsg.size() - 1);
+
+	User	sender = findUserInstance(sd);
+	if (!userInChannel(channels[channelName].getMembers(), sender.getNickName())) {
+		reply(sender.getSd(), ERR_NOTONCHANNEL(sender.getNickName(), channelName));
+		return ;
+	}
+
+	std::vector<User>	&channelMembers = channels[channelName].getMembers();
+	std::string msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " PART " + channelName + " :" + partMsg;
+	for (size_t i = 0; i < channelMembers.size(); i++) 
+		reply(channelMembers[i].getSd(), msg);
+	channels[channelName].removeUser(sender);
 }

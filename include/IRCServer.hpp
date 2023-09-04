@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/29 12:41:55 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/31 19:35:10 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,18 @@ class IRCServer {
 		void		privmsg(std::string, int);
 		void		quit(std::string, int);
 		void		kick(std::string, int);
-		void		topic(std::string input, int sd);
-		void		invite(std::string input, int sd);
+		void		topic(std::string, int);
+		void		invite(std::string, int);
+		void		modeManager(std::string, int);
+		void		part(std::string, int);
+
 		// errors
 		
 		//UTILS
 		void    	parseCmd(std::string buf);
 		void		treatCmd(int sd);
 		User		&findUserInstance(int sd);
-		User 		findUserInstance(std::string nick);
+		User 		&findUserInstance(std::string nick);
 		std::string	findUserNickName(int sd);
 		bool		nickIsUsed(std::string nickname);
 		std::vector<User>	getChannelMembers(std::string name);

@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:30:49 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/29 12:30:31 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/01 15:07:19 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ void IRCServer::treatCmd(int sd)
 	t_cmd tmp = cmd.front();
 	cmd.pop();
 
-	std::string cmdArr[7] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK", "TOPIC", "INVITE"};
-	functionPtr functPtr[7] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick, &IRCServer::topic, &IRCServer::invite};
+	std::string cmdArr[9] = {"JOIN", "PRIVMSG", "PING", "QUIT", "KICK", "TOPIC", "INVITE", "MODE", "PART"};
+	functionPtr functPtr[9] = {&IRCServer::join, &IRCServer::privmsg, &IRCServer::ping, &IRCServer::quit, &IRCServer::kick, &IRCServer::topic, &IRCServer::invite, &IRCServer::modeManager, &IRCServer::part};
 
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		if (tmp.typeCmd == cmdArr[i])
 			(this->*functPtr[i])(tmp.text, sd);
@@ -87,9 +87,8 @@ User &IRCServer::findUserInstance(int sd)
 	return (it->second);
 }
 
-User IRCServer::findUserInstance(std::string nick)
+User &IRCServer::findUserInstance(std::string nick)
 {
-	User	empty;
 	std::map<std::string, User>::iterator it = users.begin();
 	while (it != users.end())
 	{
@@ -97,7 +96,8 @@ User IRCServer::findUserInstance(std::string nick)
 			return (it->second);
 		it++;
 	}
-	return (empty);
+	User	*empty = new User;
+	return (*empty);
 }
 
 std::string IRCServer::findUserNickName(int sd)

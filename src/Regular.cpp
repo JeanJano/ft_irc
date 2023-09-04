@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 14:04:52 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/29 12:41:30 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/01 15:03:36 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ std::string	Regular::getNickName() {
 	return (this->sender->getNickName());
 }
 
+int	Regular::getSd() {
+	return (this->sender->getSd());
+}
+
 void	Regular::kick(const std::string& kicked, Channel& channel) {
 	(void)kicked;
 	(void)channel;
@@ -48,12 +52,25 @@ void	Regular::kick(const std::string& kicked, Channel& channel) {
 }
 
 void	Regular::topic(const std::string& topic, Channel& channel) {
-	(void)topic;
-	(void)channel;
-	reply(sender->getSd(), ERR_CHANOPRIVSNEEDED(sender->getNickName(), channelName));
+	std::map<char, bool> mode = channel.getMode();
+
+	if (mode['t'] == false) {
+		channel.setTopic(topic);
+		std::time_t now;
+		std::time(&now);
+		channel.setTimeStamp(now);
+		std::vector<User> &channelMembers = channel.getMembers();
+
+		std::string	topicMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " TOPIC " + channelName + " :" + topic;
+		for (size_t i = 0; i < channelMembers.size(); i++)
+			reply(channelMembers[i].getSd(), topicMsg);
+	} else {
+		reply(sender->getSd(), ERR_CHANOPRIVSNEEDED(sender->getNickName(), channelName));
+	}
 }
 
-void	Regular::invite(User receiver) {
+void	Regular::invite(User &receiver, Channel& channel) {
 	(void)receiver;
+	(void)channel;
 	reply(sender->getSd(), ERR_CHANOPRIVSNEEDED(sender->getNickName(), channelName));
 }

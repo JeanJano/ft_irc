@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 14:04:36 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/08/29 14:58:21 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/04 12:10:30 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ std::string	Operator::getNickName() {
 	return ("@" + this->sender->getNickName());
 }
 
+int	Operator::getSd() {
+	return (this->sender->getSd());
+}
+
 void	Operator::kick(const std::string& kicked, Channel& channel) {
 	std::vector<User> &channelMembers = channel.getMembers();
 		
@@ -63,8 +67,11 @@ void	Operator::topic(const std::string& topic, Channel& channel) {
 		reply(channelMembers[i].getSd(), topicMsg);
 }
 
-void	Operator::invite(User receiver)
+void	Operator::invite(User &receiver, Channel& channel)
 {
+	reply(sender->getSd(), RPL_INVITING(sender->getNickName(), receiver.getNickName(), channel.getName()));
+
 	std::string	inviteMsg = ":" + sender->getNickName() + "!" + sender->getUserName() + "@" + sender->getIp() + " INVITE " + receiver.getNickName() + " :" + channelName;
 	reply(receiver.getSd(), inviteMsg);
+	receiver.addInvit(channel.getName());
 }

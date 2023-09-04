@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:46 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/08/29 12:30:51 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/08/31 19:39:31 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,14 @@ class User
 		std::string	getRealName() const;
 		std::string	getPassWord() const;
 		std::string	getIp() const;
-		int			getSd() const;
+		std::vector<std::string>	getInvit() const;
 
+		int			getSd() const;
 		void		setIp(std::string ip);
+
+		void		addInvit(std::string channelName);
+		void		removeInvit(std::string channelName);
+		bool		isInvit(std::string channelName);
 
 		void		parseInput(std::string input);
 		void		printInfos();
@@ -42,6 +47,7 @@ class User
 		std::string passWord;
 		std::string	ip;
 		int			sd;
+		std::vector<std::string> invit;
 };
 
 #endif

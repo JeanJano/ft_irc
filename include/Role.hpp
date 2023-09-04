@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Role.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:53 by smessal           #+#    #+#             */
-/*   Updated: 2023/08/29 11:36:27 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/08/31 19:01:22 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,12 @@ class Role {
 		virtual ~Role();
 
 		virtual	void	kick(const std::string& kicked, Channel& channel) = 0;
-		virtual	void	invite(User receiver) = 0;
+		virtual	void	invite(User &receiver, Channel& channel) = 0;
 		virtual	void	topic(const std::string& topic, Channel& channel) = 0;
 		// virtual	void	mode(std::string token) = 0;
 		Role			&operator=(const Role &cpy);
 		virtual std::string		getNickName() = 0;
+		virtual	int				getSd() = 0;
 	protected:
 		User		*sender;
 		std::string	channelName;
@@ -41,10 +42,11 @@ class Operator : public Role {
 		Operator();
 		Operator	&operator=(const Operator &cpy);
 		void	kick(const std::string& kicked, Channel& channel);
-		void	invite(User receiver);
+		void	invite(User &receiver, Channel& channel);
 		void	topic(const std::string& topic, Channel& channel);
-		// void	mode(std::string token);	
+		// void	mode(std::string token);
 		std::string	getNickName();
+		int			getSd();
 };
  
 class Regular : public Role {
@@ -55,10 +57,11 @@ class Regular : public Role {
 		Regular	&operator=(const Regular &cpy);
 
 		void	kick(const std::string& kicked, Channel& channel);
-		void	invite(User receiver);
+		void	invite(User &receiver, Channel& channel);
 		void	topic(const std::string& topic, Channel& channel);
 		// void	mode(std::string token);
 		std::string	getNickName();
+		int			getSd();
 };
 
 #endif
