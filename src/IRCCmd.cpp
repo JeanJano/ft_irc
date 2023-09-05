@@ -6,7 +6,7 @@
 /*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/04 18:02:34 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/09/05 14:59:05 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,15 +110,17 @@ void IRCServer::privmsg(std::string input, int sd)
 void IRCServer::quit(std::string input, int sd)
 {
 	(void)input;
-	User quit = findUserInstance(sd);
+	User	&quit = findUserInstance(sd);
 
 	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); it++)
 	{
-		std::vector<User> cmp = it->second.getMembers();
+		std::vector<User> &cmp = it->second.getMembers();
 		for (size_t i = 0; i < cmp.size(); i++)
 		{
-			if (quit.getNickName() == cmp[i].getNickName())
-				it->second.removeUser(quit);
+			if (quit.getNickName() == cmp[i].getNickName()) {
+				part(it->first, sd);
+				// it->second.removeUser(quit);
+			}
 		}
 	}
 	close(sd);
@@ -228,7 +230,8 @@ void	IRCServer::part(std::string input, int sd) {
 
 	iss >> channelName;
 	getline(iss, partMsg);
-	partMsg.resize(partMsg.size() - 1);
+	if (!partMsg.empty())
+		partMsg.resize(partMsg.size() - 1);
 
 	User	sender = findUserInstance(sd);
 	if (!userInChannel(channels[channelName].getMembers(), sender.getNickName())) {

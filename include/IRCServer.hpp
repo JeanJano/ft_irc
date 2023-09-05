@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/05 14:12:33 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/05 14:53:52 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,5 +80,26 @@ class IRCServer {
 		User							*empty;
 };
 
+// void	IRCServer::part(std::string input, int sd) {
+// 	std::istringstream	iss(input);
+// 	std::string			channelName;
+// 	std::string			partMsg;
+
+// 	iss >> channelName;
+// 	getline(iss, partMsg);
+// 	partMsg.resize(partMsg.size() - 1);
+
+// 	User	sender = findUserInstance(sd);
+// 	if (!userInChannel(channels[channelName].getMembers(), sender.getNickName())) {
+// 		reply(sender.getSd(), ERR_NOTONCHANNEL(sender.getNickName(), channelName));
+// 		return ;
+// 	}
+
+// 	std::vector<User>	&channelMembers = channels[channelName].getMembers();
+// 	std::string msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " PART " + channelName + " :" + partMsg;
+// 	for (size_t i = 0; i < channelMembers.size(); i++) 
+// 		reply(channelMembers[i].getSd(), msg);
+// 	channels[channelName].removeUser(sender);
+// }
 
 #endif

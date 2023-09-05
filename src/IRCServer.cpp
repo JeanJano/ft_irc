@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/05 14:19:48 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/05 14:31:45 by zel-kass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 IRCServer::IRCServer(char **av)
 {
 	std::time_t now;
+	std::time(&now);
 	creation = std::ctime(&now);
     if (!creation.empty() && creation[creation.size() - 1] == '\n') {
         creation.resize(creation.size() - 1);
