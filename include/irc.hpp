@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:17:58 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/09/04 16:28:19 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/05 12:13:35 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@
 # include <netinet/tcp.h>
 # include <algorithm>
 # include <csignal>
+# include <cerrno>
 # define BUFFER_SIZE 1024
 
 extern bool run;

@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:29:21 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/04 18:04:59 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/05 12:16:10 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,9 @@ std::string IRCServer::getCompleteMsg(int sd)
 
 	struct timeval tv;
 	tv.tv_sec = 0;
-	tv.tv_usec = 50;
+	tv.tv_usec = 150;
 	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
-	while (true)
+	while (run)
 	{
 		memset(&msg, 0, sizeof(msg));
 		bytesread = recv(sd, msg, sizeof(msg), 0);
@@ -73,9 +73,10 @@ std::string IRCServer::getCompleteMsg(int sd)
 			break;
 		msg[bytesread] = '\0';
 		received += msg;
-		if (received.length() >= 2 && received.substr(received.length() - 2) == "/r/n")
+		if (received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
 			break;
 	}
 	std::cout << "Received: " << received << std::endl;
 	return (received);
 }
+

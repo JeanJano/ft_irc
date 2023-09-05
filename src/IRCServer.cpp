@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/04 18:05:35 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/05 11:42:16 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int IRCServer::init(char **av)
 	
 	if ((serverSd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
 	{
-		std::cerr << "Error Socket" << std::endl;
+		std::cout << "Error Socket" << std::endl;
 		return(0);
 	}
 
@@ -60,17 +60,17 @@ int IRCServer::init(char **av)
 
 	if (setsockopt(serverSd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0)
 	{
-		std::cerr << "Error setsockopt" << std::endl;
+		std::cout << "Error setsockopt" << std::endl;
 		return(0);
 	}
 	if (fcntl(serverSd, F_SETFL, O_NONBLOCK) < 0)
 	{
-		std::cerr << "Could not set fd to non blocking" << std::endl;
+		std::cout << "Could not set server fd to non blocking" << std::endl;
 		return(0);
 	}
 	if ((bind(serverSd, (struct sockaddr *)&servAddr, sizeof(servAddr))) < 0)
 	{
-		std::cerr << "Error bind" << std::endl;
+		std::cout << "Error bind" << std::endl;
 		close(serverSd);
 		return(0);
 	}
@@ -78,7 +78,7 @@ int IRCServer::init(char **av)
 	// listen for 5 request at a time
 	if ((listen(serverSd, 5)) < 0)
 	{
-		std::cerr << "error listen" << std::endl;
+		std::cout << "error listen" << std::endl;
 		close(serverSd);
 		return(0);
 	}
@@ -97,7 +97,7 @@ void IRCServer::serverManager()
 	{
 		if ((poll(fds.data(), fds.size(), -1)) < 0)
 		{
-			std::cerr << "Error poll" << std::endl;
+			std::cout << "Error poll" << std::endl;
 			break;
 		}
 
@@ -121,12 +121,12 @@ bool IRCServer::connectClient()
 		newSd = accept(serverSd, (struct sockaddr *)&newSockAddress, &newSockAddressSize);
 		if (newSd < 0)
 		{
-			std::cerr << "Error accept" << std::endl;
+			std::cout << "Error accept" << std::endl;
 			return false;
 		}
 		if (fcntl(newSd, F_SETFL, O_NONBLOCK) < 0)
 		{
-			std::cerr << "Could not set fd to non blocking" << std::endl;
+			std::cout << "Could not set client fd to non blocking" << std::endl;
 			close(newSd);
 			return false;
 		}
@@ -134,6 +134,7 @@ bool IRCServer::connectClient()
 		std::string input(getCompleteMsg(newSd));
 		User usr(newSd);
 		usr.parseInput(input);
+		usr.printInfos();
 		if (checkNewClient(newSd, usr))
 		{
 			newConnexionMsg(newSd, newSockAddress, usr);
@@ -148,5 +149,7 @@ bool IRCServer::connectClient()
 			return (false);
 		}
 	}
+	// else
+	// 	return (false);
 	return (true);
 }
