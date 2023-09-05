@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:29:21 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/05 12:16:10 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/05 14:26:34 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void IRCServer::handleEvents()
 	}
 }
 
-void IRCServer::newConnexionMsg(int sd, sockaddr_in addr, User &usr)
+void IRCServer::newConnexionMsg(int sd, sockaddr_in addr, User usr)
 {
 	usr.setIp(inet_ntoa(addr.sin_addr));
 	users[usr.getNickName()] = usr;
@@ -42,11 +42,11 @@ void IRCServer::newConnexionMsg(int sd, sockaddr_in addr, User &usr)
 bool IRCServer::checkNewClient(int sd, User client)
 {
 	std::string msg;
-	if (client.getPassWord().compare(password) != 0)
-	{
-		reply(sd, ERR_PASSWDMISMATCH(client.getNickName()));
-		return (false);
-	}
+	// if (client.getPassWord().compare(password) != 0)
+	// {
+	// 	reply(sd, ERR_PASSWDMISMATCH(client.getNickName()));
+	// 	return (false);
+	// }
 	if (nickIsUsed(client.getNickName()))
 	{
 		reply(sd, ERR_NICKNAMEINUSE(client.getNickName(), client.getNickName()));
@@ -62,15 +62,33 @@ std::string IRCServer::getCompleteMsg(int sd)
 	std::string received;
 
 	struct timeval tv;
-	tv.tv_sec = 0;
-	tv.tv_usec = 150;
+	tv.tv_sec = 1;
+	tv.tv_usec = 0;
+	int	i = 0;
 	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
 	while (run)
 	{
 		memset(&msg, 0, sizeof(msg));
 		bytesread = recv(sd, msg, sizeof(msg), 0);
 		if (bytesread < 0)
-			break;
+		{
+			if (i == 10)
+			{
+				// this->quit("", sd);
+				return ("");
+			}
+			if (errno == EAGAIN || errno == EWOULDBLOCK)
+			{
+				i++;
+				usleep(10000);
+			}
+			// return ("");
+		}
+		if (bytesread == 0)
+		{
+			this->quit("", sd);
+			return ("");
+		}
 		msg[bytesread] = '\0';
 		received += msg;
 		if (received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
@@ -80,3 +98,44 @@ std::string IRCServer::getCompleteMsg(int sd)
 	return (received);
 }
 
+std::string IRCServer::getWelcomeMsg(int sd)
+{
+	char msg[1500];
+	int bytesread;
+	std::string received;
+
+	struct timeval tv;
+	tv.tv_sec = 5;
+	tv.tv_usec = 0;
+	int	i = 0;
+	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
+	while (run)
+	{
+		memset(&msg, 0, sizeof(msg));
+		bytesread = recv(sd, msg, sizeof(msg), 0);
+		if (bytesread < 0)
+		{
+			if (i == 10)
+			{
+				close(sd);
+				return ("");
+			}
+			if (errno == EAGAIN || errno == EWOULDBLOCK)
+			{
+				i++;
+				usleep(10000);
+			}
+		}
+		if (bytesread == 0)
+		{
+			close(sd);
+			return ("");
+		}
+		msg[bytesread] = '\0';
+		received += msg;
+		if (received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
+			break;
+	}
+	std::cout << "Received: " << received << std::endl;
+	return (received);
+}

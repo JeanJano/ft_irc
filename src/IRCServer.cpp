@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/05 11:42:16 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/05 14:19:48 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,11 +130,17 @@ bool IRCServer::connectClient()
 			close(newSd);
 			return false;
 		}
-		// welcome message to client
-		std::string input(getCompleteMsg(newSd));
+		std::string	input = getWelcomeMsg(newSd);
+		if (input.length() >= 2 && input.substr(input.length() - 2) != "\r\n")
+		{
+			std::cout << "TEST" << std::endl;
+			input += getWelcomeMsg(newSd);
+		}
+		if (input.empty())
+			return false;
+		std::cout << "Input: " << input << std::endl;
 		User usr(newSd);
 		usr.parseInput(input);
-		usr.printInfos();
 		if (checkNewClient(newSd, usr))
 		{
 			newConnexionMsg(newSd, newSockAddress, usr);

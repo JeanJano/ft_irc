@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/04 17:17:32 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/09/05 14:12:33 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,10 @@ class IRCServer {
 		void		serverManager();
 		bool		connectClient();
 		void		handleEvents();
-		void		newConnexionMsg(int sd, sockaddr_in addr, User &usr);
+		void		newConnexionMsg(int sd, sockaddr_in addr, User usr);
 		bool		checkNewClient(int sd, User client);
 		std::string	getCompleteMsg(int sd);
+		std::string getWelcomeMsg(int sd);
 
 		// COMMANDS
 		void		ping(std::string, int);
