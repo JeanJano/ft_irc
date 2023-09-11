@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:45 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/05 11:39:31 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/11 16:59:32 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,10 @@ Channel	&Channel::operator=(const Channel &cpy) {
 
 void	Channel::addUser(User user) {
 	members.push_back(user);
+	for (std::map<std::string, Role *>::iterator it = role.begin(); it != role.end(); it++) {
+		if (user.getNickName() == it->first)
+			delete it->second;
+	}
 	if (members.size() == 1)
 		role[user.getNickName()] = new Operator(user, name); 
 	else
@@ -206,6 +210,10 @@ void	Channel::operatorPriv(char operand, char mod, std::string channelName,  std
 	for (size_t i = 0; i < members.size(); i++) {
 		if (members[i].getNickName() == param)
 			usr = members[i];
+	}
+	if (usr.getNickName() == "default") {
+		reply(sender.getSd(), ERR_NOSUCHNICK(param, channelName));
+		return ;
 	}
 	changeRole(usr, operand, channelName);
 	std::string msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " MODE " + channelName + " " + operand + mod + " " + param;

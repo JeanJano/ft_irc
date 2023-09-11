@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/05 14:31:45 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/09/11 18:06:02 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@ IRCServer::IRCServer(char **av)
 	std::time_t now;
 	std::time(&now);
 	creation = std::ctime(&now);
+	empty = new User;
     if (!creation.empty() && creation[creation.size() - 1] == '\n') {
         creation.resize(creation.size() - 1);
     }
 	if (!init(av))
 		return ;
-	empty = new User;
 	serverManager();
 }
 
@@ -105,7 +105,6 @@ void IRCServer::serverManager()
 		// new incoming connection
 		if (connectClient() == false)
 			continue;
-
 		// check data from clients
 		handleEvents();
 	}
@@ -116,6 +115,7 @@ bool IRCServer::connectClient()
 	sockaddr_in newSockAddress;
 	socklen_t newSockAddressSize = sizeof(newSockAddress);
 	pollfd	tmp;
+
 
 	if (fds[0].revents & POLLIN)
 	{
@@ -131,14 +131,18 @@ bool IRCServer::connectClient()
 			close(newSd);
 			return false;
 		}
-		std::string	input = getWelcomeMsg(newSd);
-		if (input.length() >= 2 && input.substr(input.length() - 2) != "\r\n")
-		{
-			std::cout << "TEST" << std::endl;
-			input += getWelcomeMsg(newSd);
-		}
-		if (input.empty())
-			return false;
+		std::string	input = getCompleteMsg(newSd);
+		
+		// MAYBE PARTIAL COMMAND //
+		
+		// if (input.length() >= 2 && input.substr(input.length() - 2) != "\r\n")
+		// {
+		// 	std::cout << "TEST" << std::endl;
+		// 	input += getCompleteMsg(newSd);
+		// }
+		// if (input.empty())
+		// 	return false;
+		std::cout << "je suis la" << std::endl;
 		std::cout << "Input: " << input << std::endl;
 		User usr(newSd);
 		usr.parseInput(input);
@@ -156,7 +160,6 @@ bool IRCServer::connectClient()
 			return (false);
 		}
 	}
-	// else
-	// 	return (false);
+
 	return (true);
 }
