@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:29:21 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/05 14:26:34 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/11 15:45:57 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,36 +62,18 @@ std::string IRCServer::getCompleteMsg(int sd)
 	std::string received;
 
 	struct timeval tv;
-	tv.tv_sec = 1;
+	tv.tv_sec = 1; // 5 seconds timeout
 	tv.tv_usec = 0;
-	int	i = 0;
 	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
-	while (run)
+	while (true)
 	{
 		memset(&msg, 0, sizeof(msg));
 		bytesread = recv(sd, msg, sizeof(msg), 0);
 		if (bytesread < 0)
-		{
-			if (i == 10)
-			{
-				// this->quit("", sd);
-				return ("");
-			}
-			if (errno == EAGAIN || errno == EWOULDBLOCK)
-			{
-				i++;
-				usleep(10000);
-			}
-			// return ("");
-		}
-		if (bytesread == 0)
-		{
-			this->quit("", sd);
-			return ("");
-		}
+			break;
 		msg[bytesread] = '\0';
 		received += msg;
-		if (received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
+		if (bytesread == 0 && received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
 			break;
 	}
 	std::cout << "Received: " << received << std::endl;
