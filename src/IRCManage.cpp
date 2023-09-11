@@ -20,7 +20,7 @@ void IRCServer::handleEvents()
 		if (fds[i].revents & POLLIN)
 		{
 			std::string buf = getCompleteMsg(fds[i].fd);
-			if (!buf.empty())
+			if (!buf.empty() && buf.find(4) == std::string::npos)
 			{
 				parseCmd(buf);
 				while (cmd.size() > 0)
@@ -64,6 +64,7 @@ std::string IRCServer::getCompleteMsg(int sd)
 	struct timeval tv;
 	tv.tv_sec = 1; // 5 seconds timeout
 	tv.tv_usec = 0;
+	User	sender = findUserInstance(sd);
 	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
 	while (true)
 	{
@@ -79,59 +80,54 @@ std::string IRCServer::getCompleteMsg(int sd)
 			std::cout << "Out because bytesread == 0" << std::endl;
 			break ;
 		}
-		std::cout << "msg " << msg << std::endl;
 		msg[bytesread] = '\0';
 		received += msg;
-		if (received.find(4)) {
+		std::cout << "pos EOT: " << received.find(4) << std::endl;
+		if (received.find(4) != std::string::npos) {
 			std::cout << "EOT" << std::endl;
-			// break ;
+			sender.setFullMsg(received);
+			break ;
 		}
 		if (bytesread == 0 && received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
+		{
+			received = sender.getFullMsg();
+			sender.eraseFullMsg();
 			break;
+		}
 		std::cout << "jean bg" << std::endl;
 	}
 	std::cout << "Received: " << received << std::endl;
 	return (received);
 }
 
-// std::string IRCServer::getWelcomeMsg(int sd)
-// {
-// 	char msg[1500];
-// 	int bytesread;
-// 	std::string received;
+std::string IRCServer::getWelcomeMsg(int sd)
+{
+	char msg[1500];
+	int bytesread;
+	std::string received;
 
-// 	struct timeval tv;
-// 	tv.tv_sec = 5;
-// 	tv.tv_usec = 0;
-// 	int	i = 0;
-// 	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
-// 	while (run)
-// 	{
-// 		memset(&msg, 0, sizeof(msg));
-// 		bytesread = recv(sd, msg, sizeof(msg), 0);
-// 		if (bytesread < 0)
-// 		{
-// 			if (i == 10)
-// 			{
-// 				close(sd);
-// 				return ("");
-// 			}
-// 			if (errno == EAGAIN || errno == EWOULDBLOCK)
-// 			{
-// 				i++;
-// 				usleep(10000);
-// 			}
-// 		}
-// 		if (bytesread == 0)
-// 		{
-// 			close(sd);
-// 			return ("");
-// 		}
-// 		msg[bytesread] = '\0';
-// 		received += msg;
-// 		if (received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
-// 			break;
-// 	}
-// 	std::cout << "Received: " << received << std::endl;
-// 	return (received);
-// }
+	struct timeval tv;
+	tv.tv_sec = 1; // 5 seconds timeout
+	tv.tv_usec = 0;
+	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
+	while (true)
+	{
+		memset(&msg, 0, sizeof(msg));
+		bytesread = recv(sd, msg, sizeof(msg), 0);
+		if (bytesread < 0) {
+			break;
+		}
+		if (bytesread == 0)
+		{
+			quit("", sd);
+			std::cout << "Out because bytesread == 0" << std::endl;
+			break ;
+		}
+		msg[bytesread] = '\0';
+		received += msg;
+		if (bytesread == 0 && received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
+			break;
+	}
+	std::cout << "Received: " << received << std::endl;
+	return (received);
+}

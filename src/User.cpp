@@ -17,6 +17,7 @@ User::User() {
 	nickName = "default";
 	realName = "default";
 	passWord = "default";
+	fullMsg = "";
 	ip = "default";
 	sd = 0;
 }
@@ -27,6 +28,7 @@ User::User(int newSd) : sd(newSd) {
 	realName = "default";
 	passWord = "default";
 	ip = "default";
+	fullMsg = "";
 }
 
 User::User(const User &cpy) {
@@ -44,6 +46,7 @@ User	&User::operator=(const User &cpy) {
 		this->sd = cpy.sd;
 		this->ip = cpy.ip;
 		this->invit = cpy.invit;
+		this->fullMsg = cpy.fullMsg;
 	}
 	return (*this);
 }
@@ -68,6 +71,19 @@ std::string	User::getPassWord() const {
 	return (passWord);
 }
 
+std::string	User::getFullMsg() const {
+	return (fullMsg);
+}
+
+void	User::setFullMsg(std::string msg) {
+	msg.erase(msg.find(4), 1);
+	fullMsg += msg;
+	return ;
+}
+
+void	User::eraseFullMsg() {
+	fullMsg.clear();
+}
 int	User::getSd() const {
 	return (sd);
 }

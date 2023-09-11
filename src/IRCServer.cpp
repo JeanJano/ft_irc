@@ -131,7 +131,7 @@ bool IRCServer::connectClient()
 			close(newSd);
 			return false;
 		}
-		std::string	input = getCompleteMsg(newSd);
+		std::string	input = getWelcomeMsg(newSd);
 		
 		// MAYBE PARTIAL COMMAND //
 		
