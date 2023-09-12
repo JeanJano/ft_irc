@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/09/05 11:39:13 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/12 13:42:15 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ User::User() {
 	nickName = "default";
 	realName = "default";
 	passWord = "default";
+	fullMsg = "";
 	ip = "default";
 	sd = 0;
 }
@@ -27,6 +28,7 @@ User::User(int newSd) : sd(newSd) {
 	realName = "default";
 	passWord = "default";
 	ip = "default";
+	fullMsg = "";
 }
 
 User::User(const User &cpy) {
@@ -44,6 +46,7 @@ User	&User::operator=(const User &cpy) {
 		this->sd = cpy.sd;
 		this->ip = cpy.ip;
 		this->invit = cpy.invit;
+		this->fullMsg = cpy.fullMsg;
 	}
 	return (*this);
 }
@@ -68,6 +71,20 @@ std::string	User::getPassWord() const {
 	return (passWord);
 }
 
+std::string	User::getFullMsg() const {
+	return (fullMsg);
+}
+
+void	User::setFullMsg(std::string msg) {
+	if (msg.find('\n') != std::string::npos)
+		msg.erase(msg.find('\n'), 1);
+	fullMsg += msg;
+	return ;
+}
+
+void	User::eraseFullMsg() {
+	fullMsg.clear();
+}
 int	User::getSd() const {
 	return (sd);
 }

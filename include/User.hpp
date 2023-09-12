@@ -28,6 +28,9 @@ class User
 		std::string	getNickName() const;
 		std::string	getRealName() const;
 		std::string	getPassWord() const;
+		std::string	getFullMsg() const;
+		void		setFullMsg(std::string);
+		void		eraseFullMsg();
 		std::string	getIp() const;
 		std::vector<std::string>	getInvit() const;
 
@@ -45,6 +48,7 @@ class User
 		std::string nickName;
 		std::string realName;
 		std::string passWord;
+		std::string	fullMsg;
 		std::string	ip;
 		int			sd;
 		std::vector<std::string> invit;
