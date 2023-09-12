@@ -12,3 +12,8 @@ client: g++ client.cpp -o client
 
 # command useful
 create log file: /rawlog open logs
+
+# file transfer
+dcc send nick_receiver file_path
+dcc get nick_sender
+Files are downloaded on the root directory (~)
