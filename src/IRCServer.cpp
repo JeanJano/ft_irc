@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/11 18:06:02 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/12 13:47:11 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,8 @@ void IRCServer::serverManager()
 		}
 
 		// new incoming connection
-		if (connectClient() == false)
+		bool connected = connectClient();
+		if (connected == false)
 			continue;
 		// check data from clients
 		handleEvents();
@@ -142,8 +143,6 @@ bool IRCServer::connectClient()
 		// }
 		// if (input.empty())
 		// 	return false;
-		std::cout << "je suis la" << std::endl;
-		std::cout << "Input: " << input << std::endl;
 		User usr(newSd);
 		usr.parseInput(input);
 		if (checkNewClient(newSd, usr))

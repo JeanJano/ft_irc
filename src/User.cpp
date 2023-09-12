@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/09/05 11:39:13 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/12 13:42:15 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ std::string	User::getFullMsg() const {
 }
 
 void	User::setFullMsg(std::string msg) {
-	msg.erase(msg.find(4), 1);
+	if (msg.find('\n') != std::string::npos)
+		msg.erase(msg.find('\n'), 1);
 	fullMsg += msg;
 	return ;
 }

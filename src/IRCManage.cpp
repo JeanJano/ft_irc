@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCManage.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:29:21 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/11 18:17:57 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/12 13:50:43 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,23 @@ std::string IRCServer::getCompleteMsg(int sd)
 	struct timeval tv;
 	tv.tv_sec = 1; // 5 seconds timeout
 	tv.tv_usec = 0;
-	User	sender = findUserInstance(sd);
+	User	&sender = findUserInstance(sd);
 	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
 	while (true)
 	{
 		memset(&msg, 0, sizeof(msg));
 		bytesread = recv(sd, msg, sizeof(msg), 0);
+		if (bytesread < 0 && received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
+		{
+			break;
+		}
 		if (bytesread < 0) {
+			if (!sender.getFullMsg().empty())
+			{
+				std::cout << "fullMsg erased" << std::endl;
+				received = sender.getFullMsg();
+				sender.eraseFullMsg();
+			}
 			std::cout << "test" << std::endl;
 			break;
 		}
@@ -82,21 +92,14 @@ std::string IRCServer::getCompleteMsg(int sd)
 		}
 		msg[bytesread] = '\0';
 		received += msg;
-		std::cout << "pos EOT: " << received.find(4) << std::endl;
-		if (received.find(4) != std::string::npos) {
+		if (received[received.size() - 1] != '\n') {
 			std::cout << "EOT" << std::endl;
 			sender.setFullMsg(received);
+			std::cout << "Full msg: " << sender.getFullMsg() << std::endl;
 			break ;
 		}
-		if (bytesread == 0 && received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
-		{
-			received = sender.getFullMsg();
-			sender.eraseFullMsg();
-			break;
-		}
-		std::cout << "jean bg" << std::endl;
 	}
-	std::cout << "Received: " << received << std::endl;
+	std::cout << "Received Complete: " << received << std::endl;
 	return (received);
 }
 
@@ -128,6 +131,6 @@ std::string IRCServer::getWelcomeMsg(int sd)
 		if (bytesread == 0 && received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
 			break;
 	}
-	std::cout << "Received: " << received << std::endl;
+	std::cout << "Received Welcome: " << received << std::endl;
 	return (received);
 }
