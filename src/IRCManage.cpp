@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:29:21 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/12 13:50:43 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/12 15:41:25 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void IRCServer::handleEvents()
 		if (fds[i].revents & POLLIN)
 		{
 			std::string buf = getCompleteMsg(fds[i].fd);
-			if (!buf.empty() && buf.find(4) == std::string::npos)
+			if (!buf.empty())
 			{
 				parseCmd(buf);
 				while (cmd.size() > 0)
@@ -70,14 +70,15 @@ std::string IRCServer::getCompleteMsg(int sd)
 	{
 		memset(&msg, 0, sizeof(msg));
 		bytesread = recv(sd, msg, sizeof(msg), 0);
-		if (bytesread < 0 && received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
-		{
-			break;
-		}
+		// if (bytesread < 0 && received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
+		// {
+		// 	break;
+		// }
 		if (bytesread < 0) {
 			if (!sender.getFullMsg().empty())
 			{
 				std::cout << "fullMsg erased" << std::endl;
+				sender.setFullMsg(received);
 				received = sender.getFullMsg();
 				sender.eraseFullMsg();
 			}
@@ -96,6 +97,7 @@ std::string IRCServer::getCompleteMsg(int sd)
 			std::cout << "EOT" << std::endl;
 			sender.setFullMsg(received);
 			std::cout << "Full msg: " << sender.getFullMsg() << std::endl;
+			received = "";
 			break ;
 		}
 	}
@@ -110,14 +112,16 @@ std::string IRCServer::getWelcomeMsg(int sd)
 	std::string received;
 
 	struct timeval tv;
-	tv.tv_sec = 1; // 5 seconds timeout
+	tv.tv_sec = 5; // 5 seconds timeout
 	tv.tv_usec = 0;
 	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
+	usleep(1000);
 	while (true)
 	{
 		memset(&msg, 0, sizeof(msg));
 		bytesread = recv(sd, msg, sizeof(msg), 0);
 		if (bytesread < 0) {
+			std::cout << "exit 0" << std::endl;
 			break;
 		}
 		if (bytesread == 0)
@@ -128,8 +132,8 @@ std::string IRCServer::getWelcomeMsg(int sd)
 		}
 		msg[bytesread] = '\0';
 		received += msg;
-		if (bytesread == 0 && received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
-			break;
+		// if (bytesread < 0 && received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
+		// 	break;
 	}
 	std::cout << "Received Welcome: " << received << std::endl;
 	return (received);

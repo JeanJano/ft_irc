@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCUtils.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:30:49 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/04 17:17:24 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/09/12 15:17:17 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ User &IRCServer::findUserInstance(int sd)
 			return (it->second);
 		it++;
 	}
-	return (it->second);
+	return (*empty);
 }
 
 User &IRCServer::findUserInstance(std::string nick)
