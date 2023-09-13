@@ -1,17 +1,4 @@
-#include "IRCBot.hpp"
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <iomanip>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <netdb.h>
-
-void SendIRCMessage(const std::string& message, int irc_socket) {
-    std::string irc_message = message + "\r\n";
-    send(irc_socket, irc_message.c_str(), irc_message.length(), 0);
-}
+#include "Fizzbuzz.hpp"
 
 std::string ReceiveIRCMessage(int irc_socket) {
     char buffer[1024];
@@ -44,17 +31,16 @@ int main() {
     reply(irc_socket, "NICK " + bot_nickname);
     reply(irc_socket, "USER jsauvage jsauvage localhost :Jean SAUVAGE");
     std::string irc_message = ReceiveIRCMessage(irc_socket);
-    reply(irc_socket, "JOIN #bot");
+    reply(irc_socket, "JOIN " + channel);
 
     while (true) {
         std::string irc_message = ReceiveIRCMessage(irc_socket);
     
         if (!irc_message.empty()) {
             std::cout << "message: " << irc_message << std::endl;
-            // Process the IRC message and send user messages to ChatGPT
-            // Send ChatGPT responses back to the IRC channel
-            std::string chatgpt_response = SendToChatGPT(irc_message);
-            reply(irc_socket, "PRIVMSG " + channel + " :" + chatgpt_response);
+            Fizzbuzz fizzbuzz(irc_message);
+            fizzbuzz.display();
+            fizzbuzz.sendF(irc_socket);
         }
     }
 
