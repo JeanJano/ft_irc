@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/14 16:31:48 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/14 17:12:47 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,8 @@ void IRCServer::privmsg(std::string input, int sd)
 
 	iss >> name >> col;
 	getline(iss, userMsg);
-	userMsg.resize(userMsg.size() - 1);
+	if (userMsg.size() > 0 && (userMsg[userMsg.size() - 1] == '\n' || userMsg[userMsg.size() - 1] == '\r'))
+		userMsg.resize(userMsg.size() - 1);
 	size_t pos = name.find_first_of("+?#");
 	if (pos == 0)
 		members = getChannelMembers(name);
@@ -180,7 +181,8 @@ void	IRCServer::topic(std::string input, int sd) {
 
 	iss >> channelName >> col;
 	getline(iss, topic);
-	topic.resize(topic.size() - 1);
+	if (topic.size() > 0 && (topic[topic.size() - 1] == '\n' || topic[topic.size() - 1] == '\r'))
+		topic.resize(topic.size() - 1);
 	User sender = findUserInstance(sd);
 	std::map<std::string, Channel>::iterator it = channels.find(channelName);
 	if (it == channels.end())
@@ -243,7 +245,7 @@ void	IRCServer::part(std::string input, int sd) {
 
 	iss >> channelName;
 	getline(iss, partMsg);
-	if (!partMsg.empty())
+	if (!partMsg.empty() && partMsg.size() > 0 && (partMsg[partMsg.size() - 1] == '\n' || partMsg[partMsg.size() - 1] == '\r'))
 		partMsg.resize(partMsg.size() - 1);
 
 	User	sender = findUserInstance(sd);
@@ -273,7 +275,8 @@ void	IRCServer::notice(std::string input, int sd) {
 
 	iss >> noticeTarget >> col;
 	getline(iss, noticeMsg);
-	noticeMsg.resize(noticeMsg.size() - 1);
+	if (noticeMsg.size() > 0 && (noticeMsg[noticeMsg.size() - 1] == '\n' || noticeMsg[noticeMsg.size() - 1] == '\r'))
+		noticeMsg.resize(noticeMsg.size() - 1);
 	User	sender = findUserInstance(sd);
 
 	if (noticeTarget[0] == '#') {

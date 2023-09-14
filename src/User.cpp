@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 17:05:39 by jsauvage          #+#    #+#             */
-/*   Updated: 2023/09/12 13:42:15 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/14 17:09:46 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,13 @@ void	User::parseInput(std::string input) {
 	std::stringstream	ss(input);
 	std::string			line;
 
+	if (input.empty())
+	{
+		userName = "gogol";
+		nickName = "gogol";
+		realName = "gogol";
+		passWord = "gogol";
+	}
 	while (std::getline(ss, line))
 	{
 		if (!line.empty() && line[line.size() - 1] == '\r')

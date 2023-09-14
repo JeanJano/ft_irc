@@ -6,7 +6,7 @@
 /*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 14:04:52 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/05 11:39:18 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/14 17:06:56 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Regular::Regular() {
 	sender = NULL;
-	channelName = "Default";
+	channelName = "default";
 	return ;
 }
 
