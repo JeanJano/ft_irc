@@ -18,6 +18,7 @@ std::string ReceiveIRCMessage(int irc_socket, bool isWelcome) {
 
 	tv.tv_usec = 0;
 	setsockopt(irc_socket, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
+    usleep(1000);
     ssize_t bytes_received = recv(irc_socket, buffer, sizeof(buffer) - 1, 0);
     if (bytes_received <= 0) {
         return "";

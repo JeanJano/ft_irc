@@ -47,20 +47,20 @@ void	Fizzbuzz::display() {
 }
 
 void	Fizzbuzz::sendF() {
-	std::stringstream ss;
-	std::string s;
 	for (auto it = num.begin(); it != num.end(); ++it) {
+		std::stringstream ss;
+		std::string msg = "";
 		ss << *it;
 		if (*it % 5 == 0 && *it % 7 == 0)
-			s = "FIZZ BUZZ";
+			msg = "FIZZ BUZZ";
 		else if (*it % 5 == 0)
-			s = "FIZZ";
+			msg = "FIZZ";
 		else if (*it % 7 == 0)
-			s = "BUZZ";
+			msg = "BUZZ";
 		else
-			ss >> s;
-		s = "PRIVMSG #bot :" + s + "\r\n";
-		send(sd, s.c_str(), s.size(), 0);
+			ss >> msg;
+		msg = "PRIVMSG #bot :" + msg + "\r\n";
+		send(sd, msg.c_str(), msg.size(), 0);
 	}
 }
 
