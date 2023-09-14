@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCManage.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:29:21 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/12 15:41:25 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/14 15:54:12 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ std::string IRCServer::getCompleteMsg(int sd)
 		{
 			quit("", sd);
 			std::cout << "Out because bytesread == 0" << std::endl;
+			received = "";
 			break ;
 		}
 		msg[bytesread] = '\0';
