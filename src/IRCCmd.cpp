@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCCmd.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:52 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/11 16:54:41 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/14 16:31:48 by smessal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,16 +111,29 @@ void IRCServer::quit(std::string input, int sd)
 {
 	(void)input;
 	User	&quit = findUserInstance(sd);
+	bool	removed = false;
 
-	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); it++)
+	if (channels.begin() != channels.end())
 	{
-		std::vector<User> &cmp = it->second.getMembers();
-		for (size_t i = 0; i < cmp.size(); i++)
+		std::cout << "PASS" << std::endl;
+		std::map<std::string, Channel>::iterator it = channels.begin();
+		while (it != channels.end())
 		{
-			if (quit.getNickName() == cmp[i].getNickName()) {
-				part(it->first, sd);
-				// it->second.removeUser(quit);
+			std::vector<User> &cmp = it->second.getMembers();
+			for (size_t i = 0; i < cmp.size(); i++)
+			{
+				if (quit.getNickName() == cmp[i].getNickName()) {
+					std::string	channelName = it->first;
+					it++;
+					removed = true;
+					part(channelName, sd);
+					break ;
+				}
 			}
+			if (removed == false)
+				it++;
+			else
+				removed = false;
 		}
 	}
 	close(sd);
@@ -244,6 +257,11 @@ void	IRCServer::part(std::string input, int sd) {
 	for (size_t i = 0; i < channelMembers.size(); i++) 
 		reply(channelMembers[i].getSd(), msg);
 	channels[channelName].removeUser(sender);
+	if (channelMembers.size() == 0) {
+		channels.erase(channelName);
+		std::cout << "Channel empty" << std::endl;
+	}
+	
 }
 
 void	IRCServer::notice(std::string input, int sd) {
