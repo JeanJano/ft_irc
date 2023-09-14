@@ -26,10 +26,19 @@ int main() {
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     connect(irc_socket, (struct sockaddr*)&server_addr, sizeof(server_addr));
 
+    char            host[256];
+    std::string     ip;
+    struct hostent  *host_entry;
+    int             hostname;
+
+    hostname = gethostname(host, sizeof(host));
+    host_entry = gethostbyname(host);
+    ip = inet_ntoa(*((struct in_addr*) host_entry->h_addr_list[0]));
+
     reply(irc_socket, "CAP LS");
     reply(irc_socket, "PASS p");
     reply(irc_socket, "NICK " + bot_nickname);
-    reply(irc_socket, "USER jsauvage jsauvage localhost :Jean SAUVAGE");
+    reply(irc_socket, "USER jsauvage jsauvage " + ip + " :Jean SAUVAGE");
     std::string irc_message = ReceiveIRCMessage(irc_socket);
     reply(irc_socket, "JOIN " + channel);
 
@@ -38,9 +47,9 @@ int main() {
     
         if (!irc_message.empty()) {
             std::cout << "message: " << irc_message << std::endl;
-            Fizzbuzz fizzbuzz(irc_message);
+            Fizzbuzz fizzbuzz(irc_message, irc_socket);
             fizzbuzz.display();
-            fizzbuzz.sendF(irc_socket);
+            fizzbuzz.sendF();
         }
     }
 
