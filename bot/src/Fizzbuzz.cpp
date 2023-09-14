@@ -6,19 +6,26 @@ bool	isNum(char c) {
 	return (false);
 }
 
-Fizzbuzz::Fizzbuzz(std::string input) {
+Fizzbuzz::Fizzbuzz(std::string input, int sd) : sd(sd) {
 	parsing(input);
 }
 
 Fizzbuzz::Fizzbuzz(const Fizzbuzz& p) {
 	this->num = p.num;
+	this->sd = p.sd;
 }
 
 Fizzbuzz::~Fizzbuzz() {}
 
 void	Fizzbuzz::parsing(std::string input) {
 	input = input.substr(input.find(':') + 1);
+	std::cout << input.find("JOIN") << std::endl;
+	if (input.find("JOIN") != std::string::npos) {
+		welcome();
+		return ;
+	}
 	input = input.substr(input.find(':') + 1);
+	// std::cout << input.substr(0, 5) << std::endl;
 	if (isNum(input[0]) == false)
 		return ;
 
@@ -41,7 +48,7 @@ void	Fizzbuzz::display() {
 	}
 }
 
-void	Fizzbuzz::sendF(int sd) {
+void	Fizzbuzz::sendF() {
 	std::stringstream ss;
 	std::string s;
 	for (auto it = num.begin(); it != num.end(); ++it) {
@@ -57,4 +64,17 @@ void	Fizzbuzz::sendF(int sd) {
 		s = "PRIVMSG #bot :" + s + "\r\n";
 		send(sd, s.c_str(), s.size(), 0);
 	}
+}
+
+void	Fizzbuzz::welcome() {
+	std::string	msg;
+	std::cout << "sd: " << sd << std::endl;
+
+	msg = "PRIVMSG #bot :Welcome\r\n";
+	send(sd, msg.c_str(), msg.size(), 0);
+	msg = "PRIVMSG #bot :To communicate with me just enter a list of number\r\n";
+	send(sd, msg.c_str(), msg.size(), 0);
+	msg = "PRIVMSG #bot :Enjoy the experience\r\n";
+	send(sd, msg.c_str(), msg.size(), 0);
+	return ;
 }
