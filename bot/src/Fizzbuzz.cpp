@@ -19,13 +19,11 @@ Fizzbuzz::~Fizzbuzz() {}
 
 void	Fizzbuzz::parsing(std::string input) {
 	input = input.substr(input.find(':') + 1);
-	std::cout << input.find("JOIN") << std::endl;
 	if (input.find("JOIN") != std::string::npos) {
 		welcome();
 		return ;
 	}
 	input = input.substr(input.find(':') + 1);
-	// std::cout << input.substr(0, 5) << std::endl;
 	if (isNum(input[0]) == false)
 		return ;
 
@@ -68,7 +66,6 @@ void	Fizzbuzz::sendF() {
 
 void	Fizzbuzz::welcome() {
 	std::string	msg;
-	std::cout << "sd: " << sd << std::endl;
 
 	msg = "PRIVMSG #bot :Welcome\r\n";
 	send(sd, msg.c_str(), msg.size(), 0);

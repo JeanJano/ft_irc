@@ -1,13 +1,29 @@
 #include "Fizzbuzz.hpp"
 
-std::string ReceiveIRCMessage(int irc_socket) {
+bool	run = true;
+
+void	signalHandlerBot(int num) {
+	(void)num;
+	run = false;
+}
+
+std::string ReceiveIRCMessage(int irc_socket, bool isWelcome) {
     char buffer[1024];
+
+    struct timeval tv;
+    if (isWelcome == true)
+        tv.tv_sec = 5;
+    else
+        tv.tv_sec = 1;
+
+	tv.tv_usec = 0;
+	setsockopt(irc_socket, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
     ssize_t bytes_received = recv(irc_socket, buffer, sizeof(buffer) - 1, 0);
     if (bytes_received <= 0) {
         return "";
     }
     buffer[bytes_received] = '\0';
-    return std::string(buffer);
+    return (std::string(buffer));
 }
 
 void	reply(int sd, std::string msg) {
@@ -39,11 +55,12 @@ int main() {
     reply(irc_socket, "PASS p");
     reply(irc_socket, "NICK " + bot_nickname);
     reply(irc_socket, "USER jsauvage jsauvage " + ip + " :Jean SAUVAGE");
-    std::string irc_message = ReceiveIRCMessage(irc_socket);
+    std::string irc_message = ReceiveIRCMessage(irc_socket, true);
     reply(irc_socket, "JOIN " + channel);
 
-    while (true) {
-        std::string irc_message = ReceiveIRCMessage(irc_socket);
+    signal(SIGINT, signalHandlerBot);
+    while (run) {
+        std::string irc_message = ReceiveIRCMessage(irc_socket, false);
     
         if (!irc_message.empty()) {
             std::cout << "message: " << irc_message << std::endl;
