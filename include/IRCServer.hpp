@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kass <zel-kass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:35 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/05 14:53:52 by zel-kass         ###   ########.fr       */
+/*   Updated: 2023/09/18 18:35:25 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,6 @@ class IRCServer {
 		void		part(std::string, int);
 		void		notice(std::string, int);
 
-		// errors
-		
 		//UTILS
 		void    	parseCmd(std::string buf);
 		void		treatCmd(int sd);
@@ -79,27 +77,5 @@ class IRCServer {
 		std::string						creation;
 		User							*empty;
 };
-
-// void	IRCServer::part(std::string input, int sd) {
-// 	std::istringstream	iss(input);
-// 	std::string			channelName;
-// 	std::string			partMsg;
-
-// 	iss >> channelName;
-// 	getline(iss, partMsg);
-// 	partMsg.resize(partMsg.size() - 1);
-
-// 	User	sender = findUserInstance(sd);
-// 	if (!userInChannel(channels[channelName].getMembers(), sender.getNickName())) {
-// 		reply(sender.getSd(), ERR_NOTONCHANNEL(sender.getNickName(), channelName));
-// 		return ;
-// 	}
-
-// 	std::vector<User>	&channelMembers = channels[channelName].getMembers();
-// 	std::string msg = ":" + sender.getNickName() + "!" + sender.getUserName() + "@" + sender.getIp() + " PART " + channelName + " :" + partMsg;
-// 	for (size_t i = 0; i < channelMembers.size(); i++) 
-// 		reply(channelMembers[i].getSd(), msg);
-// 	channels[channelName].removeUser(sender);
-// }
 
 #endif

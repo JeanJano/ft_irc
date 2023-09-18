@@ -6,7 +6,7 @@
 /*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:29:21 by smessal           #+#    #+#             */
-/*   Updated: 2023/09/14 15:54:12 by jsauvage         ###   ########.fr       */
+/*   Updated: 2023/09/18 18:31:04 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@ void IRCServer::newConnexionMsg(int sd, sockaddr_in addr, User usr)
 bool IRCServer::checkNewClient(int sd, User client)
 {
 	std::string msg;
-	// if (client.getPassWord().compare(password) != 0)
-	// {
-	// 	reply(sd, ERR_PASSWDMISMATCH(client.getNickName()));
-	// 	return (false);
-	// }
+	if (client.getPassWord().compare(password) != 0)
+	{
+		reply(sd, ERR_PASSWDMISMATCH(client.getNickName()));
+		return (false);
+	}
 	if (nickIsUsed(client.getNickName()))
 	{
 		reply(sd, ERR_NICKNAMEINUSE(client.getNickName(), client.getNickName()));
@@ -62,7 +62,7 @@ std::string IRCServer::getCompleteMsg(int sd)
 	std::string received;
 
 	struct timeval tv;
-	tv.tv_sec = 1; // 5 seconds timeout
+	tv.tv_sec = 1;
 	tv.tv_usec = 0;
 	User	&sender = findUserInstance(sd);
 	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
@@ -70,10 +70,6 @@ std::string IRCServer::getCompleteMsg(int sd)
 	{
 		memset(&msg, 0, sizeof(msg));
 		bytesread = recv(sd, msg, sizeof(msg), 0);
-		// if (bytesread < 0 && received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
-		// {
-		// 	break;
-		// }
 		if (bytesread < 0) {
 			if (!sender.getFullMsg().empty())
 			{
@@ -113,7 +109,7 @@ std::string IRCServer::getWelcomeMsg(int sd)
 	std::string received;
 
 	struct timeval tv;
-	tv.tv_sec = 5; // 5 seconds timeout
+	tv.tv_sec = 5;
 	tv.tv_usec = 0;
 	setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof tv);
 	usleep(1000);
@@ -133,8 +129,6 @@ std::string IRCServer::getWelcomeMsg(int sd)
 		}
 		msg[bytesread] = '\0';
 		received += msg;
-		// if (bytesread < 0 && received.length() >= 2 && received.substr(received.length() - 2) == "\r\n")
-		// 	break;
 	}
 	std::cout << "Received Welcome: " << received << std::endl;
 	return (received);

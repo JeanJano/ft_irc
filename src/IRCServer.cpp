@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smessal <smessal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jsauvage <jsauvage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 20:27:33 by zel-kass          #+#    #+#             */
-/*   Updated: 2023/09/12 13:47:11 by smessal          ###   ########.fr       */
+/*   Updated: 2023/09/18 18:25:11 by jsauvage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,16 +133,6 @@ bool IRCServer::connectClient()
 			return false;
 		}
 		std::string	input = getWelcomeMsg(newSd);
-		
-		// MAYBE PARTIAL COMMAND //
-		
-		// if (input.length() >= 2 && input.substr(input.length() - 2) != "\r\n")
-		// {
-		// 	std::cout << "TEST" << std::endl;
-		// 	input += getCompleteMsg(newSd);
-		// }
-		// if (input.empty())
-		// 	return false;
 		User usr(newSd);
 		usr.parseInput(input);
 		if (checkNewClient(newSd, usr))
